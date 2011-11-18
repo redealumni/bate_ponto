@@ -11,7 +11,7 @@ class PunchesController < ApplicationController
     
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @punches }
+      format.json { render :json => @punches }
     end
   end
 
@@ -39,11 +39,11 @@ class PunchesController < ApplicationController
 
     respond_to do |format|
       if @punch.save
-        format.html { redirect_to root_path, notice: 'Cartão batido com sucesso!' }
-        format.json { render json: @punch, status: :created, location: @punch }
+        format.html { redirect_to root_path, :notice => 'Cartão batido com sucesso!' }
+        format.json { render :json => @punch, :status => :created, :location => @punch }
       else
-        format.html { render action: "index" }
-        format.json { render json: @punch.errors, status: :unprocessable_entity }
+        format.html { render :action => "index" }
+        format.json { render :json => @punch.errors, :status => :unprocessable_entity }
       end
     end
   end
@@ -55,11 +55,11 @@ class PunchesController < ApplicationController
 
     respond_to do |format|
       if @punch.update_attributes(params[:punch])
-        format.html { redirect_to root_path, notice: 'Batida de ponto alterada.' }
+        format.html { redirect_to root_path, :notice => 'Batida de ponto alterada.' }
         format.json { head :ok }
       else
-        format.html { render action: "index" }
-        format.json { render json: @punch.errors, status: :unprocessable_entity }
+        format.html { render :action => "index" }
+        format.json { render :json => @punch.errors, :status => :unprocessable_entity }
       end
     end
   end
