@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
   has_secure_password
   validates :password, :presence => { :on => :create }
   has_many :punches
+
   
   def hours_worked(datetime_range)
     punches_in_range = self.punches.where('punched_at >= ? and punched_at <= ?', datetime_range.begin, datetime_range.end).order('punched_at ASC').all

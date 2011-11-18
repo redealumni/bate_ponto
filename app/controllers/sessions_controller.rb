@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
     @user = User.find_by_name(params[:user][:name])
     if @user.try(:authenticate, params[:user][:password])
       session[:user_id] = @user.id
-      cookies.permanent.signed[:login_user_id] = @user.id
+      cookies.permanent.signed[:login_user_id] = @user.id, @user.password_digest
       redirect_to root_path, :notice => "Logado com sucesso!" # Or whatever you want i.e. redirect_to user
     else
       render :new, :flash => { :error => "bad email/password combination" }

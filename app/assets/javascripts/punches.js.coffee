@@ -17,6 +17,7 @@ $(->
         login_fields.remove()
         $('#show_hide_login').html 'Logar com outro +'
         login_hidden = true
+      return false
         
         
     # Edit punch datetimes
@@ -25,10 +26,12 @@ $(->
       parent = $(this).parent('.punch_time_display').hide()
       parent_dom_id = parent.attr('meta-dom-id')
       punch_time_forms.filter('[meta-dom-id="' + parent_dom_id + '"]').insertAfter(parent)
+      return false
     $('.punch_time_form .punch_show_display_link').click ->  
       parent = $(this).parent('.punch_time_form')
       parent.siblings('.punch_time_display').show()
       parent.detach()
+      return false
     
     punch_time_forms = $('.punch_time_form').detach()
 
