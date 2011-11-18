@@ -35,7 +35,7 @@ class StatsController < ApplicationController
     end
     
     @pie_series = @users.map{ |u| 
-      { y: u.hours_worked(start..finish).round, name: u.name}
+      { :y => u.hours_worked(start..finish).round, :name => u.name}
     }
     
   end
@@ -71,9 +71,9 @@ class StatsController < ApplicationController
     data = users.map do |u|
       count += 1
       value = u.hours_worked(start..finish).round
-      { value: value, label: "#{u.name} (#{value}h)", colour: COLORS[count]}
+      { :value => value, :label => "#{u.name} (#{value}h)", :colour=> COLORS[count]}
     end
-    return_data = {item: data}
+    return_data = {:item => data}
   end
   
 end
