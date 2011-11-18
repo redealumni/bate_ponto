@@ -30,6 +30,10 @@ gem 'bcrypt-ruby', '~> 3.0.0'
 # To use debugger
 # gem 'ruby-debug19', :require => 'ruby-debug'
 
+group :production do
+  gem 'mysql2', '0.3.2'
+end
+
 group :test do
   # Pretty printed test output
   gem 'turn', :require => false
