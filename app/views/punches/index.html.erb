@@ -1,47 +1,49 @@
-<h1>Ponto Redealumni</h1>
+  <h1>Ponto Redealumni</h1>
 
-<%= render 'form' %>
+  <%= render 'form' %>
 
-<% @punches.each do |punch| %>
-  <%= form_for(punch) do |f| %>
-  <table class="punch_item <%= punch.entrance? ? "entrance" : "exit" %>">
-    <tr>
-      <td>
-        <div class='punch_time_display' meta-dom-id="<%=dom_id(punch)%>">
-          <%= punch.punched_at.to_s(:short)%>
-          <a href="#" class="punch_show_form_link">mudar</a>
-        </div>
-        <div class='punch_time_form' meta-dom-id="<%=dom_id(punch)%>">
-          <%= f.datetime_select('punched_at', :use_month_numbers => true, :minute_step => 15) %>
-          <a href="#" class="punch_show_display_link">cancelar</a>
-        </div>
-      </td>
-      <td><%= punch.comment %></td>
-      <td><%= punch.entrance? ? "<green>→ Entrando...</green>".html_safe : "<red>← Saindo...</red>".html_safe %></td>
-      <td><%= f.submit "Alterar" %> <%= link_to 'Remover', punch, :confirm => 'Tem certeza?', :method => :delete %></td>
-    </tr>
-  </table>
+  <% @punches.each do |punch| %>
+    <%= form_for(punch) do |f| %>
+    <table class="punch_item <%= punch.entrance? ? "entrance" : "exit" %>">
+      <tr>
+        <td class="status"><%= punch.entrance? ? "→<br/>In".html_safe : "←<br/>Out".html_safe %></td>
+        <td class="time">
+          <div class='punch_time_display' meta-dom-id="<%=dom_id(punch)%>">
+            <%= punch.punched_at.to_s(:short)%>
+            <br/>
+            <a href="#" class="punch_show_form_link">mudar</a>
+          </div>
+          <div class='punch_time_form' meta-dom-id="<%=dom_id(punch)%>">
+            <%= f.datetime_select('punched_at', :use_month_numbers => true, :minute_step => 15, :datetime_separator => '') %>
+            <br/>
+            <a href="#" class="punch_show_display_link">cancelar</a>
+          </div>
+        </td>
+        <td class="text"><%= punch.comment %></td>
+        <td class="actions"><%= f.submit "Alterar" %> <%= link_to 'remover', punch, :confirm => 'Tem certeza?', :method => :delete %></td>
+      </tr>
+    </table>
+    <% end %>
   <% end %>
-<% end %>
 
-<%if user_signed_in? %>
-  <div id="stats">
-    <%= render :partial => 'user_stats', :object => current_user %>
+  <%if user_signed_in? %>
+    <div id="stats">
+      <%= render :partial => 'user_stats', :object => current_user %>
+    </div>
+  <% end %>
+
+  <div id="link_bar">
+    <% if user_signed_in? %>
+      <span class="link_item"><%= link_to "Trocar Senha", edit_user_path(current_user)%></span>
+      <span class="link_item">
+        <%= link_to "Fazer Logout", session_path, :method => "delete", :confirm => "Tem certeza?"%>
+      </span>
+    <% else %>
+      <span class="link_item">
+        <%= link_to "Fazer Login", new_session_path %>
+      </span>
+    <% end %>
+    <span class="link_item">
+      <%= link_to "Stats", stats_path %>
+    </span>
   </div>
-<% end %>
-
-<div id="link_bar">
-  <% if user_signed_in? %>
-    <span class="link_item"><%= link_to "Trocar Senha", edit_user_path(current_user)%></span>
-    <span class="link_item">
-      <%= link_to "Fazer Logout", session_path, :method => "delete", :confirm => "Tem certeza?"%>
-    </span>
-  <% else %>
-    <span class="link_item">
-      <%= link_to "Fazer Login", new_session_path %>
-    </span>
-  <% end %>
-  <span class="link_item">
-    <%= link_to "Stats", stats_path %>
-  </span>
-</div>

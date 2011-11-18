@@ -1,0 +1,65 @@
+textarea, select, input {
+  width: 100%;
+  @include box-sizing(border-box);
+}
+
+label{
+  font-size: 10px;
+  color: #aaa;
+}
+
+button, input[type="button"], input[type="submit"] {
+  @include button(shiny);
+}
+
+table.punch_item td{
+  font-size: 10px;
+  vertical-align: middle;
+  
+  button, textarea, select, input {
+    font-size: 10px;
+    width: auto;
+    padding: 3px 10px;
+  }
+  
+  select {
+    padding: 3px 12px 3px 3px;
+    -webkit-background-size: 1000px 32px;
+    margin: 3px 1px;
+  }
+  
+  &.time {
+    width: 42%;
+  }
+  &.status {
+    width: 8%;
+  }
+  &.text {
+    width: 30%;
+  }
+  &.actions {
+    width: 20%;
+  }
+  
+}
+
+table.punch_item {
+  margin: 4px 0;
+  padding: 5px;
+  background-color: #ccc;
+}
+
+table.punch_item.exit {
+  background-color: #DFC5B6;
+  
+  .status{
+    color: #9F8D82 ;
+  }
+}
+
+table.punch_item.entrance {
+  background-color: #B7DFC0;
+  .status {
+    color: #7C9782;
+  }
+}
