@@ -31,7 +31,7 @@ gem 'bcrypt-ruby', '~> 3.0.0'
 # gem 'ruby-debug19', :require => 'ruby-debug'
 
 group :production do
-  gem 'mysql2', '0.3.2'
+  gem 'mysql2'
 end
 
 group :test do
