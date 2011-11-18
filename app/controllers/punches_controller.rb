@@ -71,7 +71,7 @@ class PunchesController < ApplicationController
     @punch.destroy
 
     respond_to do |format|
-      format.html { redirect_to punches_url }
+      format.html { redirect_to punches_url, :notice => 'Batida de ponto removida.' }
       format.json { head :ok }
     end
   end
