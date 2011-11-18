@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @user.name %>
+</p>
+
+<p>
+  <b>Admin:</b>
+  <%= @user.admin? %>
+</p>
+
+<div id="stats">
+  <%= render :partial => 'user_stats', :object => @user %>
+</div>
+
+
+<%= link_to 'Edit', edit_user_path(@user) %> |
+<%= link_to 'Back', users_path %>

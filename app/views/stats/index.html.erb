@@ -1,0 +1,93 @@
+<script>
+var chart;
+
+var pie_series = <%= @pie_series.to_json.html_safe %>;
+
+//makes colors consistent
+for (var i = 0; i < pie_series.length; i++) {
+    pie_series[i]['color'] = highchartsOptions.colors[i];
+};
+
+//the complete merged series
+var chart_series = <%= @series.to_json.html_safe %>
+chart_series.push({
+  name: "Pie", 
+  data: pie_series, 
+  type: "pie",
+  center: [1500, 120],
+  size: 150,
+  showInLegend: false,
+  dataLabels: {enabled: false}
+});
+
+$(document).ready(function() {
+   chart = new Highcharts.Chart({
+      chart: {
+         renderTo: 'container',
+         defaultSeriesType: 'line',
+         marginRight: 130,
+         marginBottom: 25,
+         zoomType: 'x'
+      },
+      title: {
+         text: 'Horas Trabalhadas Por Semana',
+         x: -20 //center
+      },
+      subtitle: {
+         text: 'Redealumni',
+         x: -20
+      },
+      xAxis: {
+         categories: <%= @week_names.to_json.html_safe  %>
+      },
+      yAxis: {
+         title: {
+            text: 'Horas'
+         },
+         plotLines: [{
+            value: 0,
+            width: 1,
+            color: '#808080'
+         }],
+         maxZoom: 5,
+         min: 0,
+      },
+      labels: {
+         items: [{
+            html: 'Total do Período',
+            style: {
+               left: '1440px',
+               top: '20px',
+               color: 'lightgray'            
+            }
+         }]
+      },
+      tooltip: {
+         formatter:  function() {
+                     var s;
+                     if (this.point.name) { // the pie chart
+                        s = '<b>'+
+                           this.point.name +'</b>'+': <br/>'+ this.y +' horas';
+                     } else {
+                        s = '<b>'+ this.series.name +'</b><br/>'+
+                          this.x +': '+ this.y +'h';
+                     }
+                     return s;
+                  }
+      },
+      legend: {
+         layout: 'vertical',
+         align: 'right',
+         verticalAlign: 'top',
+         x: -10,
+         y: 100,
+         borderWidth: 0
+      },
+      series: chart_series
+   });
+   
+   
+});
+</script>
+
+<div id="container" style="width: 1900px; height: 990px; margin: 0 auto"></div>
