@@ -1,0 +1,14 @@
+<%= form_for(@user, :url => session_path, :method => "post") do |user_fields| %>
+  <div class="field">
+    <%= user_fields.label :name %><br />
+    <%= user_fields.collection_select(:name, User.by_name, :name, :name) %>
+  </div>
+  <div class="field">
+    <%= user_fields.label :password %><br />
+    <%= user_fields.password_field :password %>
+  </div>
+  
+  <div class="actions">
+    <%= user_fields.submit "Login" %>
+  </div>
+<% end %>
