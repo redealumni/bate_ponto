@@ -3,15 +3,26 @@
 <head>
   <title>PontoRa</title>
   <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0, width=device-width;">
-  <%= stylesheet_link_tag    "application" %>
+  <%= stylesheet_link_tag "application" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
 <div class="container_8 clearfix">
-<div class="grid_8">
-  <%= yield %>
-</div>
+  <div class="grid_8">
+    <% if flash[:notice] %>
+        <div class="flash notice">
+          <%= flash[:notice] %>
+        </div>
+    <% end %>
+    <% if flash[:error] %>
+        <div class="flash error">
+            <%= flash[:error] %>
+        </div>
+    <% end %>
+
+    <%= yield %>
+  </div>
 </div>
 
 </body>

@@ -8,4 +8,5 @@
 //= require jquery_ujs
 //= require highcharts
 //= require highcharts-theme
+//= require css_browser_selector
 //= require_tree .

@@ -1,3 +1,27 @@
+body {
+    zoom: 200%;
+}
+
+.mobile body{
+    zoom: 100%;
+}
+
+.flash{
+    &.error{
+        background-color: #FFA6A6;
+        border: 1px solid #FF8181;
+        color: #9C5252;
+        padding: 10px;
+    }
+    &.notice{
+        background-color: #FFFE9C;
+        border: 1px solid #CFCE7C;
+        color: #929257;
+        padding: 10px;
+    }
+    @include border-radius(5px);
+}
+
 h1{
     text-align: center;
     margin-bottom: 10px;
