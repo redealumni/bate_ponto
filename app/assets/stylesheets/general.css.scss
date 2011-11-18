@@ -1,3 +1,32 @@
+h1{
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.this_punch{
+    .time {
+        text-align: right;
+        padding: 0 10px;
+    }
+
+    .status{
+        padding: 0 10px;
+    }
+
+    &.exit{
+          background-color: #DFC5B6;
+          color: #9F8D82 ;
+
+    }
+    &.entrance{
+        background-color: #B7DFC0;
+        color: #7C9782;
+    }
+
+    padding: 10px 0;
+}
+
+
 textarea, select, input {
   width: 100%;
   @include box-sizing(border-box);
@@ -17,7 +46,7 @@ table.punch_item td{
   vertical-align: middle;
   
   button, textarea, select, input {
-    font-size: 10px;
+    font-size: 8px;
     width: auto;
     padding: 3px 10px;
   }
@@ -62,4 +91,50 @@ table.punch_item.entrance {
   .status {
     color: #7C9782;
   }
+}
+
+#login_message {
+    #show_hide_login {
+        display: block;
+        font-size: 10px;
+    }
+    font-size: 12px;
+    margin-bottom: 5px;
+    text-align: right;
+}
+
+#user_login{
+    margin-bottom:10px;
+}
+
+.main_actions {
+    button, input[type="button"], input[type="submit"] {
+        width: 100%;
+        font-size: 18px;
+    }
+    margin: 10px 0;
+}
+
+#stats{
+    padding: 10px 0;
+    margin: 5px 0;
+    background:#D2D2D2;
+    padding: 10px 10px;
+
+    .stats_line {
+        margin-bottom: 5px;
+        .name{
+            color:#8C8C8C;
+            font-size: 12px;
+        }
+        .value{
+            color: #000;
+            font-size:18px;
+            margin-right:5px;
+        }
+    }
+}
+
+#link_bar{
+    
 }

@@ -6,10 +6,12 @@ class ApplicationController < ActionController::Base
   protected
   
     def current_user
-      if @current_user ||= User.find_by_id(session[:user_id]) || User.find_by_id(cookies[:login_user_id])
-        session[:user_id] = cookies.permanent.signed[:login_user_id] = @current_user.id
+      if @current_user ||= User.find_by_id(session[:user_id]) || User.find_by_id_and_password_digest(*cookies.signed[:login_user_id])
+        session[:user_id] = @current_user.id
+        cookies.permanent.signed[:login_user_id] = [@current_user.id, @current_user.password_digest]
       else
-        session[:user_id] = cookies.permanent.signed[:login_user_id] = nil
+        session.delete(:user_id)
+        cookies.delete(:login_user_id)
       end
       @current_user
     end
