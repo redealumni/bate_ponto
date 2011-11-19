@@ -58,11 +58,19 @@ class StatsController < ApplicationController
           total_hours += hours
         end
       end
-      avg = total_hours.to_f/days_worked
+      avg = total_hours > 0 ? total_hours.to_f/days_worked : 0
       {:value => avg, :label => "#{u.name} (#{"%2.1f" % avg}h)", :colour=> COLORS[count]}
     end
 
     render :text => {:item => data}.to_json
+  end
+
+    def gecko_this_week_pie
+    users = User.by_name
+    start = Time.now.at_beginning_of_week
+    finish = Time.now
+
+    render :text => pie_data(users, start, finish).to_json
   end
 
   def gecko_last_week_pie
