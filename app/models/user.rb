@@ -7,6 +7,21 @@ class User < ActiveRecord::Base
   validates :password, :presence => { :on => :create }
   has_many :punches
 
+  def working?
+    if last_punch = self.punches.order('punched_at DESC').first
+      last_punch.entrance?
+    else
+      false
+    end
+  end
+
+  def hours_since_last_state
+    if last_punch = self.punches.order('punched_at DESC').first
+      (Time.now - last_punch.punched_at)/60/60
+    else
+      0
+    end
+  end
   
   def hours_worked(datetime_range)
     punches_in_range = self.punches.where('punched_at >= ? and punched_at <= ?', datetime_range.begin, datetime_range.end).order('punched_at ASC').all

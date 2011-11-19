@@ -11,22 +11,24 @@
         </div>
     <% end %>
 
+    <% if user_signed_in? %>
 
-    <div class="this_punch clearfix <%= @punch.entrance? ? 'entrance' : 'exit' %>">
+        <table class="this_punch <%= @punch.entrance? ? 'entrance' : 'exit' %>">
+          <tr>
+            <td>
+              <div class="status">
+                <%= @punch.entrance? ? "→ Entrando..." : "← Saindo..." %>
+              </div>
+            </td>
+            <td>
+              <div class="time">
+                <%= Time.now.to_s(:short) %>
+              </div>
+            </td>
+          </tr>
+        </table>
 
-      <div class="grid_4 alpha">
-        <div class="status">
-          <%= @punch.entrance? ? "→ Entrando..." : "← Saindo..." %>
-        </div>
-      </div>
-
-      <div class="grid_4 omega">
-        <div class="time">
-          <%= Time.now.to_s(:short) %>
-        </div>
-      </div>
-
-    </div>
+    <% end %>
 
     <div class="field">
       <%= f.label :comment %>
