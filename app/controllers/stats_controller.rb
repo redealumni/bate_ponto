@@ -55,6 +55,22 @@ class StatsController < ApplicationController
     
     render :text => pie_data(users, start, finish).to_json
   end
+
+  def gecko_this_month_pie
+    users = User.by_name
+    start = 1.month.ago
+    finish = Time.now
+    
+    render :text => pie_data(users, start, finish).to_json
+  end
+
+  def gecko_last_month_pie
+    users = User.by_name
+    start = 1.month.ago.at_beginning_of_month
+    finish = Time.now.at_beginning_of_month
+
+    render :text => pie_data(users, start, finish).to_json
+  end
   
   def gecko_from_checkpoint_pie
     users = User.by_name

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="188ad806-9dbe-4371-8574-0b8a662aa667" name="Default" comment="" />
+    <list default="true" id="188ad806-9dbe-4371-8574-0b8a662aa667" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/stats_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/stats_controller.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/routes.rb" afterPath="$PROJECT_DIR$/config/routes.rb" />
+    </list>
     <ignored path="ponto_ra.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -27,19 +30,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="routes.rb" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="routes.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/config/routes.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="22" selection-start="279" selection-end="304" vertical-scroll-proportion="0.0">
+            <state line="12" column="0" selection-start="469" selection-end="469" vertical-scroll-proportion="0.29675424">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="stats_controller.rb" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="stats_controller.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controllers/stats_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="36" selection-start="300" selection-end="300" vertical-scroll-proportion="0.19783616">
+            <state line="69" column="43" selection-start="2084" selection-end="2084" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -59,7 +62,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/app/views/application/_punch.erb" />
         <option value="$PROJECT_DIR$/app/views/application/_punch_form.erb" />
         <option value="$PROJECT_DIR$/app/controllers/punches_controller.rb" />
         <option value="$PROJECT_DIR$/app/views/punches/index.html.erb" />
@@ -75,6 +77,7 @@
         <option value="$PROJECT_DIR$/config/locales/will_paginate.yml" />
         <option value="$PROJECT_DIR$/db/migrate/20111119190729_add_indexes.rb" />
         <option value="$PROJECT_DIR$/app/controllers/stats_controller.rb" />
+        <option value="$PROJECT_DIR$/config/routes.rb" />
       </list>
     </option>
   </component>
@@ -587,7 +590,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="366" y="229" width="1385" height="783" extended-state="0" />
+    <frame x="306" y="176" width="1385" height="783" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -750,16 +753,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/routes.rb">
+    <entry file="file://$PROJECT_DIR$/app/controllers/stats_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="22" selection-start="279" selection-end="304" vertical-scroll-proportion="0.0">
+        <state line="69" column="43" selection-start="2084" selection-end="2084" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/stats_controller.rb">
+    <entry file="file://$PROJECT_DIR$/config/routes.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="36" selection-start="300" selection-end="300" vertical-scroll-proportion="0.19783616">
+        <state line="12" column="0" selection-start="469" selection-end="469" vertical-scroll-proportion="0.29675424">
           <folding />
         </state>
       </provider>
