@@ -1,5 +1,7 @@
 body {
     zoom: 200%;
+    max-width: 640px;
+    margin: auto;
 }
 
 .mobile body{
@@ -48,6 +50,7 @@ h1{
     }
 
     padding: 10px 0;
+    width: 100%;
 }
 
 
@@ -100,6 +103,7 @@ table.punch_item {
   margin: 4px 0;
   padding: 5px;
   background-color: #ccc;
+  width: 100%;
 }
 
 table.punch_item.exit {
@@ -156,6 +160,13 @@ table.punch_item.entrance {
             font-size:18px;
             margin-right:5px;
         }
+    }
+
+    .stats_line.green .name, .stats_line.green .value {
+        color: #929257 !important;
+    }
+    .stats_line.red .name, .stats_line.red .value {
+        color: red !important;
     }
 }
 
