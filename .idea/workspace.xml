@@ -33,16 +33,7 @@
       <file leaf-file-name="routes.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/config/routes.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="0" selection-start="469" selection-end="469" vertical-scroll-proportion="0.29675424">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="stats_controller.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/controllers/stats_controller.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="69" column="43" selection-start="2084" selection-end="2084" vertical-scroll-proportion="0.0">
+            <state line="7" column="13" selection-start="161" selection-end="161" vertical-scroll-proportion="0.17310664">
               <folding />
             </state>
           </provider>
@@ -76,8 +67,8 @@
         <option value="$PROJECT_DIR$/app/controllers/users_controller.rb" />
         <option value="$PROJECT_DIR$/config/locales/will_paginate.yml" />
         <option value="$PROJECT_DIR$/db/migrate/20111119190729_add_indexes.rb" />
-        <option value="$PROJECT_DIR$/app/controllers/stats_controller.rb" />
         <option value="$PROJECT_DIR$/config/routes.rb" />
+        <option value="$PROJECT_DIR$/app/controllers/stats_controller.rb" />
       </list>
     </option>
   </component>
@@ -590,7 +581,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="306" y="176" width="1385" height="783" extended-state="0" />
+    <frame x="304" y="215" width="1385" height="783" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -755,14 +746,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/stats_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="43" selection-start="2084" selection-end="2084" vertical-scroll-proportion="0.0">
+        <state line="47" column="16" selection-start="1480" selection-end="1480" vertical-scroll-proportion="0.5054096">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/config/routes.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="0" selection-start="469" selection-end="469" vertical-scroll-proportion="0.29675424">
+        <state line="7" column="13" selection-start="161" selection-end="161" vertical-scroll-proportion="0.17310664">
           <folding />
         </state>
       </provider>
