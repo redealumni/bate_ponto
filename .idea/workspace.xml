@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="188ad806-9dbe-4371-8574-0b8a662aa667" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/stats_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/stats_controller.rb" />
-    </list>
+    <list default="true" id="188ad806-9dbe-4371-8574-0b8a662aa667" name="Default" comment="" />
     <ignored path="ponto_ra.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -41,7 +39,7 @@
       <file leaf-file-name="stats_controller.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/controllers/stats_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="2" selection-start="51" selection-end="51" vertical-scroll-proportion="0.04945904">
+            <state line="8" column="36" selection-start="300" selection-end="300" vertical-scroll-proportion="0.19783616">
               <folding />
             </state>
           </provider>
@@ -761,7 +759,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/stats_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="2" selection-start="51" selection-end="51" vertical-scroll-proportion="0.04945904">
+        <state line="8" column="36" selection-start="300" selection-end="300" vertical-scroll-proportion="0.19783616">
           <folding />
         </state>
       </provider>
