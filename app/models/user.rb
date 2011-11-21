@@ -22,6 +22,10 @@ class User < ActiveRecord::Base
       0
     end
   end
+
+  def hours_today
+    self.hours_worked(Time.now.beginning_of_day..Time.now)
+  end
   
   def hours_worked(datetime_range)
     punches_in_range = self.punches.where('punched_at >= ? and punched_at <= ?', datetime_range.begin, datetime_range.end).order('punched_at ASC').all
