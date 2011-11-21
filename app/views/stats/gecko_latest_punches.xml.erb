@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <% @punches.each do |punch| %>
+        <item>
+            <text>
+                <b><%= punch.user.name %></b> <span style="color:<%= punch.entrance? ? "green" : "red" %>;"><%= punch.entrance? ? "entrou" : "saiu" %></span>
+                há <i><%= time_ago_in_words(punch.punched_at) %></i>.
+                <% unless punch.comment.blank? -%>
+                    <blockquote><%= punch.comment %></blockquote>
+                <% end %>
+            </text>
+            <type>0</type>
+        </item>
+	<% end %>
+</root>
