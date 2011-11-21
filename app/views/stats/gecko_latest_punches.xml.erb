@@ -3,11 +3,11 @@
     <% @punches.each do |punch| %>
         <item>
             <text>
-                <b><%= punch.user.name %></b> <span style="color:<%= punch.entrance? ? "green" : "red" %>;"><%= punch.entrance? ? "entrou" : "saiu" %></span>
-                há <i><%= time_ago_in_words(punch.punched_at) %></i>.
+                <![CDATA["<b><%= punch.user.name %></b> <span style="color:<%= punch.entrance? ? "green" : "red" %>;"><%= punch.entrance? ? "entrou" : "saiu" %></span>
+                há <i><%= time_ago_in_words(punch.punched_at) %> (<%= punch.punched_at.hour %>:<%= punch.punched_at.min %>)</i>.
                 <% unless punch.comment.blank? -%>
                     <blockquote><%= punch.comment %></blockquote>
-                <% end %>
+                <% end %>"]]>
             </text>
             <type>0</type>
         </item>
