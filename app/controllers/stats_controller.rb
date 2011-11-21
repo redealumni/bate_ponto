@@ -106,7 +106,7 @@ class StatsController < ApplicationController
   end
 
   def gecko_latest_punches
-    @punches = Punch.latest.limit(10)
+    @punches = User.by_name.map{|u| u.punches.latest.first}.compact
   end
 
   protected
