@@ -105,6 +105,10 @@ class StatsController < ApplicationController
     render :text => pie_data(users, start, finish).to_json
   end
 
+  def gecko_latest_punches
+    @punches = Punch.latest.limit(10)
+  end
+
   protected
 
   def pie_data(users, start, finish)

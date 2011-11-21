@@ -11,6 +11,8 @@ PontoRa::Application.routes.draw do
   match "gecko_this_week_pie" => 'stats#gecko_this_week_pie'
   match "gecko_this_month_pie" => 'stats#gecko_this_month_pie'
   match "gecko_from_checkpoint_pie" => 'stats#gecko_from_checkpoint_pie'
+  match "gecko_latest_punches" => 'stats#gecko_latest_punches'
+
 
   root :to => 'punches#index'
 
