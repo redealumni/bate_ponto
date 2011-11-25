@@ -46,21 +46,30 @@ class UserTest < ActiveSupport::TestCase
   end
 
 
-  test "hours_worked ignora faltante um no meio" do
-    #entrou 1:00
-    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 1.hours))
-    #saiu 5:00
-    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 5.hours))
-    #saiu 10:00
-    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 10.hours))
-    @punches.update_attribute(:entrance, false)
-    #entrou 15:00
-    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 15.hours))
-    #saiu 20:00
-    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 20.hours))
+  test "hours_worked ignora entrada faltante no meio" do
+    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 1.hours)) #entra
+                                                                              # 3:00       sai
+    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 5.hours)) #sai
+    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 10.hours)) #entra
+    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 15.hours)) #sai
 
-    #9 horas
-    assert_equal 9, @user.hours_worked(Time.now.beginning_of_day..Time.now.end_of_day)
+    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 20.hours))
+    @punches.update_attribute(:punched_at, (Time.now.beginning_of_day + 3.hours) ) #  sai lá atrás
+
+    assert_equal 7, @user.hours_worked(Time.now.beginning_of_day..Time.now.end_of_day)
+  end
+
+  test "hours_worked ignora saída faltante no meio" do
+    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 1.hours)) #entra
+    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 5.hours)) #sai
+                                                                              # 8         entra
+    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 10.hours))#entra
+    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 15.hours))#sai
+
+    @punches = @user.punches.create(:punched_at => (Time.now.beginning_of_day + 20.hours))#some
+    @punches.update_attribute(:punched_at, (Time.now.beginning_of_day + 8.hours) ) # entra lá atrás
+    
+    assert_equal 11, @user.hours_worked(Time.now.beginning_of_day..Time.now.end_of_day)
   end
 
 end
