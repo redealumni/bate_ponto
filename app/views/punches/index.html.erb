@@ -1,5 +1,12 @@
 <h1>Ponto Redealumni</h1>
 
+<% if user_signed_in? and current_user.bad_memory? %>
+    <div class="flash error">
+      Cabeça de vento, ultimamente você esqueceu de bater ponto <%= number_to_percentage current_user.bad_memory_index, :precision => 0 %> das vezes...
+      <br/><strong>O senhor é um fanfarrão, Pede pra sair!!!</strong>
+    </div>
+    <br/>
+<% end %>
 <%= render 'form' %>
 
 <%= render :partial => 'punches', :object => @punches %>

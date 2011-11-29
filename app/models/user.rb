@@ -59,4 +59,18 @@ class User < ActiveRecord::Base
     time_worked/60/60
   end
   
+  def bad_memory?
+    if self.bad_memory_index > 50
+      true
+    else
+      false
+    end
+  end
+  
+  def bad_memory_index
+    last_punches = self.punches.order('punched_at DESC').limit(10)
+    num_altered = last_punches.inject(0) {|count, p| p.altered? ?  count + 1 : count}
+    num_altered.to_f / last_punches.count * 100 rescue 0
+  end
+  
 end
