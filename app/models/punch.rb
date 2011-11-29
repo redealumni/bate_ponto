@@ -32,5 +32,9 @@ class Punch < ActiveRecord::Base
   def exit?
     !entrance?
   end
+  
+  def altered?
+    (self.punched_at - self.created_at).abs > 15.minutes
+  end
 
 end
