@@ -14,6 +14,13 @@
       </div>
     </td>
     <td class="text"><%= punch.comment %></td>
+    <td class="kind">
+      <% if not punch.altered? %>
+        <%= image_tag "icon_clock_green.png", :title => "Ponto com Horário Original" %>
+      <% else %>
+        <%= image_tag "icon_clock_red.png", :title => "Ponto com Horário Alterado" %>
+      <% end %>
+    </td>
     <td class="actions">
       <%= f.submit "Alterar" %>
       <%= link_to 'remover', punch, :confirm => 'Tem certeza?', :method => :delete, :remote => true %>
