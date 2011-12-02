@@ -28,6 +28,9 @@ class User < ActiveRecord::Base
   end
   
   def hours_worked(datetime_range)
+    #don't consider future time
+    datetime_range = datetime_range.begin..(datetime_range.end < Time.now ? datetime_range.end : Time.now)
+    
     punches_in_range = self.punches.where('punched_at >= ? and punched_at <= ?', datetime_range.begin, datetime_range.end).order('punched_at ASC').all
     
     return 0 if punches_in_range.empty?

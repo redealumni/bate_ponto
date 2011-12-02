@@ -34,9 +34,9 @@ class StatsController < ApplicationController
       {:name => u.name, :data => hours}
     end
 
-    @pie_series = @users.map { |u|
+    @pie_series = @users.map do |u|
       {:y => u.hours_worked(start..finish).round, :name => u.name}
-    }
+    end
 
   end
 
