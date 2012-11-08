@@ -6,7 +6,7 @@ class StatsController < ApplicationController
     month_names = %w(JAN FEV MAR ABR MAI JUN JUL AGO SET OUT NOV DEZ)
 
     @users = User.visible.by_name
-    start = Time.parse('2011-11-14')
+    start = Time.parse('2012-10-01')
     finish = Time.now
     number_of_weeks = ((finish - start) / 60 / 60 / 24 / 7).ceil
 
