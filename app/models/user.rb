@@ -2,6 +2,7 @@
 class User < ActiveRecord::Base
   
   scope :by_name, order('name ASC')
+  scope :visible, where('hidden = ?', false)
   
   has_secure_password
   validates :password, :presence => { :on => :create }

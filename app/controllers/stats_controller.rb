@@ -5,7 +5,7 @@ class StatsController < ApplicationController
   def index
     month_names = %w(JAN FEV MAR ABR MAI JUN JUL AGO SET OUT NOV DEZ)
 
-    @users = User.by_name
+    @users = User.visible.by_name
     start = Time.parse('2011-11-14')
     finish = Time.now
     number_of_weeks = ((finish - start) / 60 / 60 / 24 / 7).ceil
@@ -41,7 +41,7 @@ class StatsController < ApplicationController
   end
 
   def gecko_daily_avg_30_days
-    users = User.by_name
+    users = User.visible.by_name
 
     count = -1
     data = users.map do |u|
@@ -66,7 +66,7 @@ class StatsController < ApplicationController
   end
 
     def gecko_this_week_pie
-    users = User.by_name
+    users = User.visible.by_name
     start = Time.now.at_beginning_of_week
     finish = Time.now
 
@@ -74,7 +74,7 @@ class StatsController < ApplicationController
   end
 
   def gecko_last_week_pie
-    users = User.by_name
+    users = User.visible.by_name
     start = 1.week.ago.at_beginning_of_week
     finish = Time.now.at_beginning_of_week
 
@@ -82,7 +82,7 @@ class StatsController < ApplicationController
   end
 
   def gecko_this_month_pie
-    users = User.by_name
+    users = User.visible.by_name
     start = 1.month.ago
     finish = Time.now
 
@@ -90,7 +90,7 @@ class StatsController < ApplicationController
   end
 
   def gecko_last_month_pie
-    users = User.by_name
+    users = User.visible.by_name
     start = 1.month.ago.at_beginning_of_month
     finish = Time.now.at_beginning_of_month
 
@@ -98,7 +98,7 @@ class StatsController < ApplicationController
   end
 
   def gecko_from_checkpoint_pie
-    users = User.by_name
+    users = User.visible.by_name
     start = Time.parse('2011-11-14')
     finish = Time.now
 
@@ -106,7 +106,7 @@ class StatsController < ApplicationController
   end
 
   def gecko_latest_punches
-    @punches = User.by_name.map{|u| u.punches.latest.first}.compact
+    @punches = User.visible.by_name.map{|u| u.punches.latest.first}.compact
   end
 
   protected
