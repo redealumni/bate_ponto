@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111119190729) do
+ActiveRecord::Schema.define(:version => 20121108120951) do
 
   create_table "punches", :force => true do |t|
     t.integer  "user_id"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(:version => 20111119190729) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "admin",           :default => false
+    t.boolean  "hidden",          :default => false
   end
 
 end
