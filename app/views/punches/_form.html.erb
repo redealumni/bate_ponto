@@ -1,53 +1,66 @@
 <%= form_for(@punch) do |f| %>
-  <% if @punch.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@punch.errors.count, "error") %> prohibited this punch from being saved:</h2>
+    <% if @punch.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@punch.errors.count, "error") %> prohibited this punch from being saved:</h2>
 
-      <ul>
-      <% @punch.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
+          <ul>
+            <% @punch.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <% if user_signed_in? %>
+
+        <table class="this_punch <%= @punch.entrance? ? 'entrance' : 'exit' %>">
+          <tr>
+            <td>
+              <div class="status">
+                <%= @punch.entrance? ? "→ Entrando..." : "← Saindo..." %>
+              </div>
+            </td>
+            <td>
+              <div class="time">
+                <%= Time.zone.now.to_s(:short) %>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+    <% end %>
+
+    <div class="field">
+      <%= f.label :comment %>
+      <br/>
+      <%= f.text_area :comment, :size => "30x2" %>
+    </div>
+
+    <% if user_signed_in? %>
+
+        <div id="login_message">
+          Logado como <b><%= current_user.name %></b>.
+          <a id="show_hide_login" href="#"> Logar com outro + </a>
+        </div>
+
+    <% end %>
+
+    <div id="user_login" class="<%= user_signed_in? ? 'logged_in' : '' %>">
+      <%= f.fields_for :user do |user_fields| %>
+          <div class="field">
+            <%= user_fields.label :name %>
+            <br/>
+            <%= user_fields.collection_select(:name, User.visible.by_name, :name, :name) %>
+          </div>
+          <div class="field">
+            <%= user_fields.label :password %>
+            <br/>
+            <%= user_fields.password_field :password %>
+          </div>
       <% end %>
-      </ul>
     </div>
-  <% end %>
-  
-  <div class="grid_4 alpha">
-    <%= @punch.entrance? ? "<green>→ Entrando...</green>".html_safe : "<red>← Saindo...</red>".html_safe %><br />
-  </div>
-  <div class="grid_4 omega">
-    <%= Time.now.to_s(:short)%>
-  </div>
-  <div class="clear"></div>
-  <div class="field">
-    <%= f.label :comment %><br />
-    <%= f.text_area :comment, :size => "30x2" %>
-  </div>
-  
-  <% if user_signed_in? %>
-  
-    <div id="login_message">
-      Logado como <b><%= current_user.name  %></b>.
-      <a id="show_hide_login" href="#"> Logar com outro + </a>
-    </div>
-  
-    
-  
-  <% end %>
-  
-  <div id="user_login" class="<%= user_signed_in? ? 'logged_in' : ''%>">
-    <%= f.fields_for :user do |user_fields| %>
-      <div class="field">
-        <%= user_fields.label :name %><br />
-        <%= user_fields.collection_select(:name, User.by_name, :name, :name) %>
-      </div>
-      <div class="field">
-        <%= user_fields.label :password %><br />
-        <%= user_fields.password_field :password %>
-      </div>
-    <% end %>    
-  </div>
 
-  <div class="actions">
-    <%= f.submit "Bater Ponto!" %>
-  </div>
+    <div class="main_actions">
+      <%= f.submit "Bater Ponto!" %>
+    </div>
 <% end %>

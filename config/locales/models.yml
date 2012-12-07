@@ -1,0 +1,13 @@
+# encoding: UTF-8
+# pt-BR translations for Ruby on Rails
+"pt-BR":
+  activerecord:
+    models:
+      punch: Batida
+      user: Usuário
+    attributes:
+      user:
+        name: Nome
+        password: Senha
+      punch:
+        comment: Nota

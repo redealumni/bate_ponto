@@ -51,14 +51,18 @@ class PunchesController < ApplicationController
   # PUT /punches/1
   # PUT /punches/1.json
   def update
-    @punch = current_user.punches.find(params[:id])
+    @punch = Punch.find(params[:id])
+
+    raise "Sem permissão, seu hacker safado!!!" if !current_user.admin? and @punch.user != current_user
 
     respond_to do |format|
       if @punch.update_attributes(params[:punch])
         format.html { redirect_to root_path, :notice => 'Batida de ponto alterada.' }
+        format.js
         format.json { head :ok }
       else
         format.html { render :action => "index" }
+        format.js
         format.json { render :json => @punch.errors, :status => :unprocessable_entity }
       end
     end
@@ -67,11 +71,15 @@ class PunchesController < ApplicationController
   # DELETE /punches/1
   # DELETE /punches/1.json
   def destroy
-    @punch = current_user.punches.find(params[:id])
+    @punch = Punch.find(params[:id])
+
+    raise "Sem permissão, seu hacker safado!!!" if !current_user.admin? and @punch.user != current_user
+
     @punch.destroy
 
     respond_to do |format|
-      format.html { redirect_to punches_url }
+      format.html { redirect_to punches_url, :notice => 'Batida de ponto removida.' }
+      format.js
       format.json { head :ok }
     end
   end

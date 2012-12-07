@@ -5,9 +5,14 @@ PontoRa::Application.routes.draw do
   resources :punches
 
   match "stats" => 'stats#index'
+  match "gecko_daily_avg_30_days" => 'stats#gecko_daily_avg_30_days'
   match "gecko_last_week_pie" => 'stats#gecko_last_week_pie'
+  match "gecko_last_month_pie" => 'stats#gecko_last_month_pie'
   match "gecko_this_week_pie" => 'stats#gecko_this_week_pie'
+  match "gecko_this_month_pie" => 'stats#gecko_this_month_pie'
   match "gecko_from_checkpoint_pie" => 'stats#gecko_from_checkpoint_pie'
+  match "gecko_latest_punches" => 'stats#gecko_latest_punches'
+
 
   root :to => 'punches#index'
 

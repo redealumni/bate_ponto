@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <% @punches.each do |punch| %>
+        <item>
+            <text>
+                <![CDATA[
+                    <b><%= punch.user.name %></b> <span style="color:<%= punch.entrance? ? "green" : "red" %>;"><%= punch.entrance? ? "entrou" : "saiu" %></span>
+                    há <%= time_ago_in_words(punch.punched_at) %>
+                    (<%= l(punch.punched_at, :format => " %a %H:%M ") %>)
+                    <% unless punch.comment.blank? -%>
+                        : "<i><%= punch.comment %></i>"
+                    <% end %>
+                ]]>
+            </text>
+            <type>0</type>
+        </item>
+	<% end %>
+</root>
