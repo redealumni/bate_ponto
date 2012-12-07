@@ -1,0 +1,29 @@
+<table id="<%= dom_id(punch) %>" class="punch_item <%= punch.entrance? ? "entrance" : "exit" %>">
+  <tr>
+    <td class="status"><%= punch.entrance? ? "→<br/>In".html_safe : "←<br/>Out".html_safe %></td>
+    <td class="time">
+      <div class='punch_time_display' meta-dom-id="<%=dom_id(punch)%>">
+        <%= punch.punched_at.to_s(:short)%>
+        <br/>
+        <a href="#" class="punch_show_form_link">mudar</a>
+      </div>
+      <div class='punch_time_form' meta-dom-id="<%=dom_id(punch)%>">
+        <%= f.datetime_select('punched_at', :use_month_numbers => true, :minute_step => 15, :datetime_separator => '') %>
+        <br/>
+        <a href="#" class="punch_show_display_link">cancelar</a>
+      </div>
+    </td>
+    <td class="text"><%= punch.comment %></td>
+    <td class="kind">
+      <% if not punch.altered? %>
+        <%= image_tag "icon_clock_green.png", :title => "Ponto com Horário Original" %>
+      <% else %>
+        <%= image_tag "icon_clock_red.png", :title => "Ponto com Horário Alterado" %>
+      <% end %>
+    </td>
+    <td class="actions">
+      <%= f.submit "Alterar" %>
+      <%= link_to 'remover', punch, :confirm => 'Tem certeza?', :method => :delete, :remote => true %>
+    </td>
+  </tr>
+</table>

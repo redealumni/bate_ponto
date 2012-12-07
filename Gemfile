@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.1'
+gem 'rails', '3.1.2'
 
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
@@ -18,6 +18,7 @@ end
 
 gem 'jquery-rails'
 gem 'bourbon'
+gem 'will_paginate'
 
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0'
@@ -38,4 +39,5 @@ end
 group :test do
   # Pretty printed test output
   gem 'turn', :require => false
+  gem 'test-unit'
 end

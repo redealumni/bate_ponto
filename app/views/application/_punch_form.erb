@@ -1,0 +1,5 @@
+<% punch = punch_form %>
+
+<%= form_for(punch, :remote => true) do |f| %>
+    <%= render :partial => 'punch', :object => punch, :locals =>{:f => f} %>
+<% end %>

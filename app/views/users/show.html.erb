@@ -10,9 +10,17 @@
   <%= @user.admin? %>
 </p>
 
+
 <div id="stats">
   <%= render :partial => 'user_stats', :object => @user %>
 </div>
+
+<%= render :partial => 'punches', :object => @punches %>
+
+<br/>
+<%= will_paginate @punches %>
+<br/>
+
 
 
 <%= link_to 'Edit', edit_user_path(@user) %> |

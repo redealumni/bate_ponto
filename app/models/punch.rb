@@ -5,8 +5,8 @@ class Punch < ActiveRecord::Base
   
   validates_presence_of :user
 
-  before_validation(:on => :create) do
-    self.punched_at = Time.now
+  before_validation do
+    self.punched_at ||= Time.now
   end
   
   before_save do
@@ -31,6 +31,10 @@ class Punch < ActiveRecord::Base
   
   def exit?
     !entrance?
+  end
+  
+  def altered?
+    (self.punched_at - self.created_at).abs > 15.minutes
   end
 
 end
