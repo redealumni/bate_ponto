@@ -4,11 +4,17 @@ class ApplicationController < ActionController::Base
   helper_method :current_user, :user_signed_in?, :user_signed_out?
 
   protected
-  
+
     def current_user
-      if @current_user ||= User.find_by_id(session[:user_id]) || User.find_by_id_and_password_digest(*cookies.signed[:login_user_id])
+      @current_user ||= User.where(:id => session[:user_id]).first
+
+      if cookies.signed[:login_user_id].present?
+        @current_user ||= User.where(cookies.signed[:login_user_id]).first
+      end
+
+      if @current_user.present?
         session[:user_id] = @current_user.id
-        cookies.permanent.signed[:login_user_id] = [@current_user.id, @current_user.password_digest]
+        cookies.permanent.signed[:login_user_id] = {:id => @current_user.id, :password_digest => @current_user.password_digest}
       else
         session.delete(:user_id)
         cookies.delete(:login_user_id)
@@ -23,11 +29,11 @@ class ApplicationController < ActionController::Base
     def user_signed_out?
       !user_signed_in?
     end
-    
+
     def require_user
       redirect_to root_path, :notice => "Não autorizado." unless user_signed_in?
     end
-    
+
     def require_admin
       unless user_signed_in? && current_user.admin?
         redirect_to root_path, :notice => "Não autorizado."
