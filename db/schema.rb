@@ -15,8 +15,8 @@ ActiveRecord::Schema.define(:version => 20121108120951) do
 
   create_table "punches", :force => true do |t|
     t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
     t.boolean  "entrance",   :default => true
     t.text     "comment"
     t.datetime "punched_at"
@@ -29,8 +29,8 @@ ActiveRecord::Schema.define(:version => 20121108120951) do
   create_table "users", :force => true do |t|
     t.string   "name"
     t.string   "password_digest"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
     t.boolean  "admin",           :default => false
     t.boolean  "hidden",          :default => false
   end
