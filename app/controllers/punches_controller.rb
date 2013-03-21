@@ -1,14 +1,14 @@
 # encoding: utf-8
 class PunchesController < ApplicationController
-  
+
   before_filter :require_user, :except => [:index, :create]
-  
+
   # GET /punches
   # GET /punches.json
   def index
     @punches = user_signed_in? ? current_user.punches.latest.first(10) : []
     @punch = user_signed_in? ? current_user.punches.new : Punch.new
-    
+
     respond_to do |format|
       format.html # index.html.erb
       format.json { render :json => @punches }
@@ -25,14 +25,15 @@ class PunchesController < ApplicationController
     if user_params
       if user = User.find_by_name(user_params[:name]).try(:authenticate, user_params[:password])
         @current_user = user
-        session[:user_id] = cookies.permanent.signed[:login_user_id] = user.id
+        session[:user_id] = user.id
+        cookies.permanent.signed[:login_user_id] = {id: user.id}.to_json
         @punches = current_user.punches.latest
         @punch = current_user.punches.new(params[:punch])
       else
         render :index, :flash => { :error => "Senha inválida." } and return
       end
     end
-    
+
     unless user_signed_in?
       render :index, :flash => { :error => "Precisa se logar!" } and return
     end
