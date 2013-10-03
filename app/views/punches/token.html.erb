@@ -1,0 +1,36 @@
+<div class="row">
+  <div class="large-12 columns">
+    <h3>Ponto por Token</h3>
+  </div>
+</div>
+<%= form_for(@punch, remote: true) do |f| %>
+
+    <div class="row">
+
+      <div class="large-6 columns">
+
+        <%= f.fields_for :user do |user_fields| %>
+            <div class="field">
+              <%= user_fields.label :token %>
+              <br/>
+              <%= user_fields.password_field :token %>
+              <small>Bata o ponto uma segunda vez em até 5 min para deletar.</small>
+            </div>
+        <% end %>
+
+        <div class="main_actions">
+          <%= f.submit "Bater Ponto com o Token!" %>
+        </div>
+      </div>
+      <div class="large-6 columns">
+        <div class="punches">
+          <% @punches.each do |punch| %>
+              <%= render partial: 'punch_info', locals: {punch: punch} %>
+          <% end %>
+        </div>
+      </div>
+
+    </div>
+<% end %>
+
+
