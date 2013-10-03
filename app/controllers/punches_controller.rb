@@ -1,7 +1,7 @@
 # encoding: utf-8
 class PunchesController < ApplicationController
 
-  before_filter :require_user, :except => [:index, :create]
+  before_filter :require_user, :except => [:index, :create, :token]
 
   # GET /punches
   # GET /punches.json
@@ -15,6 +15,11 @@ class PunchesController < ApplicationController
     end
   end
 
+  def token
+    @punch = Punch.new
+    @punches = Punch.latest.first(20)
+  end
+
   # POST /punches
   # POST /punches.json
   def create
@@ -22,30 +27,38 @@ class PunchesController < ApplicationController
     @punches = user_signed_in? ? current_user.punches.latest : []
     @punch = user_signed_in? ? current_user.punches.new(params[:punch]) : Punch.new
 
-    if user_params
-      if user = User.find_by_name(user_params[:name]).try(:authenticate, user_params[:password])
-        @current_user = user
-        session[:user_id] = user.id
-        cookies.permanent.signed[:login_user_id] = {id: user.id}.to_json
-        @punches = current_user.punches.latest
-        @punch = current_user.punches.new(params[:punch])
+    if user_params  #bate como outro usuário ou por token
+      if user = User.find_by_name(user_params[:name]).try(:authenticate, user_params[:password]) || User.find_by_token(user_params[:token])
+        @punch = user.punches.new(params[:punch])
       else
-        render :index, :flash => { :error => "Senha inválida." } and return
+        respond_to do |format|
+            format.html { redirect_to root_path, :notice => "Senha ou token inválidos." }
+            format.js   {  }
+            format.json { render json: { notice: "Senha ou token inválidos." }, status: :unprocessable_entity }
+        end
+        return
       end
-    end
-
-    unless user_signed_in?
-      render :index, :flash => { :error => "Precisa se logar!" } and return
     end
 
     respond_to do |format|
-      if @punch.save
-        format.html { redirect_to root_path, :notice => 'Cartão batido com sucesso!' }
-        format.json { render :json => @punch, :status => :created, :location => @punch }
+      if @punch.user.punches.latest.first.created_at > 5.minutes.ago
+        #remove punches sequenciais (para correção rápida)
+        removed_punch = @punch.user.punches.latest.first.destroy
+        format.html { redirect_to root_path, :notice => 'Sua última batida foi removida!' }
+        format.js   { render :json => {delete: removed_punch}, :status => :ok, :location => removed_punch }
+        format.json { render :json => {delete: removed_punch}, :status => :ok, :location => removed_punch }
       else
-        format.html { render :action => "index" }
-        format.json { render :json => @punch.errors, :status => :unprocessable_entity }
+        if @punch.save
+          format.html { redirect_to root_path, :notice => 'Cartão batido com sucesso!' }
+          format.js   { render :json => {html: render_to_string(partial: 'punch_info', locals:{punch: @punch}), create: @punch}, :status => :created, :location => @punch }
+          format.json { render :json => @punch, :status => :created, :location => @punch }
+        else
+          format.html { render :action => "index" }
+          format.js {}
+          format.json { render :json => @punch.errors, :status => :unprocessable_entity }
+        end
       end
+
     end
   end
 

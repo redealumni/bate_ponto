@@ -6,7 +6,10 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require foundation
 //= require highcharts
 //= require highcharts-theme
 //= require css_browser_selector
 //= require_tree .
+
+$(function(){ $(document).foundation(); });

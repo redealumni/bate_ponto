@@ -1,12 +1,8 @@
 body {
-    zoom: 200%;
-    max-width: 640px;
+    max-width: 960px;
     margin: auto;
 }
 
-.mobile body{
-    zoom: 100%;
-}
 
 .flash{
     &.error{
@@ -21,7 +17,7 @@ body {
         color: #929257;
         padding: 10px;
     }
-    @include border-radius(5px);
+    @include border-radius(5px, 5px);
 }
 
 h1{
@@ -60,20 +56,18 @@ textarea, select, input {
 }
 
 label{
-  font-size: 10px;
+  font-size: 0.8em;
   color: #aaa;
 }
 
 button, input[type="button"], input[type="submit"] {
-  @include button(shiny);
+  @include button;
 }
 
 table.punch_item td{
-  font-size: 10px;
   vertical-align: middle;
   
   button, textarea, select, input {
-    font-size: 8px;
     width: auto;
     padding: 3px 10px;
   }
@@ -124,9 +118,7 @@ table.punch_item.entrance {
 #login_message {
     #show_hide_login {
         display: block;
-        font-size: 10px;
     }
-    font-size: 12px;
     margin-bottom: 5px;
     text-align: right;
 }
@@ -138,7 +130,6 @@ table.punch_item.entrance {
 .main_actions {
     button, input[type="button"], input[type="submit"] {
         width: 100%;
-        font-size: 18px;
     }
     margin: 10px 0;
 }
@@ -153,11 +144,9 @@ table.punch_item.entrance {
         margin-bottom: 5px;
         .name{
             color:#8C8C8C;
-            font-size: 12px;
         }
         .value{
             color: #000;
-            font-size:18px;
             margin-right:5px;
         }
     }
@@ -172,8 +161,7 @@ table.punch_item.entrance {
 
 #link_bar{
     .link_item a {
-        @include button(shiny);
-        font-size: 12px;
+        @include button;
         width: 112px;
         display: inline-block;
         margin-bottom: 5px;

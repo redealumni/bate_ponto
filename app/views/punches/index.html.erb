@@ -31,6 +31,9 @@
   <span class="link_item">
       <%= link_to "Estatísticas", stats_path %>
     </span>
+    <span class="link_item">
+      <%= link_to "Token", token_punches_path %>
+    </span>
   <% if user_signed_in? and current_user.admin? %>
     <span class="link_item">
       <%= link_to "Admin", users_path %>

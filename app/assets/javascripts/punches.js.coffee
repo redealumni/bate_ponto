@@ -11,11 +11,11 @@ $(->
     $('#show_hide_login').click -> 
       if login_hidden
         login_fields.insertAfter $('#login_message')
-        $('#show_hide_login').html 'Manter login -'
+        $('#show_hide_login').html 'Bater como eu mesmo -'
         login_hidden = false
       else
         login_fields.remove()
-        $('#show_hide_login').html 'Logar com outro +'
+        $('#show_hide_login').html 'Bater como outro +'
         login_hidden = true
       return false
         
@@ -35,6 +35,21 @@ $(->
     
     punch_time_forms = $('#punches .punch_time_form').detach()
 
+    #Token Page
+    $("#punch_user_token").focus()
+    $("#new_punch").on( "ajax:complete", (e, xhr, opts) ->
+      $("#punch_user_token").val('').focus()
+      response = $.parseJSON(xhr.responseText)
+      if response['create']
+        punch = $(response['html']).hide()
+        $(".punches").prepend punch
+        punch.fadeIn('fast')
+        $(".punch_item").last().remove()
+      if response['delete']
+        $(".punches #punch_" + response['delete']['id']).fadeOut('slow')
+    )
+#    ).bind "ajax:error", (e, xhr, status, error) ->
+#      $("#new_punch").append "<p>Deu pau</p>"
     
 )  
   

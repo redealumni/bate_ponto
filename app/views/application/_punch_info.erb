@@ -1,0 +1,16 @@
+<table id="<%= dom_id(punch) %>" class="punch_item <%= punch.entrance? ? "entrance" : "exit" %>">
+  <tr>
+    <td class="status"><%= punch.entrance? ? "→<br/>In".html_safe : "←<br/>Out".html_safe %></td>
+    <td class="text">
+      <i><%= punch.user.name %></i>
+      (<%= number_to_human punch.user.hours_today %> horas hoje)
+    </td>
+    <td class="time">
+      <div class='punch_time_display right' meta-dom-id="<%=dom_id(punch)%>">
+        <%= image_tag "icon_clock_green.png", :title => "Ponto com Horário Original" %>
+        <%= punch.punched_at.to_s(:short)%>
+        <br/>
+      </div>
+    </td>
+  </tr>
+</table>

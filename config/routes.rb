@@ -2,7 +2,11 @@
 PontoRa::Application.routes.draw do
   resources :users
   resource :session
-  resources :punches
+  resources :punches do
+    collection do
+      get 'token'
+    end
+  end
 
   match "stats" => 'stats#index'
   match "gecko_daily_avg_30_days" => 'stats#gecko_daily_avg_30_days'
