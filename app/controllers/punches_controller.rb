@@ -17,7 +17,7 @@ class PunchesController < ApplicationController
 
   def token
     @punch = Punch.new
-    @punches = Punch.latest.first(20)
+    @punches = Punch.latest.where("punched_at > ?", 1.day.ago.beginning_of_day )
   end
 
   # POST /punches
@@ -33,7 +33,7 @@ class PunchesController < ApplicationController
       else
         respond_to do |format|
             format.html { redirect_to root_path, :notice => "Senha ou token inválidos." }
-            format.js   {  }
+            format.js   { render json: { notice: "Senha ou token inválidos." }, status: :unprocessable_entity }
             format.json { render json: { notice: "Senha ou token inválidos." }, status: :unprocessable_entity }
         end
         return
@@ -54,7 +54,7 @@ class PunchesController < ApplicationController
           format.json { render :json => @punch, :status => :created, :location => @punch }
         else
           format.html { render :action => "index" }
-          format.js {}
+          format.js { render :json => @punch.errors, :status => :unprocessable_entity }
           format.json { render :json => @punch.errors, :status => :unprocessable_entity }
         end
       end

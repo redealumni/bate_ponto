@@ -35,9 +35,22 @@ $(->
     
     punch_time_forms = $('#punches .punch_time_form').detach()
 
+    #############
     #Token Page
+    #############
+
+    #focus fica sempre no input
     $("#punch_user_token").focus()
-    $("#new_punch").on( "ajax:complete", (e, xhr, opts) ->
+
+    #se perde o foco, a gente retorna, com timeout para impedir restricoes de seguranca do browser
+    $("#punch_user_token").on "blur", ->
+      setTimeout( ->
+        $("#punch_user_token").focus()
+      1000
+      )
+
+    #quando completa a chamada de ajax, exibimos/removemos o punch e voltamos o foco
+    $("#new_punch").on "ajax:complete", (e, xhr, opts) ->
       $("#punch_user_token").val('').focus()
       response = $.parseJSON(xhr.responseText)
       if response['create']
@@ -47,9 +60,14 @@ $(->
         $(".punch_item").last().remove()
       if response['delete']
         $(".punches #punch_" + response['delete']['id']).fadeOut('slow')
-    )
-#    ).bind "ajax:error", (e, xhr, status, error) ->
-#      $("#new_punch").append "<p>Deu pau</p>"
-    
+      if response['notice']
+        notice = $("<div class='flash notice'>" + response['notice'] + "</div>")
+        $('body').prepend notice
+        setTimeout( ->
+          notice.fadeOut 500, ->
+            notice.remove()
+        5000
+        )
+
 )  
   
