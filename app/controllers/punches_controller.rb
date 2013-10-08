@@ -41,9 +41,10 @@ class PunchesController < ApplicationController
     end
 
     respond_to do |format|
-      if @punch.user.punches.latest.first.created_at > 5.minutes.ago
+      last_punch = @punch.user.punches.latest.first
+      if last_punch and last_punch.created_at > 5.minutes.ago
         #remove punches sequenciais (para correção rápida)
-        removed_punch = @punch.user.punches.latest.first.destroy
+        removed_punch = last_punch.destroy
         format.html { redirect_to root_path, :notice => 'Sua última batida foi removida!' }
         format.js   { render :json => {delete: removed_punch}, :status => :ok, :location => removed_punch }
         format.json { render :json => {delete: removed_punch}, :status => :ok, :location => removed_punch }
