@@ -19,6 +19,9 @@
   	<%= stylesheet_link_tag    "application" %>
   	<%= javascript_include_tag "vendor/custom.modernizr" %>
     <%= csrf_meta_tags %>
+
+    <%= yield(:head) if content_for?(:head)%>
+
   </head>
 
   <body>
