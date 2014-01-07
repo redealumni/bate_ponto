@@ -27,6 +27,13 @@ class User < ActiveRecord::Base
   def hours_today
     self.hours_worked(Time.now.beginning_of_day..Time.now)
   end
+
+  def hours_worked_in_month(month)
+    beginning_of_month = month.beginning_of_month
+    end_of_month = month.end_of_month
+
+    self.hours_worked(beginning_of_month..end_of_month)
+  end
   
   def hours_worked(datetime_range)
     #don't consider future time
