@@ -31,11 +31,11 @@ class StatsController < ApplicationController
       hours = @week_ranges.map do |week_range|
         u.hours_worked(week_range).round
       end
-      {:name => u.name, :data => hours}
+      {name: u.name, data: hours}
     end
 
     @pie_series = @users.map do |u|
-      {:y => u.hours_worked(start..finish).round, :name => u.name}
+      {y: u.hours_worked(start..finish).round, name: u.name}
     end
 
   end
@@ -59,10 +59,10 @@ class StatsController < ApplicationController
         end
       end
       avg = total_hours > 0 ? total_hours.to_f/days_worked : 0
-      {:value => avg, :label => "#{u.name} (#{"%2.1f" % avg}h)", :colour=> COLORS[count]}
+      {value: avg, label: "#{u.name} (#{"%2.1f" % avg}h)", colour: COLORS[count]}
     end
 
-    render :text => {:item => data}.to_json
+    render text: {item: data}.to_json
   end
 
     def gecko_this_week_pie
@@ -70,7 +70,7 @@ class StatsController < ApplicationController
     start = Time.now.at_beginning_of_week
     finish = Time.now
 
-    render :text => pie_data(users, start, finish).to_json
+    render text: pie_data(users, start, finish).to_json
   end
 
   def gecko_last_week_pie
@@ -78,7 +78,7 @@ class StatsController < ApplicationController
     start = 1.week.ago.at_beginning_of_week
     finish = Time.now.at_beginning_of_week
 
-    render :text => pie_data(users, start, finish).to_json
+    render text: pie_data(users, start, finish).to_json
   end
 
   def gecko_this_month_pie
@@ -86,7 +86,7 @@ class StatsController < ApplicationController
     start = 1.month.ago
     finish = Time.now
 
-    render :text => pie_data(users, start, finish).to_json
+    render text: pie_data(users, start, finish).to_json
   end
 
   def gecko_last_month_pie
@@ -94,7 +94,7 @@ class StatsController < ApplicationController
     start = 1.month.ago.at_beginning_of_month
     finish = Time.now.at_beginning_of_month
 
-    render :text => pie_data(users, start, finish).to_json
+    render text: pie_data(users, start, finish).to_json
   end
 
   def gecko_from_checkpoint_pie
@@ -102,7 +102,7 @@ class StatsController < ApplicationController
     start = Time.parse('2011-11-14')
     finish = Time.now
 
-    render :text => pie_data(users, start, finish).to_json
+    render text: pie_data(users, start, finish).to_json
   end
 
   def gecko_latest_punches
@@ -116,9 +116,9 @@ class StatsController < ApplicationController
     data = users.map do |u|
       count += 1
       value = u.hours_worked(start..finish).round
-      {:value => value, :label => "#{u.name} (#{value}h)", :colour=> COLORS[count]}
+      {value: value, label: "#{u.name} (#{value}h)", colour: COLORS[count]}
     end
-    return_data = {:item => data}
+    return_data = {item: data}
   end
 
 end

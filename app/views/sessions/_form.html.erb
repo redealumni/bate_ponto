@@ -1,4 +1,4 @@
-<%= form_for(@user, :url => session_path, :method => "post") do |user_fields| %>
+<%= form_for(@user, url: session_path, method: "post") do |user_fields| %>
   <div class="field">
     <%= user_fields.label :name %><br />
     <%= user_fields.collection_select(:name, User.visible.by_name, :name, :name) %>

@@ -12,10 +12,10 @@
 
 
 <div id="stats">
-  <%= render :partial => 'user_stats', :object => @user %>
+  <%= render partial: 'user_stats', object: @user %>
 </div>
 
-<%= render :partial => 'punches', :object => @punches %>
+<%= render partial: 'punches', object: @punches %>
 
 <br/>
 <%= will_paginate @punches %>

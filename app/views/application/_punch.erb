@@ -8,7 +8,7 @@
         <a href="#" class="punch_show_form_link">mudar</a>
       </div>
       <div class='punch_time_form' meta-dom-id="<%=dom_id(punch)%>">
-        <%= f.datetime_select('punched_at', :use_month_numbers => true, :minute_step => 15, :datetime_separator => '') %>
+        <%= f.datetime_select('punched_at', use_month_numbers: true, minute_step: 15, datetime_separator: '') %>
         <br/>
         <a href="#" class="punch_show_display_link">cancelar</a>
       </div>
@@ -16,14 +16,14 @@
     <td class="text"><%= punch.comment %></td>
     <td class="kind">
       <% if not punch.altered? %>
-        <%= image_tag "icon_clock_green.png", :title => "Ponto com Horário Original" %>
+        <%= image_tag "icon_clock_green.png", title: "Ponto com Horário Original" %>
       <% else %>
-        <%= image_tag "icon_clock_red.png", :title => "Ponto com Horário Alterado" %>
+        <%= image_tag "icon_clock_red.png", title: "Ponto com Horário Alterado" %>
       <% end %>
     </td>
     <td class="actions">
       <%= f.submit "Alterar" %>
-      <%= link_to 'remover', punch, :confirm => 'Tem certeza?', :method => :delete, :remote => true %>
+      <%= link_to 'remover', punch, data: { confirm: 'Tem certeza?' }, method: :delete, remote: true %>
     </td>
   </tr>
 </table>

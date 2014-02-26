@@ -21,3 +21,7 @@ tmp/
 .idea/workspace.xml
 
 .idea/workspace.xml
+
+.rvmrc
+.ruby-version
+.ruby-gemset
