@@ -7,7 +7,8 @@ PontoRa::Application.configure do
   config.cache_classes = false
 
   # Log error messages when you accidentally call methods on nil.
-  config.whiny_nils = true
+  # Deprecated in Rails 4
+  # config.whiny_nils = true
 
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
@@ -27,4 +28,10 @@ PontoRa::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  # Rails 4 shouts about changing defaults for I18n.enforce_available_locales, so we set it explicitely
+  I18n.enforce_available_locales = false
+
+  # Rails 4 needs config.eager_load to be set beforehand
+  config.eager_load = false
 end

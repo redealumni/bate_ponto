@@ -12,7 +12,8 @@ PontoRa::Application.configure do
   config.static_cache_control = "public, max-age=3600"
 
   # Log error messages when you accidentally call methods on nil
-  config.whiny_nils = true
+  # Deprecated in Rails 4
+  # config.whiny_nils = true
 
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
@@ -34,6 +35,12 @@ PontoRa::Application.configure do
   # like if you have constraints or database-specific column types
   # config.active_record.schema_format = :sql
 
+  # Rails 4 shouts about changing defaults for I18n.enforce_available_locales, so we set it explicitely
+  I18n.enforce_available_locales = false
+
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
+
+  # Rails 4 needs config.eager_load to be set beforehand
+  config.eager_load = false
 end

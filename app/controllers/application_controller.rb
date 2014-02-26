@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def current_user
-    @current_user ||= User.where(:id => session[:user_id]).first
+    @current_user ||= User.where(id: session[:user_id]).first
 
     if cookies.signed[:login_user_id].present?
       @current_user ||= User.where(JSON.parse(cookies.signed[:login_user_id])).first
@@ -39,12 +39,12 @@ class ApplicationController < ActionController::Base
   end
 
   def require_user
-    redirect_to root_path, :notice => "Não autorizado." unless user_signed_in?
+    redirect_to root_path, notice: "Não autorizado." unless user_signed_in?
   end
 
   def require_admin
     unless user_signed_in? && current_user.admin?
-      redirect_to root_path, :notice => "Não autorizado."
+      redirect_to root_path, notice: "Não autorizado."
     end
   end
 
