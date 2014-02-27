@@ -29,13 +29,13 @@ class StatsController < ApplicationController
 
     @series = @users.map do |u|
       hours = @week_ranges.map do |week_range|
-        u.hours_worked(week_range).round
+        u.hours_worked(week_range)
       end
       {name: u.name, data: hours}
     end
 
-    @pie_series = @users.map do |u|
-      {y: u.hours_worked(start..finish).round, name: u.name}
+    @pie_series = @series.map do |s|
+      {y: s[:data].sum, name: s[:name]}
     end
 
   end
