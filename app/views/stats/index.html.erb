@@ -67,10 +67,10 @@ $(document).ready(function() {
                      var s;
                      if (this.point.name) { // the pie chart
                         s = '<b>'+
-                           this.point.name +'</b>'+': <br/>'+ this.y +' horas';
+                           this.point.name +'</b>'+': <br/>'+ Math.round(this.y) +' horas';
                      } else {
                         s = '<b>'+ this.series.name +'</b><br/>'+
-                          this.x +': '+ this.y +'h';
+                          this.x +': '+ Math.round(this.y) +'h';
                      }
                      return s;
                   }
