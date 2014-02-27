@@ -1,6 +1,6 @@
 /**
  * Gray theme for Highcharts JS
- * @author Torstein Hønsi
+ * @author Torstein Honsi
  */
 
 Highcharts.theme = {
@@ -8,7 +8,7 @@ Highcharts.theme = {
 		"#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
 	chart: {
 		backgroundColor: {
-			linearGradient: [0, 0, 0, 400],
+			linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 			stops: [
 				[0, 'rgb(96, 96, 96)'],
 				[1, 'rgb(16, 16, 16)']
@@ -23,7 +23,7 @@ Highcharts.theme = {
 	title: {
 		style: {
 			color: '#FFF',
-			font: '20px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
+			font: '16px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
 		}
 	},
 	subtitle: {
@@ -39,14 +39,13 @@ Highcharts.theme = {
 		labels: {
 			style: {
 				color: '#999',
-				fontWeight: 'bold',
-				fontSize: '13px'
+				fontWeight: 'bold'
 			}
 		},
 		title: {
 			style: {
 				color: '#AAA',
-				font: 'bold 18px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
+				font: 'bold 12px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
 			}
 		}
 	},
@@ -54,26 +53,25 @@ Highcharts.theme = {
 		alternateGridColor: null,
 		minorTickInterval: null,
 		gridLineColor: 'rgba(255, 255, 255, .1)',
+		minorGridLineColor: 'rgba(255,255,255,0.07)',
 		lineWidth: 0,
 		tickWidth: 0,
 		labels: {
 			style: {
 				color: '#999',
-				fontWeight: 'bold',
-				fontSize: '13px'
+				fontWeight: 'bold'
 			}
 		},
 		title: {
 			style: {
 				color: '#AAA',
-				font: 'bold 16px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
+				font: 'bold 12px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
 			}
 		}
 	},
 	legend: {
 		itemStyle: {
-			color: '#CCC',
-			font: 'bold 16px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
+			color: '#CCC'
 		},
 		itemHoverStyle: {
 			color: '#FFF'
@@ -84,13 +82,12 @@ Highcharts.theme = {
 	},
 	labels: {
 		style: {
-			color: '#CCC',
-			font: 'bold 14px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
+			color: '#CCC'
 		}
 	},
 	tooltip: {
 		backgroundColor: {
-			linearGradient: [0, 0, 0, 50],
+			linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 			stops: [
 				[0, 'rgba(96, 96, 96, .8)'],
 				[1, 'rgba(16, 16, 16, .8)']
@@ -104,13 +101,15 @@ Highcharts.theme = {
 
 
 	plotOptions: {
+		series: {
+			shadow: true
+		},
 		line: {
 			dataLabels: {
 				color: '#CCC'
 			},
 			marker: {
-				lineColor: '#333',
-				radius: 5
+				lineColor: '#333'
 			}
 		},
 		spline: {
@@ -136,26 +135,17 @@ Highcharts.theme = {
 
 	navigation: {
 		buttonOptions: {
-			backgroundColor: {
-				linearGradient: [0, 0, 0, 20],
-				stops: [
-					[0.4, '#606060'],
-					[0.6, '#333333']
-				]
-			},
-			borderColor: '#000000',
-			symbolStroke: '#C0C0C0',
-			hoverSymbolStroke: '#FFFFFF'
-		}
-	},
-
-	exporting: {
-		buttons: {
-			exportButton: {
-				symbolFill: '#55BE3B'
-			},
-			printButton: {
-				symbolFill: '#7797BE'
+			symbolStroke: '#DDDDDD',
+			hoverSymbolStroke: '#FFFFFF',
+			theme: {
+				fill: {
+					linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+					stops: [
+						[0.4, '#606060'],
+						[0.6, '#333333']
+					]
+				},
+				stroke: '#000000'
 			}
 		}
 	},
@@ -164,7 +154,7 @@ Highcharts.theme = {
 	rangeSelector: {
 		buttonTheme: {
 			fill: {
-				linearGradient: [0, 0, 0, 20],
+				linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 				stops: [
 					[0.4, '#888'],
 					[0.6, '#555']
@@ -178,7 +168,7 @@ Highcharts.theme = {
 			states: {
 				hover: {
 					fill: {
-						linearGradient: [0, 0, 0, 20],
+						linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 						stops: [
 							[0.4, '#BBB'],
 							[0.6, '#888']
@@ -191,7 +181,7 @@ Highcharts.theme = {
 				},
 				select: {
 					fill: {
-						linearGradient: [0, 0, 0, 20],
+						linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 						stops: [
 							[0.1, '#000'],
 							[0.3, '#333']
@@ -228,7 +218,7 @@ Highcharts.theme = {
 
 	scrollbar: {
 		barBackgroundColor: {
-				linearGradient: [0, 0, 0, 20],
+				linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 				stops: [
 					[0.4, '#888'],
 					[0.6, '#555']
@@ -237,7 +227,7 @@ Highcharts.theme = {
 		barBorderColor: '#CCC',
 		buttonArrowColor: '#CCC',
 		buttonBackgroundColor: {
-				linearGradient: [0, 0, 0, 20],
+				linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 				stops: [
 					[0.4, '#888'],
 					[0.6, '#555']
@@ -246,7 +236,7 @@ Highcharts.theme = {
 		buttonBorderColor: '#CCC',
 		rifleColor: '#FFF',
 		trackBackgroundColor: {
-			linearGradient: [0, 0, 0, 10],
+			linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
 			stops: [
 				[0, '#000'],
 				[1, '#333']
