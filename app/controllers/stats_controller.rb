@@ -3,15 +3,23 @@ class StatsController < ApplicationController
   COLORS = %w(8DD3C7 FFFFB3 BEBADA FB8072 80B1D3 FDB462 B3DE69 FCCDE5 D9D9D9 BC80BD CCEBC5 FFED6F)
 
   def index
-    month_names = %w(JAN FEV MAR ABR MAI JUN JUL AGO SET OUT NOV DEZ)
+    params.permit!
 
-    @users = User.visible.by_name
-    start = Time.parse('2012-10-01')
+    month_names = %w(JAN FEV MAR ABR MAI JUN JUL AGO SET OUT NOV DEZ)
+    default_start = Time.parse("2012-10-01")
+
+    @user_id = params[:user_id]
+    date = params[:date]
+
+    user = User.find_by_id(@user_id)
+    @users = if user then [user] else User.visible.by_name end
+    @start = if date.nil? then default_start else parse_time(date) end
+
     finish = Time.now
-    number_of_weeks = ((finish - start) / 60 / 60 / 24 / 7).ceil
+    number_of_weeks = ((finish - @start) / 60 / 60 / 24 / 7).ceil
 
     @week_ranges = []
-    last_week = start
+    last_week = @start
     (1..number_of_weeks).each do
       @week_ranges.push last_week..(1.week.since(last_week))
       last_week += 1.week
@@ -37,6 +45,9 @@ class StatsController < ApplicationController
     @pie_series = @series.map do |s|
       {y: s[:data].sum, name: s[:name]}
     end
+
+    @user_list = User.visible.by_name.map {|u| [u.name, u.id]}
+    @user_list.unshift ["Todos", nil]
 
   end
 
@@ -119,6 +130,11 @@ class StatsController < ApplicationController
       {value: value, label: "#{u.name} (#{value}h)", colour: COLORS[count]}
     end
     return_data = {item: data}
+  end
+
+  def parse_time(fields)
+    p fields
+    Date.civil(fields[:year].to_i, fields[:month].to_i, fields[:day].to_i).to_time
   end
 
 end
