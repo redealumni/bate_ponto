@@ -17,26 +17,34 @@
     </div>
 <% end %>
 
-<div id="link_bar">
+<div id="link_bar" class="button-bar">
   <% if user_signed_in? %>
-      <span class="link_item"><%= link_to "Trocar Senha", edit_user_path(current_user) %></span>
-      <span class="link_item">
-        <%= link_to "Fazer Logout", session_path, method: "delete", data: { confirm: "Tem certeza?" } %>
-      </span>
+  <ul class="button-group">
+    <li class="link_item"><%= link_to "Trocar Senha", edit_user_path(current_user) %></li>
+    <li class="link_item">
+      <%= link_to "Fazer Logout", session_path, method: "delete", data: { confirm: "Tem certeza?" } %>
+    </li>
+  </ul>
   <% else %>
-      <span class="link_item">
-        <%= link_to "Fazer Login", new_session_path %>
-      </span>
+  <ul class="button-group">
+    <li class="link_item">
+      <%= link_to "Fazer Login", new_session_path %>
+    </li>
+  </ul>
   <% end %>
-  <span class="link_item">
+  <ul class="button-group">
+    <li class="link_item">
       <%= link_to "Estatísticas", stats_path %>
-    </span>
-    <span class="link_item">
+    </li>
+    <li class="link_item">
       <%= link_to "Token", token_punches_path %>
-    </span>
+    </li>
+  </ul>
   <% if user_signed_in? and current_user.admin? %>
-    <span class="link_item">
+  <ul class="button-group">
+    <li class="link_item">
       <%= link_to "Admin", users_path %>
-    </span>
+    </li>
+  </ul>
   <% end %>
 </div>

@@ -162,8 +162,8 @@ table.punch_item.entrance {
 #link_bar{
     .link_item a {
         @include button;
-        width: 112px;
-        display: inline-block;
+        // width: 112px;
+        // display: inline-block;
         margin-bottom: 5px;
     }
 }
