@@ -2,25 +2,35 @@
 
 <%= link_to 'Voltar Início', root_path %><br/><br/>
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Admin</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+<% @user_list.each_with_index do |users, idx| %>
 
-<% @users.each do |user| %>
-  <tr>
-    <td><%= user.name %></td>
-    <td><%= user.admin? %></td>
-    <td><%= link_to 'Show', user %></td>
-    <td><%= link_to 'Edit', edit_user_path(user) %></td>
-    <td><%= link_to 'Destroy', user, data: { confirm: 'Are you sure?' }, method: :delete %></td>
-  </tr>
+  <% if idx == 1 then %>
+    <% if users.blank? then break end %>
+    <hr/>
+    <h4>Escondidos:</h4>
+  <% end %>
+  
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Admin</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+
+    <% users.each do |user| %>
+      <tr>
+        <td><%= user.name %></td>
+        <td><%= user.admin? %></td>
+        <td><%= link_to 'Show', user %></td>
+        <td><%= link_to 'Edit', edit_user_path(user) %></td>
+        <td><%= link_to 'Destroy', user, data: { confirm: 'Are you sure?' }, method: :delete %></td>
+      </tr>
+    <% end %>
+  </table>
+
 <% end %>
-</table>
 
 <br />
 

@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   
   scope :by_name, -> { order 'name ASC' }
   scope :visible, -> { where 'hidden = ?', false }
+  scope :hidden, -> { where 'hidden = ?', true}
   
   # has_secure_password enables password confirmation and presence,
   # since we already set to validate presence manually and we don't need
