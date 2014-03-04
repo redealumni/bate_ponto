@@ -67,10 +67,10 @@ $(document).ready(function() {
                      var s;
                      if (this.point.name) { // the pie chart
                         s = '<b>'+
-                           this.point.name +'</b>'+': <br/>'+ this.y +' horas';
+                           this.point.name +'</b>'+': <br/>'+ Math.round(this.y) +' horas';
                      } else {
                         s = '<b>'+ this.series.name +'</b><br/>'+
-                          this.x +': '+ this.y +'h';
+                          this.x +': '+ Math.round(this.y) +'h';
                      }
                      return s;
                   }
@@ -89,5 +89,15 @@ $(document).ready(function() {
    
 });
 </script>
+
+<div id="stats_options">
+  <%= form_tag "/stats", method: :get do %>
+    <%= label_tag :date, "Data inicial:" %>
+    <%= select_date @start, prefix: :date %>
+    <%= label_tag :user_id, "Usuário:" %>
+    <%= select_tag :user_id, options_for_select(@user_list, @user_id) %>
+    <%= submit_tag "Recarregar", name:nil %>
+  <% end %>
+</div>
 
 <div id="container" style="width: 1900px; height: 990px; margin: 0 auto"></div>

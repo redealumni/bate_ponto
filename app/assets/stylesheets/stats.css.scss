@@ -1,3 +1,16 @@
 // Place all the styles related to the stats controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+body {
+  font-family: "Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif;
+}
+
+label {
+    font-size: 0.8em;
+    color: #AAA;
+    //cursor: pointer;
+    //display: block;
+    //font-weight: 500;
+    margin-bottom: 0.1875em;
+}
