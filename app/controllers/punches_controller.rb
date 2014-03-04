@@ -1,7 +1,7 @@
 # encoding: utf-8
 class PunchesController < ApplicationController
 
-  before_filter :require_user, :except => [:index, :create, :token]
+  before_filter :require_user, except: [:index, :create, :token]
 
   # GET /punches
   # GET /punches.json
@@ -11,7 +11,7 @@ class PunchesController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render :json => @punches }
+      format.json { render json: @punches }
     end
   end
 
@@ -23,6 +23,8 @@ class PunchesController < ApplicationController
   # POST /punches
   # POST /punches.json
   def create
+    permit_params!
+    
     user_params = params[:punch].delete(:user)
     @punches = user_signed_in? ? current_user.punches.latest : []
     @punch = user_signed_in? ? current_user.punches.new(params[:punch]) : Punch.new
@@ -32,7 +34,7 @@ class PunchesController < ApplicationController
         @punch = user.punches.new(params[:punch])
       else
         respond_to do |format|
-            format.html { redirect_to root_path, :notice => "Senha ou token inválidos." }
+            format.html { redirect_to root_path, notice: "Senha ou token inválidos." }
             format.js   { render json: { notice: "Senha ou token inválidos." }, status: :unprocessable_entity }
             format.json { render json: { notice: "Senha ou token inválidos." }, status: :unprocessable_entity }
         end
@@ -45,18 +47,18 @@ class PunchesController < ApplicationController
       if last_punch and last_punch.created_at > 5.minutes.ago
         #remove punches sequenciais (para correção rápida)
         removed_punch = last_punch.destroy
-        format.html { redirect_to root_path, :notice => 'Sua última batida foi removida!' }
-        format.js   { render :json => {delete: removed_punch}, :status => :ok, :location => removed_punch }
-        format.json { render :json => {delete: removed_punch}, :status => :ok, :location => removed_punch }
+        format.html { redirect_to root_path, notice: 'Sua última batida foi removida!' }
+        format.js   { render json: {delete: removed_punch}, status: :ok, location: removed_punch }
+        format.json { render json: {delete: removed_punch}, status: :ok, location: removed_punch }
       else
         if @punch.save
-          format.html { redirect_to root_path, :notice => 'Cartão batido com sucesso!' }
-          format.js   { render :json => {html: render_to_string(partial: 'punch_info', locals:{punch: @punch}), create: @punch}, :status => :created, :location => @punch }
-          format.json { render :json => @punch, :status => :created, :location => @punch }
+          format.html { redirect_to root_path, notice: 'Cartão batido com sucesso!' }
+          format.js   { render json: {html: render_to_string(partial: 'punch_info', locals:{punch: @punch}), create: @punch}, status: :created, location: @punch }
+          format.json { render json: @punch, status: :created, location: @punch }
         else
-          format.html { render :action => "index" }
-          format.js { render :json => @punch.errors, :status => :unprocessable_entity }
-          format.json { render :json => @punch.errors, :status => :unprocessable_entity }
+          format.html { render action: "index" }
+          format.js { render json: @punch.errors, status: :unprocessable_entity }
+          format.json { render json: @punch.errors, status: :unprocessable_entity }
         end
       end
 
@@ -66,19 +68,21 @@ class PunchesController < ApplicationController
   # PUT /punches/1
   # PUT /punches/1.json
   def update
+    permit_params!
+
     @punch = Punch.find(params[:id])
 
     raise "Sem permissão, seu hacker safado!!!" if !current_user.admin? and @punch.user != current_user
 
     respond_to do |format|
       if @punch.update_attributes(params[:punch])
-        format.html { redirect_to root_path, :notice => 'Batida de ponto alterada.' }
+        format.html { redirect_to root_path, notice: 'Batida de ponto alterada.' }
         format.js
         format.json { head :ok }
       else
-        format.html { render :action => "index" }
+        format.html { render action: "index" }
         format.js
-        format.json { render :json => @punch.errors, :status => :unprocessable_entity }
+        format.json { render json: @punch.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -86,6 +90,8 @@ class PunchesController < ApplicationController
   # DELETE /punches/1
   # DELETE /punches/1.json
   def destroy
+    permit_params!
+    
     @punch = Punch.find(params[:id])
 
     raise "Sem permissão, seu hacker safado!!!" if !current_user.admin? and @punch.user != current_user
@@ -93,9 +99,16 @@ class PunchesController < ApplicationController
     @punch.destroy
 
     respond_to do |format|
-      format.html { redirect_to punches_url, :notice => 'Batida de ponto removida.' }
+      format.html { redirect_to punches_url, notice: 'Batida de ponto removida.' }
       format.js
       format.json { head :ok }
     end
   end
+
+  private
+    # Rails 4: strong parameters functionality by default. For now just make it work and permit everything:
+    def permit_params!
+      params.permit!
+    end
+
 end

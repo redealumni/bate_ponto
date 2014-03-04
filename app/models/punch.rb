@@ -3,7 +3,7 @@ class Punch < ActiveRecord::Base
 
   belongs_to :user
 
-  validates :user, :presence => true
+  validates :user, presence: true
 
   before_validation do
     self.punched_at ||= Time.now
@@ -19,7 +19,7 @@ class Punch < ActiveRecord::Base
     true
   end
 
-  scope :latest, order('punched_at DESC')
+  scope :latest, -> { order 'punched_at DESC' }
 
   def entrance?
     if self.new_record? and self.user

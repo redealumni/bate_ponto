@@ -12,7 +12,7 @@
 </div>
 <div class="stats_line">
   <span class="value"><%= number_to_human user_stats.hours_worked_in_month(1.month.ago) %></span>
-  <span class="name">horas em <%= l(1.month.ago, :format => :month_year) %></span>
+  <span class="name">horas em <%= l(1.month.ago, format: :month_year) %></span>
 </div>
 <div class="stats_line <%= user_stats.working? ? "green" : "red"%>">
   <span class="value"><%= number_to_human  user_stats.hours_since_last_state %></span>

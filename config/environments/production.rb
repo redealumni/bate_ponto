@@ -51,10 +51,16 @@ PontoRa::Application.configure do
   # Enable threaded mode
   # config.threadsafe!
 
+  # Rails 4 shouts about changing defaults for I18n.enforce_available_locales, so we set it explicitely
+  I18n.enforce_available_locales = false
+
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation can not be found)
   config.i18n.fallbacks = true
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
+
+  # Rails 4 needs config.eager_load to be set beforehand
+  config.eager_load = true
 end

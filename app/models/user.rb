@@ -1,11 +1,15 @@
 # encoding: utf-8
 class User < ActiveRecord::Base
   
-  scope :by_name, order('name ASC')
-  scope :visible, where('hidden = ?', false)
+  scope :by_name, -> { order 'name ASC' }
+  scope :visible, -> { where 'hidden = ?', false }
   
-  has_secure_password
-  validates :password, :presence => { :on => :create }
+  # has_secure_password enables password confirmation and presence,
+  # since we already set to validate presence manually and we don't need
+  # password confirmation we just tell the method to enable no validation
+  has_secure_password validations: false
+
+  validates :password, presence: { on: :create }
   has_many :punches
 
   def working?
@@ -35,11 +39,14 @@ class User < ActiveRecord::Base
     self.hours_worked(beginning_of_month..end_of_month)
   end
   
+  # TODO: read carefully later, looks like a good place to refactor
   def hours_worked(datetime_range)
     #don't consider future time
     datetime_range = datetime_range.begin..(datetime_range.end < Time.now ? datetime_range.end : Time.now)
     
-    punches_in_range = self.punches.where('punched_at >= ? and punched_at <= ?', datetime_range.begin, datetime_range.end).order('punched_at ASC').all
+    # Rails 4: Relation#all deprecated, using to_a instead
+    punches_in_range = self.punches.where('punched_at >= ? and punched_at <= ?', datetime_range.begin, datetime_range.end).
+      order('punched_at ASC').to_a
     
     return 0 if punches_in_range.empty?
 
@@ -50,16 +57,16 @@ class User < ActiveRecord::Base
       fixed_punches_in_range << p
       next_punch = punches_in_range[i+1]
       if next_punch and next_punch.entrance == p.entrance #next punch is not right, add one in between
-        fixed_punches_in_range << Punch.new(:punched_at =>  next_punch.punched_at, :entrance => !next_punch.entrance?)
+        fixed_punches_in_range << Punch.new(punched_at:  next_punch.punched_at, entrance: !next_punch.entrance?)
       end
     end
 
     #add punches to the edges, if appropriate
     if not fixed_punches_in_range.first.entrance?
-      fixed_punches_in_range.unshift Punch.new(:punched_at => datetime_range.begin)
+      fixed_punches_in_range.unshift Punch.new(punched_at: datetime_range.begin)
     end
     if fixed_punches_in_range.last.entrance?
-      fixed_punches_in_range << Punch.new(:punched_at => datetime_range.end)
+      fixed_punches_in_range << Punch.new(punched_at: datetime_range.end)
     end
 
     time_worked = 0

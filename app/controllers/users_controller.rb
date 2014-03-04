@@ -1,7 +1,7 @@
 # encoding: utf-8
 class UsersController < ApplicationController
 
-  before_filter :require_admin, :except => [:edit, :update]
+  before_filter :require_admin, except: [:edit, :update]
   
   # GET /users
   # GET /users.json
@@ -10,19 +10,21 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render :json => @users }
+      format.json { render json: @users }
     end
   end
 
   # GET /users/1
   # GET /users/1.json
   def show
+    params.permit!
+    
     @user = User.find(params[:id])
-    @punches = @user.punches.latest.paginate(:page => params[:page], :per_page => 10)
+    @punches = @user.punches.latest.paginate(page: params[:page], per_page: 10)
 
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render :json => @user }
+      format.json { render json: @user }
     end
   end
 
@@ -33,7 +35,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.json { render :json => @user }
+      format.json { render json: @user }
     end
   end
 
@@ -45,15 +47,17 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
+    params.permit!
+
     @user = User.new(params[:user])
 
     respond_to do |format|
       if @user.save
-        format.html { redirect_to @user, :notice => 'User was successfully created.' }
-        format.json { render :json => @user, :status => :created, :location => @user }
+        format.html { redirect_to @user, notice: 'User was successfully created.' }
+        format.json { render json: @user, status: :created, location: @user }
       else
-        format.html { render :action => "new" }
-        format.json { render :json => @user.errors, :status => :unprocessable_entity }
+        format.html { render action: "new" }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -61,6 +65,8 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.json
   def update
+    params.permit!
+
     @user = User.find(params[:id])
     params[:user].delete(:admin) unless current_user.admin?
 
@@ -76,8 +82,8 @@ class UsersController < ApplicationController
         end
         format.json { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.json { render :json => @user.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -85,6 +91,8 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
+    params.permit!
+
     @user = User.find(params[:id])
     @user.destroy
 
@@ -93,4 +101,10 @@ class UsersController < ApplicationController
       format.json { head :ok }
     end
   end
+
+  private
+    # Rails 4: strong parameters functionality by default. For now just make it work and permit everything:
+    def permit_params!
+      params.permit!
+    end
 end
