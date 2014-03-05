@@ -37,16 +37,12 @@
     </div>
 
     <% if user_signed_in? %>
-
-        <div id="login_message">
-          Logado como <b><%= current_user.name %></b>.
-          <a id="show_hide_login" href="#"> Bater como outro + </a>
-        </div>
-
-    <% end %>
-
-    <div id="user_login" class="<%= user_signed_in? ? 'logged_in' : '' %>">
-      <%= f.fields_for :user do |user_fields| %>
+      <div id="login_message">
+        Logado como <b><%= current_user.name %></b>.
+      </div>
+    <% else %>
+      <div id="user_login">
+        <%= f.fields_for :user do |user_fields| %>
           <div class="field">
             <%= user_fields.label :name %>
             <br/>
@@ -57,8 +53,9 @@
             <br/>
             <%= user_fields.password_field :password %>
           </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
+    <% end %>
 
     <div class="main_actions">
       <%= f.submit "Bater Ponto!" %>

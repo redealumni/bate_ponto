@@ -2,24 +2,7 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 $(->
-  
-    #Login show/hide
-    
-    login_fields = $('#user_login.logged_in')
-    login_fields.remove()
-    login_hidden = true
-    $('#show_hide_login').click -> 
-      if login_hidden
-        login_fields.insertAfter $('#login_message')
-        $('#show_hide_login').html 'Bater como eu mesmo -'
-        login_hidden = false
-      else
-        login_fields.remove()
-        $('#show_hide_login').html 'Bater como outro +'
-        login_hidden = true
-      return false
-        
-        
+          
     # Edit punch datetimes
     
     $('#punches').on 'click', '.punch_show_form_link', ->
