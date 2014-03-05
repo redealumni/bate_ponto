@@ -1,13 +1,20 @@
 <h1>Admin Ponto Redealumni</h1>
 
-<%= link_to 'Voltar Início', root_path %><br/><br/>
+<%= link_to 'Voltar para o início', root_path %><br/><br/>
 
+<% hide_name = nil %>
 <% @user_list.each_with_index do |users, idx| %>
 
+  <% if users.blank? then next end %>
+
   <% if idx == 1 then %>
-    <% if users.blank? then break end %>
-    <hr/>
-    <h4>Escondidos:</h4>
+    <% hide_name = "Re-exibir" %>
+    <% unless @user_list[0].blank? %>
+      <hr/>
+    <% end %>
+    <h5>Escondidos:</h5>
+  <% else %>
+    <% hide_name = "Esconder" %>
   <% end %>
   
   <table>
@@ -17,15 +24,17 @@
       <th></th>
       <th></th>
       <th></th>
+      <th></th>
     </tr>
 
     <% users.each do |user| %>
       <tr>
         <td><%= user.name %></td>
         <td><%= user.admin? %></td>
-        <td><%= link_to 'Show', user %></td>
-        <td><%= link_to 'Edit', edit_user_path(user) %></td>
-        <td><%= link_to 'Destroy', user, data: { confirm: 'Are you sure?' }, method: :delete %></td>
+        <td><%= link_to 'Exibir', user %></td>
+        <td><%= link_to 'Editar', edit_user_path(user) %></td>
+        <td><%= link_to hide_name, hide_user_path(user), method: :put %></td>
+        <td><%= link_to 'Deletar', user, data: { confirm: 'Tem certeza?' }, method: :delete %></td>
       </tr>
     <% end %>
   </table>
@@ -34,4 +43,4 @@
 
 <br />
 
-<%= link_to 'New User', new_user_path %>
+<%= link_to 'Novo usuário', new_user_path %>

@@ -88,6 +88,31 @@ class UsersController < ApplicationController
     end
   end
 
+  # PUT /users/hide/1
+  # PUT /users/hide/1.json
+  def hide
+    params.permit!
+
+    @user = User.find(params[:id])
+
+    respond_to do |format|
+      @user.hidden = !@user.hidden
+      @user.save
+      unless @user.changed?
+        # TODO better status wording
+        status = if @user.hidden then "escondido" else "re-exibido" end
+        format.html do
+          flash[:notice] = "Usuário #{status} com sucesso."
+          redirect_to users_url
+        end
+        format.json { head :ok }
+      else
+        format.html { redirect_to users_url }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy

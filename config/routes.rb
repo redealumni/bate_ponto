@@ -1,7 +1,11 @@
 # encoding: utf-8
 PontoRa::Application.routes.draw do
-  resources :users
   resource :session
+
+  # Routes for user model, add one for hiding a user directly
+  resources :users
+  put "users/hide/:id", to: 'users#hide', as: "hide_user"
+
   resources :punches do
     collection do
       get 'token'
@@ -16,7 +20,6 @@ PontoRa::Application.routes.draw do
   match "gecko_this_month_pie" => 'stats#gecko_this_month_pie', via: :get
   match "gecko_from_checkpoint_pie" => 'stats#gecko_from_checkpoint_pie', via: :get
   match "gecko_latest_punches" => 'stats#gecko_latest_punches', via: :get
-
 
   root to: 'punches#index'
 
