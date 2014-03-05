@@ -2,7 +2,8 @@ require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
   setup do
-    @user = users(:one)
+    @user = users(:joe)
+    p @user.punches
   end
 
   test "should get index" do
@@ -18,30 +19,30 @@ class UsersControllerTest < ActionController::TestCase
 
   test "should create user" do
     assert_difference('User.count') do
-      post :create, user: @user.attributes
+      post :create, user: { punches: @user.punches }
     end
 
     assert_redirected_to user_path(assigns(:user))
   end
 
   test "should show user" do
-    get :show, id: @user.to_param
+    get :show, id: @user
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @user.to_param
+    get :edit, id: @user
     assert_response :success
   end
 
   test "should update user" do
-    put :update, id: @user.to_param, user: @user.attributes
+    patch :update, id: @user, user: { punches: @user.punches }
     assert_redirected_to user_path(assigns(:user))
   end
 
   test "should destroy user" do
     assert_difference('User.count', -1) do
-      delete :destroy, id: @user.to_param
+      delete :destroy, id: @user
     end
 
     assert_redirected_to users_path

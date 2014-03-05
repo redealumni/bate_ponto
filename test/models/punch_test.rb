@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class StatsControllerTest < ActionController::TestCase
+class PunchTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

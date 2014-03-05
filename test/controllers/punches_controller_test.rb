@@ -2,7 +2,8 @@ require 'test_helper'
 
 class PunchesControllerTest < ActionController::TestCase
   setup do
-    @punch = punches(:one)
+    @punch = punches(:punch_one)
+    p @punch.user
   end
 
   test "should get index" do
@@ -18,30 +19,30 @@ class PunchesControllerTest < ActionController::TestCase
 
   test "should create punch" do
     assert_difference('Punch.count') do
-      post :create, punch: @punch.attributes
+      post :create, punch: {  }
     end
 
     assert_redirected_to punch_path(assigns(:punch))
   end
 
   test "should show punch" do
-    get :show, id: @punch.to_param
+    get :show, id: @punch
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @punch.to_param
+    get :edit, id: @punch
     assert_response :success
   end
 
   test "should update punch" do
-    put :update, id: @punch.to_param, punch: @punch.attributes
+    patch :update, id: @punch, punch: {  }
     assert_redirected_to punch_path(assigns(:punch))
   end
 
   test "should destroy punch" do
     assert_difference('Punch.count', -1) do
-      delete :destroy, id: @punch.to_param
+      delete :destroy, id: @punch
     end
 
     assert_redirected_to punches_path
