@@ -1,7 +1,7 @@
 # encoding: utf-8
 class PunchesController < ApplicationController
 
-  before_filter :require_user, except: [:index, :create, :token]
+  before_filter :require_admin, only: [:update, :destroy]
 
   # GET /punches
   # GET /punches.json
