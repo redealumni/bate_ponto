@@ -6,26 +6,29 @@ class StatsController < ApplicationController
     params.permit!
 
     month_names = %w(JAN FEV MAR ABR MAI JUN JUL AGO SET OUT NOV DEZ)
-    default_start = Time.parse("2012-10-01")
 
     @user_id = params[:user_id]
     date = params[:date]
 
+    # Do we really need to check stuff from 2 years ago by default?
+    # Let the user decide instead
+    default_start = 3.months.ago
+
     user = User.find_by_id(@user_id)
-    @users = if user then [user] else User.visible.by_name end
+    users = if user then [user] else User.visible.by_name end
     @start = if date.nil? then default_start else parse_time(date) end
 
     finish = Time.now
     number_of_weeks = ((finish - @start) / 60 / 60 / 24 / 7).ceil
 
-    @week_ranges = []
+    week_ranges = []
     last_week = @start
     (1..number_of_weeks).each do
-      @week_ranges.push last_week..(1.week.since(last_week))
+      week_ranges.push last_week..(1.week.since(last_week))
       last_week += 1.week
     end
 
-    @week_names = @week_ranges.map do |week_range|
+    @week_names = week_ranges.map do |week_range|
       #o ano em que o primeiro dia da semana começa
       year = week_range.begin.at_beginning_of_week.year - 2000
       #o mês em que o primeiro dia da semana começa
@@ -35,8 +38,8 @@ class StatsController < ApplicationController
       "%1d%3s%2.2d" % [week_number, month_names[month-1], year]
     end
 
-    @series = @users.map do |u|
-      hours = @week_ranges.map do |week_range|
+    @series = users.map do |u|
+      hours = week_ranges.map do |week_range|
         u.hours_worked(week_range)
       end
       {name: u.name, data: hours}
@@ -46,8 +49,8 @@ class StatsController < ApplicationController
       {y: s[:data].sum, name: s[:name]}
     end
 
-    @user_list = User.visible.by_name.map {|u| [u.name, u.id]}
-    @user_list.unshift ["Todos", nil]
+    @user_list = [["Todos", nil]]
+    @user_list.concat User.visible.by_name.pluck(:name, :id)
 
   end
 
@@ -133,7 +136,6 @@ class StatsController < ApplicationController
   end
 
   def parse_time(fields)
-    p fields
     Date.civil(fields[:year].to_i, fields[:month].to_i, fields[:day].to_i).to_time
   end
 
