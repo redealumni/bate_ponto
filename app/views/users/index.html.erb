@@ -25,6 +25,7 @@
       <th></th>
       <th></th>
       <th></th>
+      <th></th>
     </tr>
 
     <% users.each do |user| %>
@@ -35,11 +36,14 @@
         <td><%= link_to 'Editar', edit_user_path(user) %></td>
         <td><%= link_to hide_name, hide_user_path(user), method: :put %></td>
         <td><%= link_to 'Deletar', user, data: { confirm: 'Tem certeza?' }, method: :delete %></td>
+        <td><%= link_to image_tag('icon_print.png', alt: 'Gerar relatório'), report_user_path(user) %></td>
       </tr>
     <% end %>
   </table>
 
 <% end %>
+
+<%= link_to "Gerar relatórios para todos os usuários visíveis", report_user_path(id: 'all') %>
 
 <br />
 

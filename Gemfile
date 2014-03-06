@@ -4,9 +4,6 @@ ruby "2.0.0"
 
 gem 'rails', '4.0.3'
 
-# Gems used only for assets and not required
-# in production environments by default.
-
 # Rails 4 doesn't support the assets group anymore
 gem 'sass-rails'
 gem 'coffee-rails'
@@ -20,14 +17,17 @@ gem 'will_paginate'
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby'
 
+# To generate reports
+gem 'thinreports'
+
+# To generate zip files
+gem 'rubyzip'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 
 # Deploy with Capistrano
 # gem 'capistrano'
-
-# To use debugger
-# gem 'ruby-debug19', :require => 'ruby-debug'
 
 group :development, :production do
   gem 'mysql2'

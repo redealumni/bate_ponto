@@ -10,6 +10,7 @@
   <%= @user.admin? %>
 </p>
 
+<%= link_to image_tag('icon_print.png', alt: 'Gerar relatório'), report_user_path(@user) %>
 
 <div id="stats">
   <%= render partial: 'user_stats', object: @user %>
@@ -20,7 +21,6 @@
 <br/>
 <%= will_paginate @punches %>
 <br/>
-
 
 
 <%= link_to 'Edit', edit_user_path(@user) %> |

@@ -88,8 +88,8 @@ class UsersController < ApplicationController
     end
   end
 
-  # PUT /users/hide/1
-  # PUT /users/hide/1.json
+  # PUT /users/1/hide
+  # PUT /users/1/hide.json
   def hide
     params.permit!
 
@@ -127,7 +127,37 @@ class UsersController < ApplicationController
     end
   end
 
+  # GET /users/1/report
+  def report
+    params.permit!
+
+    if params[:id] == 'all'
+      report_for_all
+    else
+      @user = User.find(params[:id])
+      send_data @user.report, filename: 'report.txt'
+    end
+
+  end
+
   private
+    def report_for_all
+      temp_file = Tempfile.new("reports-#{request.uuid}")
+      begin
+        file_name = "relatorios_#{Date.today.to_s(:filename)}.zip"
+        Zip::OutputStream.open temp_file.path do |z|
+          User.visible.find_each do |u|
+            z.put_next_entry "relatorio_#{u.name}"
+            z.write u.report
+          end
+        end
+
+        send_file temp_file.path, type: 'application/zip', filename: file_name
+      ensure 
+        temp_file.close
+      end
+    end
+
     # Rails 4: strong parameters functionality by default. For now just make it work and permit everything:
     def permit_params!
       params.permit!

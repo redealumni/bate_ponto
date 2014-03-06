@@ -2,9 +2,13 @@
 PontoRa::Application.routes.draw do
   resource :session
 
-  # Routes for user model, add one for hiding a user directly
-  resources :users
-  put "users/hide/:id", to: 'users#hide', as: "hide_user"
+  # Routes for user model
+  resources :users do
+    member do
+      put "hide"
+      get "report"
+    end
+  end
 
   resources :punches do
     collection do

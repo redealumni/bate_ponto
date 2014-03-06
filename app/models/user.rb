@@ -91,5 +91,9 @@ class User < ActiveRecord::Base
     num_altered = last_punches.inject(0) {|count, p| p.altered? ?  count + 1 : count}
     num_altered.to_f / last_punches.count * 100 rescue 0
   end
+
+  def report
+    "report!"
+  end
   
 end
