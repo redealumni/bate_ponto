@@ -1,6 +1,8 @@
 # encoding: utf-8
 class User < ActiveRecord::Base
   
+  TOLERANCE = 0.5 # hours
+
   scope :by_name, -> { order 'name ASC' }
   scope :visible, -> { where 'hidden = ?', false }
   scope :hidden, -> { where 'hidden = ?', true}
@@ -12,6 +14,46 @@ class User < ActiveRecord::Base
 
   validates :password, presence: { on: :create }
   has_many :punches
+
+  def first_shift
+    # TODO: implement
+    [8, 12]
+  end
+
+  def second_shift
+    # TODO: implement
+    [14, 18]
+  end
+
+  def num_of_shifts
+    # TODO: implement
+    2
+  end
+
+  def is_hours_ok(hours)
+    return (hours - self.daily_goal).abs < TOLERANCE
+  end
+
+  def hours_error(hours)
+    return (hours - self.daily_goal)
+  end
+
+  def is_punch_time_ok(punch_time, shift, moment)
+    # TODO: implement
+    return true
+  end
+
+  # Return as a integer in minutes
+  def punch_time_error(punch_time, shift, moment)
+    # TODO: implement
+    return 0
+  end
+
+  # Return as a integer in hours
+  def daily_goal
+    # TODO: implement
+    return 8
+  end
 
   def working?
     if last_punch = self.punches.order('punched_at DESC').first

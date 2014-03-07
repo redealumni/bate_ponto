@@ -1,6 +1,8 @@
 # encoding: utf-8
 class UsersController < ApplicationController
 
+  include SummaryBuilder
+
   before_filter :require_admin, except: [:edit, :update]
   
   # GET /users
@@ -128,27 +130,55 @@ class UsersController < ApplicationController
   end
 
   # GET /users/1/report
+  # GET /users/1/report.pdf
   def report
     params.permit!
 
     if params[:id] == 'all'
       report_for_all
     else
-      @user = User.find(params[:id])
-      send_data @user.report, filename: 'report.txt'
+      date = Date.today.prev_month
+      @summary = summary_for User.find(params[:id]), get_weeks_of_month(date), date
+      respond_to do |format|
+        format.html do 
+          render
+        end
+        format.pdf do
+          pdf_string = render_to_string pdf: "relatorio_#{@summary.user.name}.pdf",
+            template: "users/report.html.erb", 
+            layout: "report_pdf"
+          
+          pdf_data = WickedPdf.new.pdf_from_string(pdf_string)
+          
+          send_data pdf_data, 
+            type: "application/pdf", disposition: 'attachment', 
+            filename: "relatorio_#{@summary.user.name}.pdf"
+        end
+      end
     end
-
   end
 
   private
     def report_for_all
       temp_file = Tempfile.new("reports-#{request.uuid}")
+      date = Date.today.prev_month
+      date_range = get_weeks_of_month(date)
+
       begin
         file_name = "relatorios_#{Date.today.to_s(:filename)}.zip"
+
         Zip::OutputStream.open temp_file.path do |z|
           User.visible.find_each do |u|
-            z.put_next_entry "relatorio_#{u.name}"
-            z.write u.report
+            @summary = summary_for u, date_range, date
+            
+            pdf_string = render_to_string  pdf: "relatorio_#{@summary.user.name}.pdf",
+              template: "users/report.html.erb", 
+              layout: "report_pdf"
+
+            pdf_data = WickedPdf.new.pdf_from_string(pdf_string)
+
+            z.put_next_entry "relatorio_#{@summary.user.name}.pdf"
+            z.write pdf_data
           end
         end
 

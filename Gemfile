@@ -18,7 +18,8 @@ gem 'will_paginate'
 gem 'bcrypt-ruby'
 
 # To generate reports
-gem 'thinreports'
+gem 'wkhtmltopdf-binary'
+gem 'wicked_pdf'
 
 # To generate zip files
 gem 'rubyzip'

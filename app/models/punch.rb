@@ -21,6 +21,15 @@ class Punch < ActiveRecord::Base
 
   scope :latest, -> { order 'punched_at DESC' }
 
+  def is_punch_time_ok(shift, moment)
+    self.user.is_punch_time_ok self.punched_at, shift, moment
+  end
+
+  # Return as a integer in minutes
+  def punch_time_error(shift, moment)
+    self.user.punch_time_error self.punched_at, shift, moment
+  end
+
   def entrance?
     if self.new_record? and self.user
       last_punch = self.user.punches.order("punched_at DESC").first

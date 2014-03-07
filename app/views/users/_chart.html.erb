@@ -1,0 +1,29 @@
+<script>
+window.onload = (function() {
+
+  $('#graph').highcharts({
+    chart: {
+      type: 'bar'
+    },
+    title: {
+      text: 'Rendimento'
+    },
+    xAxis: {
+      categories: <%= @summary.chart[:categories].to_json.html_safe %>
+    },
+    yAxis: {
+      title: {
+        text: 'Horas trabalhadas'
+      }
+    },
+    plotOptions: {
+      series: {
+        animation: false
+      }
+    },
+    series: <%= @summary.chart[:weeks].to_json.html_safe %>
+  })
+});
+</script>
+
+<div id="graph" style="width:75%; height:400px;"></div>

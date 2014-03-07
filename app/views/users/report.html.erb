@@ -1,0 +1,46 @@
+<h1>Relatório de Horas RedeAlumni</h1>
+
+<div class="intro">
+  <strong>Funcionário: </strong><%= @summary.user.name %> <br>
+  <strong>Data: </strong><%= l @summary.date, format: :month_year %> <br>
+  <strong>Horários: </strong> <%= @summary.user.first_shift.join(" as ") %>, <%= @summary.user.second_shift.join(" as ") %> horas<br>
+</div>
+
+<br>
+
+<table class="week-overview">
+  <tr>
+    <th>Semana</th>
+    <th>Horas trabalhadas</th>
+  </tr>
+  <% @summary.weeks.each do |week| %>
+    <tr>
+      <td><%= week.name %></td>
+      <td class='<%= if week.problem? then "problem" else "" end %>' ><%= week.hours.round %></td>
+    </tr>
+  <% end %>
+</table>
+
+<table class="irregularities">
+  <tr>
+    <th>Dia</th>
+    <th>Batidas</th>
+    <th>Irregularidade</th>
+  </tr>
+
+  <% @summary.days.each do |day| %>
+    <tr>
+      <td><%= l day.date, format: :short %></td>
+      <td><%= day.readable_punches %></td>
+      <td><%= day.issue %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%= render "chart.html.erb" %>
+
+<br>
+
+<% if !params[:format] || params[:format] != "pdf" then %>
+  <%= link_to "Exportar como PDF", report_user_path(@summary.user, format: "pdf") %>
+<% end %>

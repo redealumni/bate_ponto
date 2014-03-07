@@ -7,6 +7,9 @@
       default: "%d/%m/%Y"
       short: "%d de %B"
       long: "%d de %B de %Y"
+      month_year: "%B de %Y"
+      abbr: "%d/%m"
+
 
     day_names:
       - Domingo
@@ -62,8 +65,8 @@
     formats:
       default: "%A, %d de %B de %Y, %H:%M h"
       short: "%d/%m, %H:%M h"
+      just_time: "%H:%M"
       long: "%A, %d de %B de %Y, %H:%M h"
-      month_year: "%B de %Y"
 
     am: ''
     pm: ''
