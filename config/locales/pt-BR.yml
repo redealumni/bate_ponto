@@ -66,6 +66,7 @@
       default: "%A, %d de %B de %Y, %H:%M h"
       short: "%d/%m, %H:%M h"
       just_time: "%H:%M"
+      month_year: "%B de %Y"
       long: "%A, %d de %B de %Y, %H:%M h"
 
     am: ''

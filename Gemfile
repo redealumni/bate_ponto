@@ -24,6 +24,9 @@ gem 'wicked_pdf'
 # To generate zip files
 gem 'rubyzip'
 
+# Time picker
+gem 'jquery-timepicker-rails'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 

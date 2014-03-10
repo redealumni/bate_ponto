@@ -10,6 +10,7 @@
 //= require highcharts
 //= require highcharts-theme
 //= require css_browser_selector
+//= require jquery.timepicker.js
 //= require_tree .
 
 $(function(){ $(document).foundation(); });

@@ -3,7 +3,7 @@
 <div class="intro">
   <strong>Funcionário: </strong><%= @summary.user.name %> <br>
   <strong>Data: </strong><%= l @summary.date, format: :month_year %> <br>
-  <strong>Horários: </strong> <%= @summary.user.first_shift.join(" as ") %>, <%= @summary.user.second_shift.join(" as ") %> horas<br>
+  <strong>Horários: </strong> <%= @summary.user.readable_shift 1 %>, <%= @summary.user.readable_shift 2 %><br>
 </div>
 
 <br>
@@ -43,4 +43,6 @@
 
 <% if !params[:format] || params[:format] != "pdf" then %>
   <%= link_to "Exportar como PDF", report_user_path(@summary.user, format: "pdf") %>
+  <br>
+  <%= link_to "Voltar", :back %>
 <% end %>

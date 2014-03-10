@@ -1,7 +1,9 @@
 # encoding: utf-8
 class User < ActiveRecord::Base
   
-  TOLERANCE = 0.5 # hours
+  # TODO: clean up how hours are calculed
+  TOLERANCE_HOURS = 0.5 # hours
+  TOLERANCE_PUNCH = 15.minutes
 
   scope :by_name, -> { order 'name ASC' }
   scope :visible, -> { where 'hidden = ?', false }
@@ -11,48 +13,75 @@ class User < ActiveRecord::Base
   # since we already set to validate presence manually and we don't need
   # password confirmation we just tell the method to enable no validation
   has_secure_password validations: false
-
   validates :password, presence: { on: :create }
+  
   has_many :punches
 
-  def first_shift
-    # TODO: implement
-    [8, 12]
+  # Each user has shifts, entrance and exit times. We don't need to query these (for now, anyway),
+  # so we serialize it back and forth as a array of integers representing the shift hours in minutes
+  # from midnight
+  serialize :shifts, Array
+  validates_each :shifts do |record, attr, value|
+    if value.blank?
+      record.errors.add(attr, "não pode ser vazio.")
+    elsif not value.each_cons(2).all? { |a| a.first <= a.last }  
+      record.errors.add(attr, "possuí formato inválido.") 
+    end 
   end
 
-  def second_shift
-    # TODO: implement
-    [14, 18]
+  # Get the entrance and exit times of a shift as an array
+  # If no argument passed, return all times grouped by shift
+  def shift(num = nil)
+    if num.nil?
+      self.shifts.each_slice(2).map { |s| s }
+    else
+      # positions 0 and 1 for first shift, 2 and 3 for second, etc
+      self.shifts[(num - 1) * 2, 2]
+    end
   end
 
   def num_of_shifts
-    # TODO: implement
-    2
+    self.shifts.size / 2
   end
 
+  # Given a amount of hours, check if it's ok for this user
   def is_hours_ok(hours)
-    return (hours - self.daily_goal).abs < TOLERANCE
+    return (hours - self.daily_goal).abs < TOLERANCE_HOURS
   end
 
+  # Return how off is the hours for this user in hours (float)
   def hours_error(hours)
     return (hours - self.daily_goal)
   end
 
-  def is_punch_time_ok(punch_time, shift, moment)
-    # TODO: implement
-    return true
+  # Convenience hash so we can use meaningful symbols for the next three
+  # methods
+  MOMENTS = {
+    entrance: 0,
+    exit: 1
+  }
+
+  # Given shift and a day, get a datetime representing the actual shift moment
+  def shift_time(time, shift_num, moment)
+    time.midnight + self.shift(shift_num)[MOMENTS[moment]].minutes
   end
 
-  # Return as a integer in minutes
-  def punch_time_error(punch_time, shift, moment)
-    # TODO: implement
-    return 0
+  # Get readable form for shift
+  def readable_shift(num)
+    formatted = MOMENTS.each_key.map { |key| I18n.l shift_time(Time.now, num, key), format: :just_time }
+    formatted.join(' as ')
   end
 
-  # Return as a integer in hours
-  def daily_goal
-    # TODO: implement
-    return 8
+  # Given a timestamp of a punch, check if it's ok for this user
+  def is_punch_time_ok(punch_time, shift_num, moment)
+    adjusted_time = shift_time punch_time, shift_num, moment
+    return (adjusted_time - punch_time).abs < TOLERANCE_PUNCH
+  end
+
+  # Return as a integer, in minutes
+  def punch_time_error(punch_time, shift_num, moment)
+    adjusted_time = shift_time punch_time, shift_num, moment
+    return ((adjusted_time - punch_time) / 60).round
   end
 
   def working?
@@ -132,10 +161,6 @@ class User < ActiveRecord::Base
     last_punches = self.punches.order('punched_at DESC').limit(10)
     num_altered = last_punches.inject(0) {|count, p| p.altered? ?  count + 1 : count}
     num_altered.to_f / last_punches.count * 100 rescue 0
-  end
-
-  def report
-    "report!"
   end
   
 end

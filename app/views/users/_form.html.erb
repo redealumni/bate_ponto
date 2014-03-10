@@ -32,6 +32,31 @@
       <%= f.label :hidden %><br />
       <%= f.check_box :hidden %>
     </div>
+    <div class="field">
+      <%= f.label :daily_goal %><br />
+      <%= f.text_field :daily_goal %>
+    </div>
+    <span id="__shifts"><%= f.hidden_field :shifts %></span>
+
+    <div class="shifts-section">
+      <div id="shift-list">
+        <% @user.shift.each_with_index do |s, idx| %>
+          <% i = idx + 1 %>
+          <div class="shift" data-shift-num="<%= i %>">
+            <div class="shift-intro">
+              <strong>Turno <%= i %>:</strong>
+            </div>
+            <%= label_tag "#{i}-1", "Entrada: ", data: { "shift-entrance" => true } %>
+            <%= text_field_tag "#{i}-1", nil, data: { "shift-entrance" => true } %>
+            <%= label_tag "#{i}-2", "Saída: ", data: { "shift-exit" => true } %>
+            <%= text_field_tag "#{i}-2",nil, data: { "shift-exit" => true } %>
+          </div>
+        <% end %>
+      </div>
+      <%= hidden_field_tag "num-of-shifts", @user.num_of_shifts %>
+      <%= link_to "Remover ultimo turno", '#', id: "remove-shift", class: "button" %>
+      <%= link_to "Novo turno", '#', id: "add-shift", class: "button" %>
+    </div>
   <% end %>
   <div class="actions">
     <%= f.submit %>

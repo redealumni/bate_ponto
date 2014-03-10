@@ -1,7 +1,9 @@
 # encoding: utf-8
 class UsersController < ApplicationController
 
-  include SummaryBuilder
+  include DatetimeHelper
+
+  DEFAULT_SHIFTS = [480, 720, 840, 1080]
 
   before_filter :require_admin, except: [:edit, :update]
   
@@ -34,6 +36,7 @@ class UsersController < ApplicationController
   # GET /users/new.json
   def new
     @user = User.new
+    @user.shifts = Array.new(DEFAULT_SHIFTS)
 
     respond_to do |format|
       format.html # new.html.erb
@@ -44,12 +47,14 @@ class UsersController < ApplicationController
   # GET /users/1/edit
   def edit
     @user = User.find(params[:id])
+    @user.shifts = Array.new(DEFAULT_SHIFTS) if @user.shifts.blank?
   end
 
   # POST /users
   # POST /users.json
   def create
     params.permit!
+    params[:user][:shifts] = JSON.parse(params[:user][:shifts])
 
     @user = User.new(params[:user])
 
@@ -68,6 +73,7 @@ class UsersController < ApplicationController
   # PUT /users/1.json
   def update
     params.permit!
+    params[:user][:shifts] = JSON.parse(params[:user][:shifts])
 
     @user = User.find(params[:id])
     params[:user].delete(:admin) unless current_user.admin?
@@ -138,20 +144,21 @@ class UsersController < ApplicationController
       report_for_all
     else
       date = Date.today.prev_month
-      @summary = summary_for User.find(params[:id]), get_weeks_of_month(date), date
+      @summary = Summary.summary_for User.find(params[:id]), get_weeks_of_month(date), date
       respond_to do |format|
         format.html do 
           render
         end
         format.pdf do
           pdf_string = render_to_string pdf: "relatorio_#{@summary.user.name}.pdf",
+            formats: [:html],
             template: "users/report.html.erb", 
             layout: "report_pdf"
           
           pdf_data = WickedPdf.new.pdf_from_string(pdf_string)
           
           send_data pdf_data, 
-            type: "application/pdf", disposition: 'attachment', 
+            type: "application/pdf", 
             filename: "relatorio_#{@summary.user.name}.pdf"
         end
       end
@@ -169,9 +176,10 @@ class UsersController < ApplicationController
 
         Zip::OutputStream.open temp_file.path do |z|
           User.visible.find_each do |u|
-            @summary = summary_for u, date_range, date
+            @summary = Summary.summary_for u, date_range, date
             
             pdf_string = render_to_string  pdf: "relatorio_#{@summary.user.name}.pdf",
+              formats: [:html],
               template: "users/report.html.erb", 
               layout: "report_pdf"
 
