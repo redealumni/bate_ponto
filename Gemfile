@@ -40,6 +40,8 @@ end
 group :development, :test do
   #gem 'debugger'
   gem 'pry-rails'
+  gem 'byebug'
+  gem 'pry-byebug'
 end
 
 group :test do

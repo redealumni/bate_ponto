@@ -128,27 +128,30 @@ class User < ActiveRecord::Base
   
   # TODO: read carefully later, looks like a good place to refactor
   def hours_worked(datetime_range)
-    #don't consider future time
+    # don't consider future time
     datetime_range = datetime_range.begin..(datetime_range.end < Time.now ? datetime_range.end : Time.now)
     
-    # Rails 4: Relation#all deprecated, using to_a instead
+    # Rails 4: Relation#all deprecated - just give the relationship itself
     punches_in_range = self.punches.where('punched_at >= ? and punched_at <= ?', datetime_range.begin, datetime_range.end).
-      order('punched_at ASC').to_a
+      order('punched_at ASC')
     
-    return 0 if punches_in_range.empty?
+    return 0 if punches_in_range.blank?
 
     fixed_punches_in_range = []
 
-    #adds punches that may be missing in the middle
-    punches_in_range.each_with_index do |p, i|
-      fixed_punches_in_range << p
-      next_punch = punches_in_range[i+1]
-      if next_punch and next_punch.entrance == p.entrance #next punch is not right, add one in between
-        fixed_punches_in_range << Punch.new(punched_at:  next_punch.punched_at, entrance: !next_punch.entrance?)
+    # adds punches that may be missing in the middle
+    punches_in_range.each_cons(2) do |ps|
+      p1, p2 = ps
+      fixed_punches_in_range << p1
+      if p1.entrance == p2.entrance #next punch is not right, add one in between
+        fixed_punches_in_range << Punch.new(punched_at:  p2.punched_at, entrance: !p2.entrance?)
       end
     end
 
-    #add punches to the edges, if appropriate
+    # add last punch from range, which the loop didn't catch
+    fixed_punches_in_range << punches_in_range.last
+
+    # add punches to the edges, if appropriate
     if not fixed_punches_in_range.first.entrance?
       fixed_punches_in_range.unshift Punch.new(punched_at: datetime_range.begin)
     end
