@@ -34,8 +34,8 @@ ActiveRecord::Schema.define(version: 20140307201936) do
     t.boolean  "admin",           default: false
     t.boolean  "hidden",          default: false
     t.string   "token"
-    t.string   "shifts"
-    t.integer  "daily_goal",      default: 8,     null: false
+    t.string   "shifts",          default: "---\n- 480\n- 720\n- 0\n- 840\n- 1080\n- 0\n", null: false
+    t.integer  "daily_goal",      default: 8,                                              null: false
   end
 
 end

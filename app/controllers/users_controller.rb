@@ -3,8 +3,6 @@ class UsersController < ApplicationController
 
   include DatetimeHelper
 
-  DEFAULT_SHIFTS = [480, 720, 840, 1080]
-
   before_filter :require_admin, except: [:edit, :update]
   
   # GET /users
@@ -36,7 +34,6 @@ class UsersController < ApplicationController
   # GET /users/new.json
   def new
     @user = User.new
-    @user.shifts = Array.new(DEFAULT_SHIFTS)
 
     respond_to do |format|
       format.html # new.html.erb
@@ -47,7 +44,6 @@ class UsersController < ApplicationController
   # GET /users/1/edit
   def edit
     @user = User.find(params[:id])
-    @user.shifts = Array.new(DEFAULT_SHIFTS) if @user.shifts.blank?
   end
 
   # POST /users

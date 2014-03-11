@@ -35,7 +35,7 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
         partial = [week.begin, week.end].map { |w| I18n.l w, format: :abbr }
         partial.join(' a ')
       end
-      Week.new(name, user.hours_worked(week), user.daily_goal, size)
+      Week.new(name, hours_worked_less_lunch(user, week), user.daily_goal, size)
     end
 
     days = []
@@ -43,7 +43,7 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
       week.each do |day|
         issues = []
         day_range = range_for_day day
-        hours = user.hours_worked day_range
+        hours = hours_worked_less_lunch user, day_range
         punches_for_day = user.punches.where(punched_at: day_range)
         if punches_for_day.blank? then
           issues << "Funcionário faltou."
@@ -56,15 +56,16 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
             issues << "Batidas faltantes."
           end
 
-          count = 0
           moment = :entrance
-          punches_for_day.each do |punch|
-            shift = 1 + (count / 2)
+
+          punches_for_day.each.with_index do |punch, idx|
+            shift = (idx / 2) + 1
+            break if shift > user.num_of_shifts
+
             unless punch.is_punch_time_ok shift, moment then
               issues << define_issue_for_punch(punch, shift, moment)
             end
             moment = swap(moment, :entrance, :exit)
-            count += 1
           end
         end
 
@@ -125,6 +126,11 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
     else
       "Funcionário fez #{readable_duration(error.abs)} de hora extra."
     end
+  end
+
+  def self.hours_worked_less_lunch(user, time_range)
+    lunch_time = (user.shift.map {|s| s.last }.sum.to_f / 60) * date_range_size(time_range)
+    user.hours_worked(time_range) - lunch_time
   end
 
   def self.swap(value, first, second)

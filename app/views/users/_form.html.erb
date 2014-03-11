@@ -46,10 +46,18 @@
             <div class="shift-intro">
               <strong>Turno <%= i %>:</strong>
             </div>
-            <%= label_tag "#{i}-1", "Entrada: ", data: { "shift-entrance" => true } %>
-            <%= text_field_tag "#{i}-1", nil, data: { "shift-entrance" => true } %>
-            <%= label_tag "#{i}-2", "Saída: ", data: { "shift-exit" => true } %>
-            <%= text_field_tag "#{i}-2",nil, data: { "shift-exit" => true } %>
+            <div class="field columns small-2 large-4">
+              <%= label_tag "#{i}-1", "Entrada: ", data: { "shift-entrance" => true } %>
+              <%= text_field_tag "#{i}-1", nil, data: { "shift-time" => true, "shift-entrance" => true } %>
+            </div>
+            <div class="field columns small-2 large-4">
+              <%= label_tag "#{i}-2", "Saída: ", data: { "shift-exit" => true } %>
+              <%= text_field_tag "#{i}-2", nil, data: { "shift-time" => true, "shift-exit" => true } %>
+            </div>
+            <div class="field columns small-2 large-4">
+              <%= label_tag "#{i}-lunch", "Intervalo: ", data: { "shift-lunch" => true } %>
+              <%= text_field_tag "#{i}-lunch", nil, data: { "shift-lunch" => true } %>
+            </div>
           </div>
         <% end %>
       </div>

@@ -51,6 +51,11 @@ class PunchesController < ApplicationController
         format.js   { render json: {delete: removed_punch}, status: :ok, location: removed_punch }
         format.json { render json: {delete: removed_punch}, status: :ok, location: removed_punch }
       else
+        if last_punch and last_punch.entrance? and last_punch.punched_at.to_date < (Date.today)
+          @punch.punched_at = last_punch.punched_at.midnight + 22.hours
+          @punch.comment = "Horário da batida reajustado automaticamente devido a possível esquecimento do usuário."
+        end
+
         if @punch.save
           format.html { redirect_to root_path, notice: 'Cartão batido com sucesso!' }
           format.js   { render json: {html: render_to_string(partial: 'punch_info', locals:{punch: @punch}), create: @punch}, status: :created, location: @punch }

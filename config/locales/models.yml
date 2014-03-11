@@ -9,5 +9,7 @@
       user:
         name: Nome
         password: Senha
+        shifts: Turnos
+        daily_goal: Meta diária
       punch:
         comment: Nota

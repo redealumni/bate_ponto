@@ -1,6 +1,8 @@
 # encoding: utf-8
 class User < ActiveRecord::Base
   
+  DEFAULT_SHIFTS = [480, 720, 0, 840, 1080, 0]
+
   # TODO: clean up how hours are calculed
   TOLERANCE_HOURS = 0.5 # hours
   TOLERANCE_PUNCH = 15.minutes
@@ -17,31 +19,39 @@ class User < ActiveRecord::Base
   
   has_many :punches
 
-  # Each user has shifts, entrance and exit times. We don't need to query these (for now, anyway),
+  # Each user has shifts, entrance and exit times, and lunch hours. We don't need to query these (for now, anyway),
   # so we serialize it back and forth as a array of integers representing the shift hours in minutes
   # from midnight
   serialize :shifts, Array
   validates_each :shifts do |record, attr, value|
     if value.blank?
       record.errors.add(attr, "não pode ser vazio.")
-    elsif not value.each_cons(2).all? { |a| a.first <= a.last }  
-      record.errors.add(attr, "possuí formato inválido.") 
+    elsif value.size % 3 != 0
+      record.errors.add(attr, "possuí formato inválido.")
+    else
+      grouped = value.each_slice(3).map { |s| s }
+      grouped.each_cons(2) do |cons|
+        if cons[0][0] > cons[0][1] or cons[0][1] > cons[1][0] or cons[1][0] > cons[1][1] then
+          record.errors.add(attr, "possuí formato inválido.")
+          break
+        end
+      end
     end 
   end
 
-  # Get the entrance and exit times of a shift as an array
+  # Get the entrance, exit and lunch times of a shift as an array
   # If no argument passed, return all times grouped by shift
   def shift(num = nil)
     if num.nil?
-      self.shifts.each_slice(2).map { |s| s }
+      self.shifts.each_slice(3).map { |s| s }
     else
-      # positions 0 and 1 for first shift, 2 and 3 for second, etc
-      self.shifts[(num - 1) * 2, 2]
+      # positions 0 to 2 for first shift, 3 to 5 for second, etc
+      self.shifts[(num - 1) * 3, 3]
     end
   end
 
   def num_of_shifts
-    self.shifts.size / 2
+    self.shifts.size / 3
   end
 
   # Given a amount of hours, check if it's ok for this user
@@ -68,8 +78,13 @@ class User < ActiveRecord::Base
 
   # Get readable form for shift
   def readable_shift(num)
-    formatted = MOMENTS.each_key.map { |key| I18n.l shift_time(Time.now, num, key), format: :just_time }
-    formatted.join(' as ')
+    formatted = MOMENTS.each_key.map { |key| I18n.l self.shift_time(Time.now, num, key), format: :just_time }
+    lunch = self.shift(num).last
+    formatted.join(' as ') + if lunch > 0 
+      " com #{DatetimeHelper.readable_duration(lunch)} de intervalo"
+    else
+      ""
+    end
   end
 
   # Given a timestamp of a punch, check if it's ok for this user
