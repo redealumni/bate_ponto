@@ -142,20 +142,12 @@ class UsersController < ApplicationController
       date = Date.today.prev_month
       @summary = Summary.summary_for User.find(params[:id]), get_weeks_of_month(date), date
       respond_to do |format|
-        format.html do 
-          render
-        end
+        format.html { render }
         format.pdf do
-          pdf_string = render_to_string pdf: "relatorio_#{@summary.user.name}.pdf",
-            formats: [:html],
+          @format = :pdf
+          render pdf: "relatorio_#{@summary.user.name}.pdf",
             template: "users/report.html.erb", 
             layout: "report_pdf"
-          
-          pdf_data = WickedPdf.new.pdf_from_string(pdf_string)
-          
-          send_data pdf_data, 
-            type: "application/pdf", 
-            filename: "relatorio_#{@summary.user.name}.pdf"
         end
       end
     end
@@ -169,13 +161,13 @@ class UsersController < ApplicationController
 
       begin
         file_name = "relatorios_#{Date.today.to_s(:filename)}.zip"
+        @format = :pdf
 
         Zip::OutputStream.open temp_file.path do |z|
           User.visible.find_each do |u|
             @summary = Summary.summary_for u, date_range, date
             
-            pdf_string = render_to_string  pdf: "relatorio_#{@summary.user.name}.pdf",
-              formats: [:html],
+            pdf_string = render_to_string formats: [:html],
               template: "users/report.html.erb", 
               layout: "report_pdf"
 

@@ -21,7 +21,7 @@
   <% end %>
 </table>
 
-<table class="irregularities">
+<table class="irregularities splitForPrint">
   <tr>
     <th>Dia</th>
     <th>Batidas</th>
@@ -41,7 +41,7 @@
 
 <br>
 
-<% if !params[:format] || params[:format] != "pdf" then %>
+<% if @format != :pdf then %>
   <%= link_to "Exportar como PDF", report_user_path(@summary.user, format: "pdf") %>
   <br>
   <%= link_to "Voltar", :back %>

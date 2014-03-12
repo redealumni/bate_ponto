@@ -11,6 +11,7 @@
 //= require highcharts-theme
 //= require css_browser_selector
 //= require jquery.timepicker.js
+//= require tablesplit.js
 //= require_tree .
 
 $(function(){ $(document).foundation(); });
