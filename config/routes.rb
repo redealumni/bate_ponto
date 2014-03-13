@@ -1,4 +1,3 @@
-# encoding: utf-8
 PontoRa::Application.routes.draw do
   resource :session
 

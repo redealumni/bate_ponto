@@ -1,4 +1,3 @@
-# encoding: utf-8
 class PunchesController < ApplicationController
 
   before_filter :require_admin, only: [:update, :destroy]

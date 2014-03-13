@@ -1,4 +1,3 @@
-# encoding: utf-8
 class User < ActiveRecord::Base
   
   DEFAULT_SHIFTS = [480, 720, 0, 840, 1080, 0]
