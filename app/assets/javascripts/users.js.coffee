@@ -18,8 +18,8 @@ $(->
   #  return (value / 60) + ':' + (value % 60)
 
   parsed_shifts = [];
-  if $('#__shifts')
-    parsed_shifts = $('#__shifts').children().val().
+  $('#__shifts').each (shift) ->
+    parsed_shifts = $(shift).children().val().
       slice(1, -1).split(',').map (e) -> parseInt(e) * 60
 
   shift_time_settings = { timeFormat: "H:i" }

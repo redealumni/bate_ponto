@@ -128,11 +128,17 @@ class UsersController < ApplicationController
   # GET /users/1/report
   # GET /users/1/report.pdf
   def report
-    if report_id == 'all'
-      report_for_all
+    date = report_params[:partial] == "true" ? Date.today : Date.today.prev_month
+
+    if report_params[:id] == 'all'
+      report_for_all date, report_params[:partial] == "true"
     else
-      date = Date.today.prev_month
-      @summary = Summary.summary_for User.find(report_id), get_weeks_of_month(date), date
+      @summary = Summary.summary_for(User.find(report_params[:id]), 
+        get_weeks_of_month(date), 
+        date, 
+        report_params[:partial])
+      @partial = report_params[:partial]
+
       respond_to do |format|
         format.html { render }
         format.pdf do
@@ -146,9 +152,8 @@ class UsersController < ApplicationController
   end
 
   private
-    def report_for_all
+    def report_for_all(date, partial)
       temp_file = Tempfile.new("reports-#{request.uuid}")
-      date = Date.today.prev_month
       date_range = get_weeks_of_month(date)
 
       begin
@@ -157,7 +162,7 @@ class UsersController < ApplicationController
 
         Zip::OutputStream.open temp_file.path do |z|
           User.visible.find_each do |u|
-            @summary = Summary.summary_for u, date_range, date
+            @summary = Summary.summary_for u, date_range, date, partial
             
             pdf_string = render_to_string formats: [:html],
               template: "users/report.html.erb", 
@@ -187,9 +192,9 @@ class UsersController < ApplicationController
       params.require(:id)
     end
 
-    # Safe nullable id param for report
-    def report_id
-      params.permit(:id)[:id]
+    # Safe parameters for report
+    def report_params
+      params.permit(:id, :partial)
     end
 
     # Safe parameters for user creation / updating

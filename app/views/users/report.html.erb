@@ -42,7 +42,13 @@
 <br>
 
 <% if @format != :pdf then %>
-  <%= link_to "Exportar como PDF", report_user_path(@summary.user, format: "pdf") %>
+  <%= link_to "Exportar como PDF", report_user_path(@summary.user, partial: @partial, format: "pdf") %>
+  <br>
+  <% unless @partial %>
+    <%= link_to "Gerar relatório parcial do mês", report_user_path(@summary.user, partial: true) %>
+  <% else %>
+    <%= link_to "Gerar relatório do mês passado", report_user_path(@summary.user) %>
+  <% end %>
   <br>
   <%= link_to "Voltar", :back %>
 <% end %>

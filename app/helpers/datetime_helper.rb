@@ -1,6 +1,17 @@
 module DatetimeHelper
   module_function
   
+  # Given a date range, return one such that ignores future dates if applicable
+  def ignore_future(date_range)
+    if date_range.begin > Date.today
+      nil
+    elsif date_range.end > Date.today
+      date_range.begin..Date.today
+    else
+      date_range
+    end
+  end
+
   # Given a date range, return it's size
   def date_range_size(date_range)
     (date_range.end.to_date - date_range.begin.to_date).to_i + 1

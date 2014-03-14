@@ -26,9 +26,14 @@ end
 Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
   extend DatetimeHelper
 
-  def self.summary_for(user, raw_weeks, month_date)
+  def self.summary_for(user, raw_weeks, month_date, partial = false)
     weeks = raw_weeks.map do |week|
+      # If partial mode enabled, don't bother with future dates
+      week = ignore_future(week) if partial
+      next if partial and week.nil?
+
       size = date_range_size(week)
+
       name = if size == 1 then
         I18n.l week.begin, format: :abbr
       else
@@ -36,11 +41,14 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
         partial.join(' a ')
       end
       Week.new(name, hours_worked_less_lunch(user, week), user.daily_goal, size)
-    end
+    end.compact
 
     days = []
     raw_weeks.each do |week|
       week.each do |day|
+        # If partial mode enabled, don't bother with future dates
+        break if partial and day > Date.today
+
         issues = []
         day_range = range_for_day day
         hours = hours_worked_less_lunch user, day_range
