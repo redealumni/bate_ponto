@@ -1,4 +1,3 @@
-<%= javascript_include_tag 'PunchesController' %>
 <table id="<%= dom_id(punch) %>" class="punch_item <%= punch.entrance? ? "entrance" : "exit" %>">
   <tr>
     <td class="status"><%= punch.entrance? ? "→<br/>In".html_safe : "←<br/>Out".html_safe %></td>
