@@ -17,11 +17,9 @@ class UsersController < ApplicationController
 
   # GET /users/1
   # GET /users/1.json
-  def show
-    params.permit!
-    
-    @user = User.find(params[:id])
-    @punches = @user.punches.latest.paginate(page: params[:page], per_page: 10)
+  def show    
+    @user = User.find(show_params[:id])
+    @punches = @user.punches.latest.paginate(page: show_params[:page], per_page: 10)
 
     respond_to do |format|
       format.html # show.html.erb
@@ -42,16 +40,17 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
-    @user = User.find(params[:id])
+    @user = User.find(id_param)
   end
 
   # POST /users
   # POST /users.json
   def create
-    params.permit!
-    params[:user][:shifts] = JSON.parse(params[:user][:shifts])
+    create_params = user_params
 
-    @user = User.new(params[:user])
+    create_params[:shifts] = JSON.parse(create_params[:shifts])
+
+    @user = User.new(create_params)
 
     respond_to do |format|
       if @user.save
@@ -67,14 +66,14 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.json
   def update
-    params.permit!
-    params[:user][:shifts] = JSON.parse(params[:user][:shifts])
+    update_params = user_params
 
-    @user = User.find(params[:id])
-    params[:user].delete(:admin) unless current_user.admin?
+    update_params[:shifts] = JSON.parse(update_params[:shifts]) if current_user.admin?
+
+    @user = User.find(id_param)
 
     respond_to do |format|
-      if @user.update_attributes(params[:user])
+      if @user.update_attributes(update_params)
         format.html do
           flash[:notice] = 'Usuário alterado com sucesso.'
           if current_user == @user
@@ -94,9 +93,7 @@ class UsersController < ApplicationController
   # PUT /users/1/hide
   # PUT /users/1/hide.json
   def hide
-    params.permit!
-
-    @user = User.find(params[:id])
+    @user = User.find(id_param)
 
     respond_to do |format|
       @user.hidden = !@user.hidden
@@ -119,9 +116,7 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    params.permit!
-
-    @user = User.find(params[:id])
+    @user = User.find(id_param)
     @user.destroy
 
     respond_to do |format|
@@ -133,13 +128,11 @@ class UsersController < ApplicationController
   # GET /users/1/report
   # GET /users/1/report.pdf
   def report
-    params.permit!
-
-    if params[:id] == 'all'
+    if report_id == 'all'
       report_for_all
     else
       date = Date.today.prev_month
-      @summary = Summary.summary_for User.find(params[:id]), get_weeks_of_month(date), date
+      @summary = Summary.summary_for User.find(report_id), get_weeks_of_month(date), date
       respond_to do |format|
         format.html { render }
         format.pdf do
@@ -183,8 +176,29 @@ class UsersController < ApplicationController
       end
     end
 
-    # Rails 4: strong parameters functionality by default. For now just make it work and permit everything:
-    def permit_params!
-      params.permit!
+    # Safe parameters for show
+    def show_params
+      params.require(:id)
+      params.permit(:id, :page)
     end
+
+    # Safe id param
+    def id_param
+      params.require(:id)
+    end
+
+    # Safe nullable id param for report
+    def report_id
+      params.permit(:id)[:id]
+    end
+
+    # Safe parameters for user creation / updating
+    def user_params
+      if current_user.admin?
+        params.require(:user).permit(:name, :password, :token, :hidden, :admin, :daily_goal, :shifts)
+      else
+        params.require(:user).permit(:password)
+      end
+    end
+
 end

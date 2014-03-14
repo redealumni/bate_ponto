@@ -22,15 +22,12 @@ class PunchesController < ApplicationController
   # POST /punches
   # POST /punches.json
   def create
-    permit_params!
-    
-    user_params = params[:punch].delete(:user)
     @punches = user_signed_in? ? current_user.punches.latest : []
-    @punch = user_signed_in? ? current_user.punches.new(params[:punch]) : Punch.new
+    @punch = user_signed_in? ? current_user.punches.new(create_params) : Punch.new
 
     if user_params  #bate como outro usuário ou por token
       if user = User.find_by_name(user_params[:name]).try(:authenticate, user_params[:password]) || User.find_by_token(user_params[:token])
-        @punch = user.punches.new(params[:punch])
+        @punch = user.punches.new(create_params)
       else
         respond_to do |format|
             format.html { redirect_to root_path, notice: "Senha ou token inválidos." }
@@ -71,15 +68,12 @@ class PunchesController < ApplicationController
 
   # PUT /punches/1
   # PUT /punches/1.json
-  def update
-    permit_params!
-
-    @punch = Punch.find(params[:id])
-
+  def update    
+    @punch = Punch.find(id_param)
     raise "Sem permissão, seu hacker safado!!!" if !current_user.admin? and @punch.user != current_user
 
     respond_to do |format|
-      if @punch.update_attributes(params[:punch])
+      if @punch.update_attributes(update_params)
         format.html { redirect_to root_path, notice: 'Batida de ponto alterada.' }
         format.js
         format.json { head :ok }
@@ -93,11 +87,8 @@ class PunchesController < ApplicationController
 
   # DELETE /punches/1
   # DELETE /punches/1.json
-  def destroy
-    permit_params!
-    
-    @punch = Punch.find(params[:id])
-
+  def destroy    
+    @punch = Punch.find(id_param)
     raise "Sem permissão, seu hacker safado!!!" if !current_user.admin? and @punch.user != current_user
 
     @punch.destroy
@@ -110,9 +101,24 @@ class PunchesController < ApplicationController
   end
 
   private
-    # Rails 4: strong parameters functionality by default. For now just make it work and permit everything:
-    def permit_params!
-      params.permit!
+    # Get params for creating
+    def create_params
+      params.require(:punch).permit(:comment)
+    end
+
+    # Get user params for unlogged punching
+    def user_params
+      params.require(:punch).permit(user: [:name, :password, :token])[:user]
+    end
+
+    # Get params for updating
+    def update_params
+      params.require(:punch).permit(:comment, :punched_at)
+    end
+
+    # Get id parameter
+    def id_param
+      params.require(:id)
     end
 
 end
