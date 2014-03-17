@@ -1,7 +1,5 @@
 class User < ActiveRecord::Base
   
-  DEFAULT_SHIFTS = [480, 720, 0, 840, 1080, 0]
-
   # TODO: clean up how hours are calculed
   TOLERANCE_HOURS = 0.5 # hours
   TOLERANCE_PUNCH = 15.minutes
@@ -19,82 +17,47 @@ class User < ActiveRecord::Base
   has_many :punches
 
   # Each user has shifts, entrance and exit times, and lunch hours. We don't need to query these (for now, anyway),
-  # so we serialize it back and forth as a array of integers representing the shift hours in minutes
-  # from midnight
-  serialize :shifts, Array
+  # so we serialize it back and forth as the Shifts class
+  serialize :shifts, Shifts
   validates_each :shifts do |record, attr, value|
-    if value.blank?
-      record.errors.add(attr, "não pode ser vazio.")
-    elsif value.size % 3 != 0
-      record.errors.add(attr, "possuí formato inválido.")
-    else
-      grouped = value.each_slice(3).map { |s| s }
-      grouped.each_cons(2) do |cons|
-        if cons[0][0] > cons[0][1] or cons[0][1] > cons[1][0] or cons[1][0] > cons[1][1] then
-          record.errors.add(attr, "possuí formato inválido.")
-          break
-        end
-      end
-    end 
+    record.errors.add(attr, "possuí formato inválido.") unless value.valid?
   end
 
-  # Get the entrance, exit and lunch times of a shift as an array
-  # If no argument passed, return all times grouped by shift
-  def shift(num = nil)
-    if num.nil?
-      self.shifts.each_slice(3).map { |s| s }
-    else
-      # positions 0 to 2 for first shift, 3 to 5 for second, etc
-      self.shifts[(num - 1) * 3, 3]
-    end
+  # We also put daily goals as arrays of hours (in minutes) in the database
+  serialize :goals, Array
+  validates_each :goals do |record, attr, value|
+    record.errors.add(attr, "possuí formato inválido.") unless goals.size == 5
   end
 
-  def num_of_shifts
-    self.shifts.size / 3
+  # Get weekly goal
+  def weekly_goal(range = nil)
+    if range then self.goals[range].sum else self.goals.sum end
   end
 
-  # Given a amount of hours, check if it's ok for this user
-  def is_hours_ok(hours)
-    return (hours - self.daily_goal).abs < TOLERANCE_HOURS
+  # Get daily goal
+  def daily_goal(day)
+    self.goals[Shifts::DAY_MAPPING[day]]
+  end
+
+  # Given a amount of hours and the weekday, check if it's ok for this user
+  def is_hours_ok(day, hours)
+    return (hours - self.daily_goal(day)).abs < TOLERANCE_HOURS
   end
 
   # Return how off is the hours for this user in hours (float)
-  def hours_error(hours)
-    return (hours - self.daily_goal)
-  end
-
-  # Convenience hash so we can use meaningful symbols for the next three
-  # methods
-  MOMENTS = {
-    entrance: 0,
-    exit: 1
-  }
-
-  # Given shift and a day, get a datetime representing the actual shift moment
-  def shift_time(time, shift_num, moment)
-    time.midnight + self.shift(shift_num)[MOMENTS[moment]].minutes
-  end
-
-  # Get readable form for shift
-  def readable_shift(num)
-    formatted = MOMENTS.each_key.map { |key| I18n.l self.shift_time(Time.now, num, key), format: :just_time }
-    lunch = self.shift(num).last
-    formatted.join(' as ') + if lunch > 0 
-      " com #{DatetimeHelper.readable_duration(lunch)} de intervalo"
-    else
-      ""
-    end
+  def hours_error(day, hours)
+    return (hours - self.daily_goal(day))
   end
 
   # Given a timestamp of a punch, check if it's ok for this user
-  def is_punch_time_ok(punch_time, shift_num, moment)
-    adjusted_time = shift_time punch_time, shift_num, moment
+  def is_punch_time_ok(punch_time, day, shift_num, moment)
+    adjusted_time = shifts[day][shift_num].shift_time punch_time, moment
     return (adjusted_time - punch_time).abs < TOLERANCE_PUNCH
   end
 
   # Return as a integer, in minutes
-  def punch_time_error(punch_time, shift_num, moment)
-    adjusted_time = shift_time punch_time, shift_num, moment
+  def punch_time_error(punch_time, day, shift_num, moment)
+    adjusted_time = shifts[day][shift_num].shift_time punch_time, moment
     return ((adjusted_time - punch_time) / 60).round
   end
 

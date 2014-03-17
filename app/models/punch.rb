@@ -20,13 +20,13 @@ class Punch < ActiveRecord::Base
 
   scope :latest, -> { order 'punched_at DESC' }
 
-  def is_punch_time_ok(shift, moment)
-    self.user.is_punch_time_ok self.punched_at, shift, moment
+  def is_punch_time_ok(day, shift_num, moment)
+    self.user.is_punch_time_ok self.punched_at, day, shift_num, moment
   end
 
   # Return as a integer in minutes
-  def punch_time_error(shift, moment)
-    self.user.punch_time_error self.punched_at, shift, moment
+  def punch_time_error(day, shift_num, moment)
+    self.user.punch_time_error self.punched_at, day, shift_num, moment
   end
 
   def entrance?

@@ -1,13 +1,9 @@
 # Summary classes used for representing user reports
 
-Week = Struct.new(:name, :hours, :daily_goal, :week_size) do
+Week = Struct.new(:name, :hours, :weekly_goal, :week_size) do
 
   def problem?
     (weekly_goal - hours).abs < User::TOLERANCE_HOURS * week_size
-  end
-
-  def weekly_goal
-    daily_goal * week_size
   end
 
 end
@@ -37,10 +33,11 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
       name = if size == 1 then
         I18n.l week.begin, format: :abbr
       else
-        partial = [week.begin, week.end].map { |w| I18n.l w, format: :abbr }
-        partial.join(' a ')
+        [week.begin, week.end].map { |w| I18n.l w, format: :abbr }.join(' a ')
       end
-      Week.new(name, hours_worked_less_lunch(user, week), user.daily_goal, size)
+
+      goal = user.weekly_goal week.begin.cwday - 1, week.end.cwday - 1
+      Week.new(name, hours_worked_less_lunch(user, week), goal, size)
     end.compact
 
     days = []
@@ -49,18 +46,20 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
         # If partial mode enabled, don't bother with future dates
         break if partial and day > Date.today
 
+        weekday = Shifts::NUM_MAPPING[day.cwday]
+
         issues = []
         day_range = range_for_day day
-        hours = hours_worked_less_lunch user, day_range
+        hours = hours_worked_less_lunch user, day_range, weekday
         punches_for_day = user.punches.where(punched_at: day_range)
         if punches_for_day.blank? then
           issues << "Funcionário faltou."
         else
-          if not user.is_hours_ok hours then
-            issues << define_issue_for_hours(user, hours)
+          if not user.is_hours_ok weekday, hours then
+            issues << define_issue_for_hours(user, weekday, hours)
           end
 
-          if punches_for_day.size < user.num_of_shifts * 2 then
+          if punches_for_day.size < user.shifts.num_of_shifts(weekday) * 2 then
             issues << "Batidas faltantes."
           end
 
@@ -68,10 +67,10 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
 
           punches_for_day.each.with_index do |punch, idx|
             shift = (idx / 2) + 1
-            break if shift > user.num_of_shifts
+            break if shift > user.shifts.num_of_shifts(weekday)
 
-            unless punch.is_punch_time_ok shift, moment then
-              issues << define_issue_for_punch(punch, shift, moment)
+            unless punch.is_punch_time_ok weekday, shift, moment then
+              issues << define_issue_for_punch(punch, weekday, shift, moment)
             end
             moment = swap(moment, :entrance, :exit)
           end
@@ -108,8 +107,8 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
   # Helper private methods
   private
   
-  def self.define_issue_for_punch(punch, shift, moment)
-    error = punch.punch_time_error shift, moment
+  def self.define_issue_for_punch(punch, day, shift, moment)
+    error = punch.punch_time_error day, shift, moment
     if punch.entrance
       wording = if error < 0 then
         "atrasado"
@@ -127,8 +126,8 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
     end
   end
 
-  def self.define_issue_for_hours(user, hours)
-    error = (user.hours_error(hours) * 60).ceil
+  def self.define_issue_for_hours(user, weekday, hours)
+    error = (user.hours_error(weekday, hours) * 60).ceil
     if error < 0
       "Faltaram #{readable_duration(error.abs)} para o funcionário no dia."
     else
@@ -136,9 +135,12 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
     end
   end
 
-  def self.hours_worked_less_lunch(user, time_range)
-    lunch_time = (user.shift.map {|s| s.last }.sum.to_f / 60) * date_range_size(time_range)
-    user.hours_worked(time_range) - lunch_time
+  def self.hours_worked_less_lunch(user, date_range)
+    lunch_time = date_range.map { |date| date.cwday }.map { |weekday| 
+      user.shifts.lunch_time(Shifts::NUM_MAPPING[weekday]) 
+    }.sum.to_f / 60
+
+    user.hours_worked(date_range) - lunch_time
   end
 
   def self.swap(value, first, second)
