@@ -2,6 +2,9 @@
 # Meant to be serialized in the users table
 class Shifts
 
+  include Enumerable
+  extend Forwardable
+
   # Mappings
   DAY_MAPPING = {
     monday: 1,
@@ -39,9 +42,8 @@ class Shifts
     @days = @days.keep_if { |key, value| VALID_DAYS.member? key }
   end
 
-  def [](key)
-    @days[key]
-  end
+  # Delegate iterators and acessors to internal hash
+  def_delegators :@days, :[], :each, :each_value, :each_key
 
   def num_of_shifts(key)
     @days[key].size
@@ -65,6 +67,19 @@ class Shifts
       return false unless day.last.valid?
     end
     return true
+  end
+
+  # Populate from hash
+  def from_hash(data)
+    data.each do |day, shifts|
+      @days[day.to_sym] = shifts.map { |e| Shift.from_hash e }
+    end
+    self
+  end
+
+  # Class instance variant of from_hash
+  def self.from_hash(data)
+    Shifts.new.from_hash data
   end
 
 end

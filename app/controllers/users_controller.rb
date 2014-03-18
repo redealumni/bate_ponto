@@ -48,7 +48,7 @@ class UsersController < ApplicationController
   def create
     create_params = user_params
 
-    create_params[:shifts] = JSON.parse(create_params[:shifts])
+    create_params[:shifts] = Shifts.from_hash JSON.parse(create_params[:shifts])
 
     @user = User.new(create_params)
 
@@ -68,7 +68,7 @@ class UsersController < ApplicationController
   def update
     update_params = user_params
 
-    update_params[:shifts] = JSON.parse(update_params[:shifts]) if current_user.admin?
+    update_params[:shifts] = Shifts.from_hash JSON.parse(update_params[:shifts]) if current_user.admin?
 
     @user = User.find(id_param)
 

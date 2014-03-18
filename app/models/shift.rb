@@ -27,4 +27,16 @@ Shift = Struct.new(:entrance, :exit, :lunch) do
   def <=>(other)
     entrance <=> other.entrance
   end
+
+  # Populate from hash
+  def from_json(data)
+    data.each { |k, v| self[k] = v }
+    self
+  end
+
+  # Class variant of from_hash
+  def self.from_json(data)
+    self.new.from_json data
+  end
+
 end

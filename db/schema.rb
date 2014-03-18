@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140307201936) do
+ActiveRecord::Schema.define(version: 20140318190747) do
 
   create_table "punches", force: true do |t|
     t.integer  "user_id"
@@ -33,8 +34,8 @@ ActiveRecord::Schema.define(version: 20140307201936) do
     t.boolean  "admin",           default: false
     t.boolean  "hidden",          default: false
     t.string   "token"
-    t.string   "shifts",          default: "---\n- 480\n- 720\n- 0\n- 840\n- 1080\n- 0\n", null: false
-    t.integer  "daily_goal",      default: 8,                                              null: false
+    t.text     "shifts",                                                     null: false
+    t.string   "goals",           default: "---\n- 8\n- 8\n- 8\n- 8\n- 8\n", null: false
   end
 
 end

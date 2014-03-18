@@ -32,39 +32,12 @@
       <%= f.label :hidden %><br />
       <%= f.check_box :hidden %>
     </div>
-    <div class="field">
-      <%= f.label :daily_goal %><br />
-      <%= f.text_field :daily_goal %>
-    </div>
-    <span id="__shifts"><%= f.hidden_field :shifts %></span>
+    <span id="__goals"><%= f.hidden_field :goals %></span>
+    <%= render goals %>
 
-    <div class="shifts-section">
-      <div id="shift-list">
-        <% @user.shift.each_with_index do |s, idx| %>
-          <% i = idx + 1 %>
-          <div class="shift" data-shift-num="<%= i %>">
-            <div class="shift-intro">
-              <strong>Turno <%= i %>:</strong>
-            </div>
-            <div class="field columns small-2 large-4">
-              <%= label_tag "#{i}-1", "Entrada: ", data: { "shift-entrance" => true } %>
-              <%= text_field_tag "#{i}-1", nil, data: { "shift-time" => true, "shift-entrance" => true } %>
-            </div>
-            <div class="field columns small-2 large-4">
-              <%= label_tag "#{i}-2", "Saída: ", data: { "shift-exit" => true } %>
-              <%= text_field_tag "#{i}-2", nil, data: { "shift-time" => true, "shift-exit" => true } %>
-            </div>
-            <div class="field columns small-2 large-4">
-              <%= label_tag "#{i}-lunch", "Intervalo: ", data: { "shift-lunch" => true } %>
-              <%= text_field_tag "#{i}-lunch", nil, data: { "shift-lunch" => true } %>
-            </div>
-          </div>
-        <% end %>
-      </div>
-      <%= hidden_field_tag "num-of-shifts", @user.num_of_shifts %>
-      <%= link_to "Remover ultimo turno", '#', id: "remove-shift", class: "button" %>
-      <%= link_to "Novo turno", '#', id: "add-shift", class: "button" %>
-    </div>
+    <span id="__shifts"><%= f.hidden_field :shifts %></span>
+    <%= render shifts %>
+
   <% end %>
   <div class="actions">
     <%= f.submit %>

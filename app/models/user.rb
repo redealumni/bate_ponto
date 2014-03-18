@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+
+  DEFAULT_SHIFTS = [480, 720, 0, 840, 1080, 0]
   
   # TODO: clean up how hours are calculed
   TOLERANCE_HOURS = 0.5 # hours
@@ -18,7 +20,7 @@ class User < ActiveRecord::Base
 
   # Each user has shifts, entrance and exit times, and lunch hours. We don't need to query these (for now, anyway),
   # so we serialize it back and forth as the Shifts class
-  serialize :shifts, Shifts
+  serialize :shifts
   validates_each :shifts do |record, attr, value|
     record.errors.add(attr, "possuí formato inválido.") unless value.valid?
   end
@@ -26,7 +28,7 @@ class User < ActiveRecord::Base
   # We also put daily goals as arrays of hours (in minutes) in the database
   serialize :goals, Array
   validates_each :goals do |record, attr, value|
-    record.errors.add(attr, "possuí formato inválido.") unless goals.size == 5
+    record.errors.add(attr, "possuí formato inválido.") unless value.size == 5
   end
 
   # Get weekly goal
