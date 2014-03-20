@@ -79,8 +79,13 @@ module DatetimeHelper
   def readable_duration(minutes)
     h = minutes / 60
     m = minutes % 60
-    hours = if h > 0 then (h.to_s + "h:") else "" end
-    return hours + (minutes % 60).to_s + "m"
+    str_hours = if h > 0 then (h.to_s + 'h') else '' end
+    str_minutes = if m > 0 then (m.to_s + 'm') else '' end
+
+    if str_hours.blank? and str_minutes.blank? then '0m'
+    elsif str_hours.blank? then str_minutes
+    elsif str_minutes.blank? then str_hours
+    else str_hours + ':' + str_minutes end
   end
 
 end

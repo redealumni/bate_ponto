@@ -3,10 +3,24 @@
 <div class="intro">
   <strong>Funcionário: </strong><%= @summary.user.name %> <br>
   <strong>Data: </strong><%= l @summary.date, format: :month_year %> <br>
-  <strong>Horários: </strong> <%= @summary.user.readable_shift 1 %>, <%= @summary.user.readable_shift 2 %><br>
 </div>
 
 <br>
+
+<table class="shift-overview">
+  <tr>
+    <th>Dia:</th>
+    <th>Horário:</th>
+    <th>Meta:</th>
+  </tr>
+  <% @summary.user.shifts.each do |weekday, shifts| %>
+    <tr>
+      <td><%= Shifts.localize weekday %></td>
+      <td><%= shifts.join(',') %></td>
+      <td><%= DatetimeHelper.readable_duration((@summary.user.daily_goal(weekday) * 60 ).round) %></td>
+    </tr>
+  <% end %>
+</table>
 
 <table class="week-overview">
   <tr>

@@ -2,10 +2,10 @@
   <% @user.shifts.each do |day, shifts| %>
     <% shift_id = Shifts::DAY_MAPPING[day] %>
     <div class="shift-list" id="shift-<%= day %>" data-shift-day="<%= shift_id %>">
-      <span class="shift-day-intro"><%= I18n.t("date.day_names")[shift_id] %></span> 
+      <h5 class="shift-day-intro"><%= I18n.t("date.day_names")[shift_id] %></h5>
       <% shifts.each_with_index do |shift, idx| %>
         <% i = idx + 1 %>
-        <div class="shift" data-shift-num="<%= i %>">
+        <div class="shift row" data-shift-num="<%= i %>">
           <div class="shift-intro">
             <strong>Turno <%= i %>:</strong>
           </div>
@@ -19,13 +19,13 @@
           </div>
           <div class="field columns small-2 large-4">
             <%= label_tag "lunch", "Intervalo: " %>
-            <%= text_field_tag "lunch", nil %>
+            <%= text_field_tag "lunch", nil, data: { "shift-lunch" => true } %>
           </div>
         </div>
       <% end %>
       <%= hidden_field_tag "num-of-shifts-#{shift_id}", shifts.size %>
-      <%= link_to "Remover ultimo turno", '#', id: "remove-shift-#{shift_id}", class: [ "button", "remove-shift-btn" ] %>
-      <%= link_to "Novo turno", '#', id: "add-shift-#{shift_id}", class: [ "button", "add-shift-btn" ],  %>
+      <%= link_to "Remover ultimo turno", '#!', id: "remove-shift-#{shift_id}", class: [ "button", "remove-shift-btn" ] %>
+      <%= link_to "Novo turno", '#!', id: "add-shift-#{shift_id}", class: [ "button", "add-shift-btn" ] %>
     </div>
   <% end %>
 </div>

@@ -4,6 +4,7 @@
 $(->
 
   shift_main = $('.shifts-section')
+  goals_main = $('.goals-section')
 
   day_mapping =
     monday: 1
@@ -27,10 +28,17 @@ $(->
     hm = value.split(':')
     return (parseInt(hm[0]) * 60) + parseInt(hm[1])
 
-  to_date = (seconds) ->
+  parse_to_hours = (value) ->
+    hm = value.split(':')
+    return parseInt(hm[0]) + parseInt(hm[1]) / 60
+
+  to_date = (minutes) ->
     t = new Date(1970,0,1)
-    t.setSeconds(seconds)
+    t.setSeconds(minutes * 60)
     return t
+
+  to_minutes = (hours) ->
+    Math.round(hours * 60)
 
   to_hash = (array) ->
     result = {}
@@ -48,38 +56,57 @@ $(->
   # parseToString = (value) ->
   #  return (value / 60) + ':' + (value % 60)
 
+  $('#trueShifts').each (idx, elem) ->
+    $('#__shifts').children().val($(elem).text())
+
+  goals = []
+
+  $('#trueGoals').each (idx, elem) ->
+    trueValue = $(elem).text()
+    $('#__goals').children().val(trueValue)
+    goals = JSON.parse(trueValue)
+
   parsed_shifts = {};
-  $('#__shifts').each (shifts) ->
+  $('#__shifts').children().each (idx, shifts) ->
     obj = JSON.parse(shifts.value)
     parsed_shifts = to_hash(obj)
 
   shift_time_settings = { timeFormat: 'H:i' }
   shift_lunch_settings = { timeFormat: 'H:i', maxTime: '2:00', step: 15}
+  goal_settings = { timeFormat: 'H:i', maxTime: '10:00', step: 60 }
 
-  enable_time_picker = (selector) ->
+  enable_goal_time_picker = (idx, input) ->
+    $(input).timepicker(goal_settings).timepicker('setTime', to_date(to_minutes(goals[idx])))
+
+  enable_shift_time_picker = (setter) ->
     return (idx, input) ->
       jinput = $(input)
-      settings = if jinput.data('shift-time') then shift_time_settings else shift_lunch_settings
-      jinput.timepicker(settings).timepicker('setTime', selector(idx, input))
+      settings = if jinput.data('shift-lunch') then shift_lunch_settings else shift_time_settings
+      jinput.timepicker(settings).timepicker('setTime', setter(idx, input))
 
-  set_time_startup = (day_id) ->
+  set_time_startup = (day_id, shift_id) ->
     return (idx, input) ->
-      to_date(parsed_shifts[day_id][idx])
+      to_date(parsed_shifts[day_id][shift_id][input.id])
 
-  set_time_new = (day_id) ->
-    return (idx, input) ->
-      to_date(parse_to_minutes($(input).val()) * 60)
+  set_time_new = (idx, input) ->
+    to_date(parse_to_minutes(input.value))
 
   # Enable time-picker at startup
-  $('.shift', shift_main).each (idx, list) ->
+  $('.goals-line :input', goals_main).each enable_goal_time_picker
+
+  $('.shift-list', shift_main).each (idx, list) ->
     list = $(list)
-    $(':input', list).each enable_time_picker(set_time_startup(list.data('shift-day')))
+    day_id = list.data('shift-day')
+    $('.shift', list).each (idx, shift) ->
+      shift = $(shift)
+      shift_id = shift.data('shift-num') - 1
+      $(':input', shift).each enable_shift_time_picker(set_time_startup(day_id, shift_id))
 
   # New shift option
-  $('.add-shift-btn', shift_main).click () ->
-    this = $(this)
-    shift_day = this.parent().data('shift-day')
-    last_shift = $('.shift', this.parent()).last()
+  $('.add-shift-btn', shift_main).click (e) ->
+    self = $(this)
+    shift_day = self.parent().data('shift-day')
+    last_shift = $('.shift', self.parent()).last()
     new_index = parseInt(last_shift.data('shift-num')) + 1
     new_shift = last_shift.clone()
 
@@ -90,33 +117,33 @@ $(->
 
     last_shift.after new_shift
 
-    new_shift.find(':input').each enable_time_picker(set_time_new(shift_day))
-
+    new_shift.find(':input').each enable_shift_time_picker(set_time_new)
     $("#num-of-shifts-#{shift_day}", shift_main).val(new_index)
 
     if new_index >= 2
-      $("#remove-shift-#{shift_day}", shift_main).show()
+      $('.remove-shift-btn', self.parent()).show()
 
   # Remove shift option
-  $('.remove-shift-btn', shift_main).click () ->
-    this = $(this)
-    shift_day = this.parent().data('shift-day')
+  $('.remove-shift-btn', shift_main).click (e) ->
+    self = $(this)
+    shift_day = self.parent().data('shift-day')
     old_index = $("#num-of-shifts-#{shift_day}", shift_main)
     new_index = parseInt(old_index.val()) - 1
     old_index.val(new_index)
 
-    $('.shift', this.parent()).last().remove()
+    $('.shift', self.parent()).last().remove()
 
     if new_index < 2
-      $('#remove-shift', shift_main).hide()
+      self.hide()
 
   # Submit action
   $('form').submit () ->
     # Goals
-    goals = []
+    final_goals = []
     $('.goals-section :input').each (idx, input) ->
-      goals.push [input.id, parseInt(input.value)]
-    $('#__goals').children().val(JSON.stringify(parse_goals(goals)))
+      final_goals.push [input.id, parse_to_hours(input.value)]
+    final_goals = JSON.stringify(parse_goals(final_goals))
+    $('#__goals').children().val(final_goals)
 
     # Shifts
     shifts = {}

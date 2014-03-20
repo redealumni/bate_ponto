@@ -49,6 +49,7 @@ class UsersController < ApplicationController
     create_params = user_params
 
     create_params[:shifts] = Shifts.from_hash JSON.parse(create_params[:shifts])
+    create_params[:goals] = JSON.parse(create_params[:goals])
 
     @user = User.new(create_params)
 
@@ -69,6 +70,8 @@ class UsersController < ApplicationController
     update_params = user_params
 
     update_params[:shifts] = Shifts.from_hash JSON.parse(update_params[:shifts]) if current_user.admin?
+    update_params[:goals] = JSON.parse(update_params[:goals]) if current_user.admin?
+
 
     @user = User.find(id_param)
 
@@ -200,7 +203,7 @@ class UsersController < ApplicationController
     # Safe parameters for user creation / updating
     def user_params
       if current_user.admin?
-        params.require(:user).permit(:name, :password, :token, :hidden, :admin, :daily_goal, :shifts)
+        params.require(:user).permit(:name, :password, :token, :hidden, :admin, :goals, :shifts)
       else
         params.require(:user).permit(:password)
       end

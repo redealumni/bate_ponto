@@ -29,14 +29,14 @@ Shift = Struct.new(:entrance, :exit, :lunch) do
   end
 
   # Populate from hash
-  def from_json(data)
+  def from_hash(data)
     data.each { |k, v| self[k] = v }
     self
   end
 
   # Class variant of from_hash
-  def self.from_json(data)
-    self.new.from_json data
+  def self.from_hash(data)
+    self.new.from_hash data
   end
 
 end

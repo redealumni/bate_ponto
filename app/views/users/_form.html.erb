@@ -21,25 +21,31 @@
       <%= f.text_field :name %>
     </div>
     <div class="field">
-      <%= f.label :admin %><br />
-      <%= f.check_box :admin %>
-    </div>
-    <div class="field">
       <%= f.label :token %><br />
       <%= f.text_field :token %>
     </div>
-    <div class="field">
-      <%= f.label :hidden %><br />
-      <%= f.check_box :hidden %>
+    <div class="row">
+      <div class="field columns small-3 large-6">
+        <%= f.label :admin %><br />
+        <%= f.check_box :admin %>
+      </div>
+      <div class="field columns small-3 large-6">
+        <%= f.label :hidden %><br />
+        <%= f.check_box :hidden %>
+      </div>
     </div>
     <span id="__goals"><%= f.hidden_field :goals %></span>
-    <%= render goals %>
+    <%= render 'goals' %>
+    <br>
 
     <span id="__shifts"><%= f.hidden_field :shifts %></span>
-    <%= render shifts %>
+    <%= render 'shifts' %>
 
   <% end %>
   <div class="actions">
     <%= f.submit %>
   </div>
+
+  <div id="trueGoals" hidden><%= @user.goals.to_json %></div>
+  <div id="trueShifts" hidden><%= @user.shifts.to_json %></div>
 <% end %>

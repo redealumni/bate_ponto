@@ -36,7 +36,7 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
         [week.begin, week.end].map { |w| I18n.l w, format: :abbr }.join(' a ')
       end
 
-      goal = user.weekly_goal week.begin.cwday - 1, week.end.cwday - 1
+      goal = user.weekly_goal (week.begin.cwday - 1)..(week.end.cwday - 1)
       Week.new(name, hours_worked_less_lunch(user, week), goal, size)
     end.compact
 
@@ -50,7 +50,7 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
 
         issues = []
         day_range = range_for_day day
-        hours = hours_worked_less_lunch user, day_range, weekday
+        hours = hours_worked_less_lunch_in_day user, day
         punches_for_day = user.punches.where(punched_at: day_range)
         if punches_for_day.blank? then
           issues << "Funcionário faltou."
@@ -66,8 +66,8 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
           moment = :entrance
 
           punches_for_day.each.with_index do |punch, idx|
-            shift = (idx / 2) + 1
-            break if shift > user.shifts.num_of_shifts(weekday)
+            shift = (idx / 2)
+            break if shift >= user.shifts.num_of_shifts(weekday)
 
             unless punch.is_punch_time_ok weekday, shift, moment then
               issues << define_issue_for_punch(punch, weekday, shift, moment)
@@ -135,12 +135,22 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
     end
   end
 
+  def self.check_range(date_range)
+    date_range.begin.to_date == date_range.end.to_date
+  end
+
   def self.hours_worked_less_lunch(user, date_range)
-    lunch_time = date_range.map { |date| date.cwday }.map { |weekday| 
+    weekdays = date_range.to_a.map { |date| date.cwday }
+
+    lunch_time = weekdays.map { |weekday| 
       user.shifts.lunch_time(Shifts::NUM_MAPPING[weekday]) 
     }.sum.to_f / 60
 
     user.hours_worked(date_range) - lunch_time
+  end
+
+  def self.hours_worked_less_lunch_in_day(user, day)
+    user.hours_worked(range_for_day(day)) - user.shifts.lunch_time(Shifts::NUM_MAPPING[day.cwday])
   end
 
   def self.swap(value, first, second)

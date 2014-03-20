@@ -6,8 +6,8 @@ class ApplicationController < ActionController::Base
   after_filter :log_cookies, if: ->{ Rails.env.development? }
 
   def log_cookies
-    Rails.logger.info "Session: #{session.inspect}\n"
-    Rails.logger.info "Cookies: #{cookies.signed[:login_user_id].inspect}\n"
+    # Rails.logger.info "Session: #{session.inspect}\n"
+    # Rails.logger.info "Cookies: #{cookies.signed[:login_user_id].inspect}\n"
   end
 
   protected

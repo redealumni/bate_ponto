@@ -82,4 +82,9 @@ class Shifts
     Shifts.new.from_hash data
   end
 
+  # TODO: rip this out
+  def self.localize(day)
+    I18n.translate('date.day_names')[DAY_MAPPING[day]]
+  end
+
 end

@@ -22,13 +22,13 @@ class User < ActiveRecord::Base
   # so we serialize it back and forth as the Shifts class
   serialize :shifts
   validates_each :shifts do |record, attr, value|
-    record.errors.add(attr, "possuí formato inválido.") unless value.valid?
+    record.errors.add(attr, "possuí formato inválido.") unless not value.blank? and value.valid?
   end
 
   # We also put daily goals as arrays of hours (in minutes) in the database
   serialize :goals, Array
   validates_each :goals do |record, attr, value|
-    record.errors.add(attr, "possuí formato inválido.") unless value.size == 5
+    record.errors.add(attr, "possuí formato inválido.") unless not value.blank? and value.size == 5
   end
 
   # Get weekly goal
@@ -38,7 +38,7 @@ class User < ActiveRecord::Base
 
   # Get daily goal
   def daily_goal(day)
-    self.goals[Shifts::DAY_MAPPING[day]]
+    self.goals[Shifts::DAY_MAPPING[day] - 1]
   end
 
   # Given a amount of hours and the weekday, check if it's ok for this user
