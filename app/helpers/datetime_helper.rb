@@ -37,6 +37,10 @@ module DatetimeHelper
     return result
   end
 
+  def get_monday_of_week(date)
+    find_date(date.beginning_of_week) { |day| day.cwday == 1 }
+  end
+
   def get_first_monday_of_month(date)
     find_date(date.beginning_of_month) { |day| day.cwday == 1 }
   end
@@ -47,6 +51,24 @@ module DatetimeHelper
 
   def get_first_weekday_of_month(date)
     find_date(date.beginning_of_month) { |day| day.cwday <= 5 }
+  end
+
+  # Get array with ranges representing weeks between two dates
+  def get_weeks_of_range(date_range)
+    start = get_monday_of_week(date_range.begin)
+    result = []
+
+    ini = start
+    fin = nil
+    loop do
+      fin = get_friday_of_week(ini)
+      result << (ini..fin)
+      ini += 1.week
+
+      break if ini > date_range.end
+    end
+
+    return result
   end
 
   # Get array with ranges representing weeks of the month

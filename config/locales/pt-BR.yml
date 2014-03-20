@@ -6,6 +6,7 @@
       default: "%d/%m/%Y"
       short: "%d de %B"
       long: "%d de %B de %Y"
+      long_abbr: "%d/%b/%y"
       month_year: "%B de %Y"
       abbr: "%d/%m"
 

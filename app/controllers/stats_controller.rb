@@ -1,11 +1,12 @@
 class StatsController < ApplicationController
+  include DatetimeHelper
 
   COLORS = %w(8DD3C7 FFFFB3 BEBADA FB8072 80B1D3 FDB462 B3DE69 FCCDE5 D9D9D9 BC80BD CCEBC5 FFED6F)
 
   def index
     params.permit!
 
-    month_names = %w(JAN FEV MAR ABR MAI JUN JUL AGO SET OUT NOV DEZ)
+    month_names = I18n.t 'date.abbr_month_names'
 
     @user_id = params[:user_id]
     date = params[:date]
@@ -19,23 +20,12 @@ class StatsController < ApplicationController
     @start = if date.nil? then default_start else parse_time(date) end
 
     finish = Time.now
-    number_of_weeks = ((finish - @start) / 60 / 60 / 24 / 7).ceil
+    number_of_weeks = ((finish.to_date - @start.to_date).to_i / 7).ceil
 
-    week_ranges = []
-    last_week = @start
-    (1..number_of_weeks).each do
-      week_ranges.push last_week..(1.week.since(last_week))
-      last_week += 1.week
-    end
+    week_ranges = get_weeks_of_range number_of_weeks.weeks.ago.to_date..finish.to_date
 
     @week_names = week_ranges.map do |week_range|
-      #o ano em que o primeiro dia da semana começa
-      year = week_range.begin.at_beginning_of_week.year - 2000
-      #o mês em que o primeiro dia da semana começa
-      month = week_range.begin.at_beginning_of_week.month
-      #o número da semana dentro do mês
-      week_number = ((week_range.begin.at_beginning_of_week - week_range.begin.at_beginning_of_month) / 60 / 60 / 24 / 7).ceil
-      "%1d%3s%2.2d" % [week_number, month_names[month-1], year]
+      I18n.l week_range.end, format: :long_abbr 
     end
 
     @series = users.map do |u|
