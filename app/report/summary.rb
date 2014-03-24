@@ -146,7 +146,7 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
       user.shifts.lunch_time(Shifts::NUM_MAPPING[weekday]) 
     }.sum.to_f / 60
 
-    user.hours_worked(date_range) - lunch_time
+    user.hours_worked(to_time_range(date_range)) - lunch_time
   end
 
   def self.hours_worked_less_lunch_in_day(user, day)

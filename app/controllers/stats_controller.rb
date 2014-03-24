@@ -30,7 +30,7 @@ class StatsController < ApplicationController
 
     @series = users.map do |u|
       hours = week_ranges.map do |week_range|
-        u.hours_worked(week_range)
+        u.hours_worked(to_time_range(week_range))
       end
       {name: u.name, data: hours}
     end

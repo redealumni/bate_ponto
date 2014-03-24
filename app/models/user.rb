@@ -90,8 +90,8 @@ class User < ActiveRecord::Base
   end
 
   def hours_worked_in_month(month)
-    beginning_of_month = month.beginning_of_month
-    end_of_month = month.end_of_month
+    beginning_of_month = month.beginning_of_month.midnight
+    end_of_month = month.end_of_month.end_of_day
 
     self.hours_worked(beginning_of_month..end_of_month)
   end

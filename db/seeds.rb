@@ -13,11 +13,11 @@ users =
   User.create!(name:'Te', password: 'abc123', token: '456')
 ]
 
-date_range = Time.parse('2012-10-01').to_date..Date.yesterday
-punch_hours = [8.hours, 12.hours, 14.hours, 18.hours]
+date_range = Time.parse('2013-10-01').to_date..Date.yesterday
+punch_hours = [10.hours, 13.hours, 14.hours, 17.hours]
 
 def oops
-  rand(-45..45).minutes
+  rand(-15..15).minutes
 end
 
 date_range.each do |date|

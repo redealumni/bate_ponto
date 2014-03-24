@@ -17,6 +17,12 @@ module DatetimeHelper
     (date_range.end.to_date - date_range.begin.to_date).to_i + 1
   end
 
+  # Given a date range, return a time range starting from midnight of the begin,
+  # up to the end of the last day
+  def to_time_range(date_range)
+    date_range.begin.beginning_of_day..date_range.end.end_of_day
+  end
+
   # Return a datetime range for the beginning to the end of the day
   def range_for_day(date)
     date.beginning_of_day..date.end_of_day

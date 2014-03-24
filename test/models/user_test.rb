@@ -2,6 +2,8 @@ require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
 
+  include DatetimeHelper
+
   def setup
     @user = User.create(name: "Joao Cohones", password: "abc123")
   end
@@ -27,7 +29,7 @@ class UserTest < ActiveSupport::TestCase
     #saiu 15:00
     @punches = @user.punches.create(punched_at: (yesterday_time(15.hours)))
 
-    assert_equal 9, @user.hours_worked(yesterday_range)
+    assert_equal 9, @user.hours_worked(yesterday_range).ceil
   end
 
   test "hours_worked punches falta fim" do
@@ -39,7 +41,7 @@ class UserTest < ActiveSupport::TestCase
     @punches = @user.punches.create(punched_at: (yesterday_time(10.hours)))
 
     #18 horas, até o fim do período
-    assert_equal 18, @user.hours_worked(yesterday_range)
+    assert_equal 18, @user.hours_worked(yesterday_range).ceil
   end
 
   test "hours_worked punches falta início" do
@@ -51,7 +53,7 @@ class UserTest < ActiveSupport::TestCase
     @punches = @user.punches.create(punched_at: (yesterday_time(17.hours)))
 
     #12 horas, desde o início do dia
-    assert_equal 12, @user.hours_worked(yesterday_range)
+    assert_equal 12, @user.hours_worked(yesterday_range).ceil
   end
 
 
@@ -65,7 +67,7 @@ class UserTest < ActiveSupport::TestCase
     @punches = @user.punches.create(punched_at: (yesterday_time(20.hours)))
     @punches.update_attribute(:punched_at, (yesterday_time(3.hours)) ) #  sai lá atrás
 
-    assert_equal 7, @user.hours_worked(yesterday_range)
+    assert_equal 7, @user.hours_worked(yesterday_range).ceil
   end
 
   test "hours_worked ignora saída faltante no meio" do
@@ -78,7 +80,18 @@ class UserTest < ActiveSupport::TestCase
     @punches = @user.punches.create(punched_at: (yesterday_time(20.hours)))#some
     @punches.update_attribute(:punched_at, (yesterday_time(8.hours)) ) # entra lá atrás
     
-    assert_equal 11, @user.hours_worked(yesterday_range)
+    assert_equal 11, @user.hours_worked(yesterday_range).ceil
+  end
+
+  test "hours_worked semana inteira" do
+    start = get_monday_of_week(1.week.ago.to_date)
+    finish = (start + 4.days).to_date
+
+    (start..finish).each do |day|
+      [1, 5, 10, 14].each { |h| @user.punches.create(punched_at: day + h.hours) }
+    end
+
+    assert_equal 40, @user.hours_worked(start.midnight..finish.end_of_day).ceil
   end
 
 end
