@@ -47,7 +47,7 @@ class PunchesController < ApplicationController
         format.js   { render json: {delete: removed_punch}, status: :ok, location: removed_punch }
         format.json { render json: {delete: removed_punch}, status: :ok, location: removed_punch }
       else
-        if last_punch and last_punch.entrance? and last_punch.punched_at.to_date != Date.today
+        if last_punch and last_punch.entrance? and not (last_punch.punched_at.to_date === Time.now.to_date)
           @punch.punched_at = last_punch.punched_at.midnight + 22.hours
           @punch.comment = "Horário da batida reajustado automaticamente devido a possível esquecimento do usuário."
         end
