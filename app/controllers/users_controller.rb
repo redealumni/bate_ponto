@@ -31,6 +31,8 @@ class UsersController < ApplicationController
   # GET /users/new.json
   def new
     @user = User.new
+    @user.shifts = Shifts.new_default
+    @user.goals = [8] * 5
 
     respond_to do |format|
       format.html # new.html.erb
