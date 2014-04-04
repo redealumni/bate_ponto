@@ -96,33 +96,42 @@ class User < ActiveRecord::Base
     self.hours_worked(beginning_of_month..end_of_month)
   end
 
+  # TODO: read ** CAREFULLY ** later, looks like a good place to refactor
   def hours_worked(datetime_range)
     # don't consider future time
     datetime_range = datetime_range.begin..(datetime_range.end < Time.now ? datetime_range.end : Time.now)
     
+    # Rails 4: Relation#all deprecated - just give the relationship itself
     punches_in_range = self.punches.where('punched_at >= ? and punched_at <= ?', datetime_range.begin, datetime_range.end).
-      order('punched_at ASC').pluck(:entrance, :punched_at).map {|e| { entrance: e[0], punched_at: e[1] } }
+      order('punched_at ASC')
     
-    return 0 if punches_in_range.empty?
+    return 0 if punches_in_range.blank?
+
+    fixed_punches_in_range = []
+
+    # adds punches that may be missing in the middle
+    punches_in_range.each_cons(2) do |ps|
+      p1, p2 = ps
+      fixed_punches_in_range << p1
+      if p1.entrance == p2.entrance #next punch is not right, add one in between
+        fixed_punches_in_range << Punch.new(punched_at: p2.punched_at, entrance: !p2.entrance?)
+      end
+    end
+
+    # add last punch from range, which the loop didn't catch
+    fixed_punches_in_range << punches_in_range.last
+
+    # add punches to the edges, if appropriate
+    if not fixed_punches_in_range.first.entrance?
+      fixed_punches_in_range.unshift Punch.new(punched_at: datetime_range.begin)
+    end
+    if fixed_punches_in_range.last.entrance?
+      fixed_punches_in_range << Punch.new(punched_at: datetime_range.end)
+    end
 
     time_worked = 0
-
-    # consider punches to the edges, if appropriate
-    initial = punches_in_range.first
-    unless initial[:entrance]
-      time_worked += initial[:punched_at] - datetime_range.begin.to_time
-    end
-
-    final = punches_in_range.last
-    if final[:entrance]
-      time_worked += datetime_range.end.to_time - final[:punched_at]
-    end
-
-    # consider punches that may be missing in the middle
-    punches_in_range.each_cons(2) do |p1, p2|
-      if p1[:entrance] && (p1[:entrance] == p2[:entrance] || !p2[:entrance]) then # if next punch is not right, consider one in between
-          time_worked += p2[:punched_at] - p1[:punched_at]
-      end
+    fixed_punches_in_range.each_slice(2) do |pair|
+      time_worked += pair.last.punched_at - pair.first.punched_at
     end
     
     time_worked/60/60
