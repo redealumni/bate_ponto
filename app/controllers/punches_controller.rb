@@ -2,6 +2,10 @@ class PunchesController < ApplicationController
 
   before_filter :require_admin, only: [:update, :destroy]
 
+  # TODO: do it right
+  # Enables or disables autofixer
+  AUTOFIXER = false
+
   # GET /punches
   # GET /punches.json
   def index
@@ -47,7 +51,7 @@ class PunchesController < ApplicationController
         format.js   { render json: {delete: removed_punch}, status: :ok, location: removed_punch }
         format.json { render json: {delete: removed_punch}, status: :ok, location: removed_punch }
       else
-        if last_punch and last_punch.entrance? and not (last_punch.punched_at.to_date === Time.now.to_date)
+        if AUTOFIXER and last_punch and last_punch.entrance? and not (last_punch.punched_at.to_date === Time.now.to_date)
           @punch.punched_at = last_punch.punched_at.midnight + 22.hours
           @punch.comment = "Horário da batida reajustado automaticamente devido a possível esquecimento do usuário."
         end

@@ -1,0 +1,41 @@
+<h1>Relatório de Faltas RedeAlumni</h1>
+
+<table class="absenceTable splitForPrint">
+  <tr>
+    <th></th>
+    <% @absences[:days].each do |day| %>
+      <th><%= l day, format: :abbr %></th>
+    <% end %>
+  </tr>
+
+  <% @absences[:registers].each do |user, marks| %>
+    <tr>
+      <td><%= user.name %></td>
+      <% marks.each do |t| %>
+        <% unless t then %>
+          <td class='present'>O</td>
+        <% else %>
+          <td class='not-present'>X</td>
+        <% end %>
+      <% end %>
+    </tr>
+  <% end %>
+</table>
+
+<br>
+
+<div class="legend">
+  <em><strong>Legenda:</strong></em><br>
+  <em>Presença:</em> <strong>O</strong><br>
+  <em>Falta:</em> <strong>X</strong>
+</div>
+
+<br>
+
+<% if @partial %>
+  <%= link_to "Gerar relatório de faltas para todos os usuários visíveis", users_absences_path %>
+<% else %>
+ <%= link_to "Gerar relatório de faltas parciais para todos os usuários visíveis", users_absences_path(partial: true) %>
+<% end %>
+<br>
+<%= link_to "Voltar", users_path %>

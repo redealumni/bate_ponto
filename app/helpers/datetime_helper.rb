@@ -59,6 +59,11 @@ module DatetimeHelper
     find_date(date.beginning_of_month) { |day| day.cwday <= 5 }
   end
 
+  # Get array with day ranges flattened as days
+  def get_days_for_ranges(day_ranges_arrays)
+    day_ranges_arrays.map(&:to_a).flatten!
+  end
+
   # Get array with ranges representing weeks between two dates
   def get_weeks_of_range(date_range)
     start = get_monday_of_week(date_range.begin)

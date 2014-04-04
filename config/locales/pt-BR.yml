@@ -10,7 +10,6 @@
       month_year: "%B de %Y"
       abbr: "%d/%m"
 
-
     day_names:
       - Domingo
       - Segunda

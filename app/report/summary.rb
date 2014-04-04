@@ -19,8 +19,27 @@ Day = Struct.new(:date, :hours, :punches, :issue) do
 
 end
 
+
 Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
   extend DatetimeHelper
+
+  def self.absences_for(month_date)
+    days = get_days_for_ranges get_weeks_of_month(month_date)
+    
+    results = {
+      days: days,
+      registers: Hash.new { |hash, key| hash[key] = [] }
+    }
+
+    User.all.find_each do |user|
+      days.each do |day|
+        punches_for_day = user.punches.where(punched_at: range_for_day(day))
+        results[:registers][user] << punches_for_day.blank?
+      end
+    end
+
+    return results
+  end
 
   def self.summary_for(user, raw_weeks, month_date, partial = false)
     weeks = raw_weeks.map do |week|
