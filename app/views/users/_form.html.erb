@@ -25,13 +25,17 @@
       <%= f.text_field :token %>
     </div>
     <div class="row">
-      <div class="field columns small-3 large-6">
+      <div class="field columns small-2 large-4">
         <%= f.label :admin %><br />
         <%= f.check_box :admin %>
       </div>
-      <div class="field columns small-3 large-6">
+      <div class="field columns small-2 large-4">
         <%= f.label :hidden %><br />
         <%= f.check_box :hidden %>
+      </div>
+      <div class="field columns small-2 large-4">
+        <%= f.label :flexible_goal %><br />
+        <%= f.check_box :flexible_goal %>
       </div>
     </div>
     <span id="__goals"><%= f.hidden_field :goals %></span>

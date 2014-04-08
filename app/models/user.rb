@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
   # We also put daily goals as arrays of hours (in minutes) in the database
   serialize :goals, Array
   validates_each :goals do |record, attr, value|
-    record.errors.add(attr, "possuí formato inválido.") unless value.size == 5
+    record.errors.add(attr, "possuí formato inválido.") unless record.flexible_goal or value.size == 5
   end
 
   # Ensure shifts and goals aren't nil
@@ -49,7 +49,7 @@ class User < ActiveRecord::Base
 
   # Given a amount of hours and the weekday, check if it's ok for this user
   def is_hours_ok(day, hours)
-    return (hours - self.daily_goal(day)).abs < TOLERANCE_HOURS
+    return self.flexible_goal || (hours - self.daily_goal(day)).abs < TOLERANCE_HOURS
   end
 
   # Return how off is the hours for this user in hours (float)
@@ -59,6 +59,8 @@ class User < ActiveRecord::Base
 
   # Given a timestamp of a punch, check if it's ok for this user
   def is_punch_time_ok(punch_time, day, shift_num, moment)
+    return true if self.flexible_goal
+
     adjusted_time = shifts[day][shift_num].shift_time punch_time, moment
     return (adjusted_time - punch_time).abs < TOLERANCE_PUNCH
   end

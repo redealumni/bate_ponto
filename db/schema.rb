@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140318190747) do
+ActiveRecord::Schema.define(version: 20140408193449) do
 
   create_table "punches", force: true do |t|
     t.integer  "user_id"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 20140318190747) do
     t.string   "token"
     t.text     "shifts",                                                     null: false
     t.string   "goals",           default: "---\n- 8\n- 8\n- 8\n- 8\n- 8\n", null: false
+    t.boolean  "flexible_goal",   default: false
   end
 
 end

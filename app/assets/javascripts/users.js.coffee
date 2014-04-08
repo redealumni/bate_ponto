@@ -91,6 +91,18 @@ $(->
   set_time_new = (idx, input) ->
     to_date(parse_to_minutes(input.value))
 
+  # Hide goals option if flexible
+  toggle_goals_section = (flexible) ->
+    if flexible
+      goals_main.hide()
+    else
+      goals_main.show()
+
+  $('#user_flexible_goal').change () ->
+    toggle_goals_section $(this).is(':checked')
+
+  toggle_goals_section $('#user_flexible_goal').is(':checked')
+
   # Enable time-picker at startup
   $('.goals-line :input', goals_main).each enable_goal_time_picker
 
@@ -135,6 +147,7 @@ $(->
 
     if new_index < 2
       self.hide()
+
 
   # Submit action
   $('form').submit () ->

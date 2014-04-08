@@ -11,13 +11,15 @@
   <tr>
     <th>Dia:</th>
     <th>Horário:</th>
-    <th>Meta:</th>
+    <% unless @summary.user.flexible_goal %><th>Meta:</th><% end %>
   </tr>
   <% @summary.user.shifts.each do |weekday, shifts| %>
     <tr>
       <td><%= Shifts.localize weekday %></td>
       <td><%= shifts.join(',') %></td>
-      <td><%= DatetimeHelper.readable_duration((@summary.user.daily_goal(weekday) * 60 ).round) %></td>
+      <% unless @summary.user.flexible_goal %>
+        <td><%= DatetimeHelper.readable_duration((@summary.user.daily_goal(weekday) * 60 ).round) %></td>
+      <% end %>
     </tr>
   <% end %>
 </table>
