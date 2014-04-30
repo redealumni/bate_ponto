@@ -126,21 +126,26 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
   # Helper private methods
   private
   
+  # Helper hash for defining wording
+  ISSUE_WORDING = {
+    pos_error: {
+      entrance: "atrasado",
+      exit: "mais tarde"
+    },
+    neg_error: {
+      entrance: "adiantado",
+      exit: "mais cedo"
+    }
+  }
+
   def self.define_issue_for_punch(punch, day, shift, moment)
     error = punch.punch_time_error day, shift, moment
+    error_type = if error < 0 then :neg_error else :pos_error end
+    wording = ISSUE_WORDING[error_type][moment]
+    
     if punch.entrance
-      wording = if error < 0 then
-        "atrasado"
-      else
-        "adiantado"
-      end
       "Funcionário chegou #{readable_duration(error.abs)} #{wording} para o #{shift + 1}º turno."
     else
-      wording = if error < 0 then
-        "mais cedo"
-      else
-        "mais tarde"
-      end
       "Funcionário foi embora #{readable_duration(error.abs)} #{wording} no #{shift + 1}º turno."
     end
   end
