@@ -148,7 +148,6 @@ $(->
     if new_index < 2
       self.hide()
 
-
   # Submit action
   $('form').submit () ->
     # Goals

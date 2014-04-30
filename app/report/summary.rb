@@ -134,14 +134,14 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
       else
         "adiantado"
       end
-      "Funcionário chegou #{readable_duration(error.abs)} #{wording}."
+      "Funcionário chegou #{readable_duration(error.abs)} #{wording} para o #{shift + 1}º turno."
     else
       wording = if error < 0 then
         "mais cedo"
       else
         "mais tarde"
       end
-      "Funcionário foi embora #{readable_duration(error.abs)} #{wording}."
+      "Funcionário foi embora #{readable_duration(error.abs)} #{wording} no #{shift + 1}º turno."
     end
   end
 

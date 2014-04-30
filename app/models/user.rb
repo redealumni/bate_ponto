@@ -68,7 +68,7 @@ class User < ActiveRecord::Base
   # Return as a integer, in minutes
   def punch_time_error(punch_time, day, shift_num, moment)
     adjusted_time = shifts[day][shift_num].shift_time punch_time, moment
-    return ((adjusted_time - punch_time) / 60).round
+    return ((punch_time - adjusted_time) / 60).round
   end
 
   def working?
