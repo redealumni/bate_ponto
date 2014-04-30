@@ -169,7 +169,7 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
   end
 
   def self.hours_worked_less_lunch_in_day(user, day)
-    user.hours_worked(range_for_day(day)) - user.shifts.lunch_time(Shifts::NUM_MAPPING[day.cwday])
+    user.hours_worked(range_for_day(day)) - user.shifts.lunch_time(Shifts::NUM_MAPPING[day.cwday]).to_f/60
   end
 
   def self.swap(value, first, second)

@@ -14,7 +14,7 @@ users =
 ]
 
 date_range = Time.parse('2013-10-01').to_date..Date.yesterday
-punch_hours = [10.hours, 13.hours, 14.hours, 17.hours]
+punch_hours = [10.hours, 19.hours]
 
 def oops
   rand(-15..15).minutes
