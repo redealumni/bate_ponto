@@ -109,7 +109,9 @@ $(->
   $('.shift-list', shift_main).each (idx, list) ->
     list = $(list)
     day_id = list.data('shift-day')
-    $('.shift', list).each (idx, shift) ->
+    shifts = $('.shift', list)
+    $('.remove-shift-btn', list).hide() if shifts.length < 2
+    shifts.each (idx, shift) ->
       shift = $(shift)
       shift_id = shift.data('shift-num') - 1
       $(':input', shift).each enable_shift_time_picker(set_time_startup(day_id, shift_id))

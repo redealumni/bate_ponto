@@ -1,4 +1,5 @@
 <div class="shifts-section">
+  <%#= link_to "Copiar turnos do primeiro dia para todos os outros", '#!', id: "copy-all-shifts" %>
   <% @user.shifts.each do |day, shifts| %>
     <% shift_id = Shifts::DAY_MAPPING[day] %>
     <div class="shift-list" id="shift-<%= day %>" data-shift-day="<%= shift_id %>">
