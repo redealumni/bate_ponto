@@ -1,22 +1,18 @@
 # Summary classes used for representing user reports
 
 Week = Struct.new(:name, :hours, :weekly_goal, :week_size) do
-
   def problem?
     (weekly_goal - hours).abs < User::TOLERANCE_HOURS * week_size
   end
-
 end
 
 Day = Struct.new(:date, :hours, :punches, :issue) do
-
   def readable_punches
     punch_times = punches.map { |p| I18n.l p.punched_at, format: :just_time }
     result = []
     punch_times.each_slice(2) { |slice| result << slice.join(" as ") }
     result.join(", ")
   end
-
 end
 
 
@@ -77,26 +73,12 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
           if not user.is_hours_ok weekday, hours then
             issues << define_issue_for_hours(user, weekday, hours)
           end
-
-          if punches_for_day.size < user.shifts.num_of_shifts(weekday) * 2 then
-            issues << "Batidas faltantes."
-          end
-
-          moment = :entrance
-
-          punches_for_day.each.with_index do |punch, idx|
-            shift = (idx / 2)
-            break if shift >= user.shifts.num_of_shifts(weekday)
-
-            unless punch.is_punch_time_ok weekday, shift, moment then
-              issues << define_issue_for_punch(punch, weekday, shift, moment)
-            end
-            moment = swap(moment, :entrance, :exit)
-          end
         end
 
-        processed_issues = if issues.empty? then
-          "Nenhuma."
+        readable_hours = if hours == 0 then "" else readable_duration(hours, format: :hours) + " feitos no dia. " end
+
+        processed_issues = readable_hours + if issues.empty? then
+          "Nenhuma irregularidade."
         else 
           issues.join(" ")
         end
@@ -126,30 +108,6 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
   # Helper private methods
   private
   
-  # Helper hash for defining wording
-  ISSUE_WORDING = {
-    pos_error: {
-      entrance: "atrasado",
-      exit: "mais tarde"
-    },
-    neg_error: {
-      entrance: "adiantado",
-      exit: "mais cedo"
-    }
-  }
-
-  def self.define_issue_for_punch(punch, day, shift, moment)
-    error = punch.punch_time_error day, shift, moment
-    error_type = if error < 0 then :neg_error else :pos_error end
-    wording = ISSUE_WORDING[error_type][moment]
-    
-    if punch.entrance
-      "Funcionário chegou #{readable_duration(error.abs)} #{wording} para o #{shift + 1}º turno."
-    else
-      "Funcionário foi embora #{readable_duration(error.abs)} #{wording} no #{shift + 1}º turno."
-    end
-  end
-
   def self.define_issue_for_hours(user, weekday, hours)
     error = (user.hours_error(weekday, hours) * 60).ceil
     if error < 0

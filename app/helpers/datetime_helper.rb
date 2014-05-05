@@ -108,8 +108,11 @@ module DatetimeHelper
     return result
   end
 
-  # Format a amount of minutes as a readable string of hours:minutes
-  def readable_duration(minutes)
+  # Format a amount of minutes or hours as a readable string of hours:minutes
+  def readable_duration(duration, format: :minutes)
+    # Convert hours to minutes if needed
+    minutes = format == :hours ? (duration * 60).ceil : duration
+
     h = minutes / 60
     m = minutes % 60
     str_hours = if h > 0 then (h.to_s + 'h') else '' end
