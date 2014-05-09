@@ -3,11 +3,11 @@
   <span class="name">horas hoje</span>
 </div>
 <div class="stats_line">
-  <span class="value"><%= number_to_human user_stats.hours_worked(1.week.ago..Time.now) %></span>
+  <span class="value"><%= number_to_human user_stats.hours_worked(1.week.ago..Time.zone.now) %></span>
   <span class="name">horas nos últimos 7 dias</span>
 </div>
 <div class="stats_line">
-  <span class="value"><%= number_to_human user_stats.hours_worked(1.month.ago..Time.now) %></span>
+  <span class="value"><%= number_to_human user_stats.hours_worked(1.month.ago..Time.zone.now) %></span>
   <span class="name">horas nos últimos 30 dias</span>
 </div>
 <div class="stats_line">

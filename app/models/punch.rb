@@ -5,7 +5,7 @@ class Punch < ActiveRecord::Base
   validates :user, presence: true
 
   before_validation do
-    self.punched_at ||= Time.now
+    self.punched_at ||= Time.zone.now
   end
 
   before_save do

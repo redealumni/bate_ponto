@@ -10,7 +10,7 @@ Shift = Struct.new(:entrance, :exit, :lunch) do
 
   # Get readable form for shift
   def to_s
-    formatted = [:entrance, :exit].map { |m| I18n.l shift_time(Time.now, m), format: :just_time }
+    formatted = [:entrance, :exit].map { |m| I18n.l shift_time(Time.zone.now, m), format: :just_time }
     formatted.join(' as ') + if lunch > 0 
       " com #{DatetimeHelper.readable_duration(lunch)} de intervalo"
     else

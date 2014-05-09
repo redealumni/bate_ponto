@@ -81,14 +81,14 @@ class User < ActiveRecord::Base
 
   def hours_since_last_state
     if last_punch = self.punches.order('punched_at DESC').first
-      (Time.now - last_punch.punched_at)/60/60
+      (Time.zone.now - last_punch.punched_at)/60/60
     else
       0
     end
   end
 
   def hours_today
-    self.hours_worked(Time.now.beginning_of_day..Time.now)
+    self.hours_worked(Time.zone.now.beginning_of_day..Time.zone.now)
   end
 
   def hours_worked_in_month(month)
@@ -101,7 +101,7 @@ class User < ActiveRecord::Base
   # TODO: read ** CAREFULLY ** later, looks like a good place to refactor
   def hours_worked(datetime_range)
     # don't consider future time
-    datetime_range = datetime_range.begin..(datetime_range.end < Time.now ? datetime_range.end : Time.now)
+    datetime_range = datetime_range.begin..(datetime_range.end < Time.zone.now ? datetime_range.end : Time.zone.now)
     
     # Rails 4: Relation#all deprecated - just give the relationship itself
     punches_in_range = self.punches.where('punched_at >= ? and punched_at <= ?', datetime_range.begin, datetime_range.end).

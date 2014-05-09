@@ -19,7 +19,7 @@ class StatsController < ApplicationController
     users = if user then [user] else User.visible.by_name end
     @start = if date.nil? then default_start else parse_time(date) end
 
-    finish = Time.now
+    finish = Time.zone.now
     number_of_weeks = ((finish.to_date - @start.to_date).to_i / 7).ceil
 
     week_ranges = get_weeks_of_range number_of_weeks.weeks.ago.to_date..finish.to_date
@@ -71,8 +71,8 @@ class StatsController < ApplicationController
 
     def gecko_this_week_pie
     users = User.visible.by_name
-    start = Time.now.at_beginning_of_week
-    finish = Time.now
+    start = Time.zone.now.at_beginning_of_week
+    finish = Time.zone.now
 
     render text: pie_data(users, start, finish).to_json
   end
@@ -80,7 +80,7 @@ class StatsController < ApplicationController
   def gecko_last_week_pie
     users = User.visible.by_name
     start = 1.week.ago.at_beginning_of_week
-    finish = Time.now.at_beginning_of_week
+    finish = Time.zone.now.at_beginning_of_week
 
     render text: pie_data(users, start, finish).to_json
   end
@@ -88,7 +88,7 @@ class StatsController < ApplicationController
   def gecko_this_month_pie
     users = User.visible.by_name
     start = 1.month.ago
-    finish = Time.now
+    finish = Time.zone.now
 
     render text: pie_data(users, start, finish).to_json
   end
@@ -96,7 +96,7 @@ class StatsController < ApplicationController
   def gecko_last_month_pie
     users = User.visible.by_name
     start = 1.month.ago.at_beginning_of_month
-    finish = Time.now.at_beginning_of_month
+    finish = Time.zone.now.at_beginning_of_month
 
     render text: pie_data(users, start, finish).to_json
   end
@@ -104,7 +104,7 @@ class StatsController < ApplicationController
   def gecko_from_checkpoint_pie
     users = User.visible.by_name
     start = Time.parse('2011-11-14')
-    finish = Time.now
+    finish = Time.zone.now
 
     render text: pie_data(users, start, finish).to_json
   end
@@ -126,7 +126,7 @@ class StatsController < ApplicationController
   end
 
   def parse_time(fields)
-    Date.civil(fields[:year].to_i, fields[:month].to_i, fields[:day].to_i).to_time
+    Date.civil(fields[:year].to_i, fields[:month].to_i, fields[:day].to_i).beginning_of_day
   end
 
 end
