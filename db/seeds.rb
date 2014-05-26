@@ -5,16 +5,18 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+shift_cfg = Shifts.new_default
 users =
 [
-  User.create!(name:'Admin', password: 'abc123', token: '123', admin: true),
-  User.create!(name:'Uni', password: 'abc123', token: '234'),
-  User.create!(name:'Duni', password: 'abc123', token: '345'),
-  User.create!(name:'Te', password: 'abc123', token: '456')
+  User.create!(name:'Admin', password: 'abc123', token: '123', admin: true, shifts: shift_cfg),
+  User.create!(name:'Uni', password: 'abc123', token: '234', shifts: shift_cfg),
+  User.create!(name:'Duni', password: 'abc123', token: '345', shifts: shift_cfg),
+  User.create!(name:'Te', password: 'abc123', token: '456', shifts: shift_cfg)
 ]
 
 date_range = Time.parse('2013-10-01').to_date..Date.yesterday
-punch_hours = [10.hours, 19.hours]
+punch_hours = [8.hours, 12.hours, 14.hours, 18.hours]
 
 def oops
   rand(-15..15).minutes

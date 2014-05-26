@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 ruby "2.0.0"
 
-gem 'rails', '4.0.3'
+gem 'rails', '~> 4.1.0'
 
 # Rails 4 doesn't support the assets group anymore
 gem 'sass-rails'

@@ -28,35 +28,40 @@ module DatetimeHelper
     date.beginning_of_day..date.end_of_day
   end
 
-  # Starting from a initial date, find a date evaluating a condition
-  # from a block
-  def find_date(initial_date)
-    result = initial_date
-
-    loop do
-      status = yield result
-      break if status
-
-      result += 1.day
-    end
-
-    return result
-  end
-
   def get_monday_of_week(date)
-    find_date(date.beginning_of_week) { |day| day.cwday == 1 }
+    if date.cwday == 5
+      date
+    else
+      date + (1 - date.cwday).days
+    end
   end
 
   def get_first_monday_of_month(date)
-    find_date(date.beginning_of_month) { |day| day.cwday == 1 }
+    start_point = date.beginning_of_month
+
+    first_try = get_monday_of_week(start_point)
+    if first_try.month == start_point.month
+      first_try
+    else
+      first_try + 7.days
+    end
   end
 
   def get_friday_of_week(date)
-    find_date(date.beginning_of_week) { |day| day.cwday == 5 }
+    if date.cwday == 5
+      date
+    else
+      date + (5 - date.cwday).days
+    end
   end
 
   def get_first_weekday_of_month(date)
-    find_date(date.beginning_of_month) { |day| day.cwday <= 5 }
+    start_point = date.beginning_of_month
+    if start_point.cwday >= 1 and start_point.cwday <= 5
+      start_point
+    else
+      start_point + (8 - start_point.cwday).days
+    end
   end
 
   # Get array with day ranges flattened as days
