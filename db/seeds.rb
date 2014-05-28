@@ -15,7 +15,9 @@ users =
   User.create!(name:'Te', password: 'abc123', token: '456', shifts: shift_cfg)
 ]
 
-date_range = Time.parse('2013-10-01').to_date..Date.yesterday
+anotherday = Date.yesterday - 1.day
+
+date_range = Time.parse('2013-10-01').to_date..anotherday
 punch_hours = [8.hours, 12.hours, 14.hours, 18.hours]
 
 def oops
@@ -29,5 +31,13 @@ date_range.each do |date|
       punch.created_at = punch.updated_at = punch.punched_at
       punch.save!
     end
+  end
+end
+
+users.each do |user|
+  punch_hours[0, 3].each do |punch_time|
+    punch = Punch.create!(user: user, punched_at: Date.yesterday.midnight + punch_time + oops)
+    punch.created_at = punch.updated_at = punch.punched_at
+    punch.save!
   end
 end

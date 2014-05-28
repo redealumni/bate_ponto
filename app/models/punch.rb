@@ -45,4 +45,15 @@ class Punch < ActiveRecord::Base
     (self.punched_at - self.created_at).abs > 15.minutes
   end
 
+  def self.maintenance
+    now = Time.zone.now
+    User.all.each do |u|
+      last_punch = u.punches.latest.first
+      if last_punch.entrance? && now - last_punch.punched_at > 16.hours
+        u.punches.create punched_at: last_punch.punched_at + 6.hours, 
+          comment: "Batida automática feita as #{now}, favor corregir."
+      end
+    end
+  end
+
 end

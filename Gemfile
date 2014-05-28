@@ -27,6 +27,9 @@ gem 'rubyzip'
 # Time picker
 gem 'jquery-timepicker-rails'
 
+# Cron
+gem 'whenever'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 
