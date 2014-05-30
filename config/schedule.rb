@@ -6,6 +6,7 @@
 timezone_offset_in_hours = -3
 midnight_in_brazil       = Time.parse('0 am') + timezone_offset_in_hours.hours
 
-every 1.day, at: midnight_in_brazil + 3.hours do
-  runner 'Punch.maintenance'
-end
+# Disable...
+# every 1.day, at: midnight_in_brazil + 3.hours do
+#   runner 'Punch.maintenance'
+# end

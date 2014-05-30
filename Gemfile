@@ -30,6 +30,9 @@ gem 'jquery-timepicker-rails'
 # Cron
 gem 'whenever'
 
+# Background jobs
+gem 'delayed_job_active_record'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 

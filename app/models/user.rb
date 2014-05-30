@@ -72,7 +72,7 @@ class User < ActiveRecord::Base
   end
 
   def working?
-    if last_punch = self.punches.order('punched_at DESC').first
+    if last_punch = self.punches.latest.first
       last_punch.entrance?
     else
       false
@@ -80,7 +80,7 @@ class User < ActiveRecord::Base
   end
 
   def hours_since_last_state
-    if last_punch = self.punches.order('punched_at DESC').first
+    if last_punch = self.punches.latest.first
       (Time.zone.now - last_punch.punched_at)/60/60
     else
       0
@@ -148,7 +148,7 @@ class User < ActiveRecord::Base
   end
   
   def bad_memory_index
-    last_punches = self.punches.order('punched_at DESC').limit(10)
+    last_punches = self.punches.latest.limit(10)
     num_altered = last_punches.inject(0) {|count, p| p.altered? ?  count + 1 : count}
     num_altered.to_f / last_punches.count * 100 rescue 0
   end

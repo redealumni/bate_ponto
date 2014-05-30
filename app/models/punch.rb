@@ -10,12 +10,18 @@ class Punch < ActiveRecord::Base
 
   before_save do
     if self.user
-      last_punch_scope = self.user.punches.order("punched_at DESC").where('punched_at < ?', self.punched_at)
+      last_punch_scope = self.user.punches.latest.where('punched_at < ?', self.punched_at)
       last_punch_scope = last_punch_scope.where('id <> ?', self.id) unless self.new_record?
       last_punch = last_punch_scope.first
       self.entrance = last_punch ? !last_punch.entrance? : true
     end
     true
+  end
+
+  after_save do
+    if self.entrance?
+      self.fix_punch
+    end
   end
 
   scope :latest, -> { order 'punched_at DESC' }
@@ -31,7 +37,7 @@ class Punch < ActiveRecord::Base
 
   def entrance?
     if self.new_record? and self.user
-      last_punch = self.user.punches.order("punched_at DESC").first
+      last_punch = self.user.punches.latest.first
       self.entrance = !last_punch.entrance? if last_punch
     end
     !!self.entrance
@@ -45,15 +51,14 @@ class Punch < ActiveRecord::Base
     (self.punched_at - self.created_at).abs > 15.minutes
   end
 
-  def self.maintenance
-    now = Time.zone.now
-    User.all.each do |u|
-      last_punch = u.punches.latest.first
-      if last_punch.entrance? && now - last_punch.punched_at > 16.hours
-        u.punches.create punched_at: last_punch.punched_at + 6.hours, 
-          comment: "Batida automática feita as #{now}, favor corregir."
-      end
+  def fix_punch
+    after = self.user.punches.latest.where("punched_at > ?", self.punched_at)
+    if after.blank?
+      self.user.punches.create(punched_at: self.punched_at + 6.hours, 
+        comment: "Batida automática feita as #{Time.zone.now}, favor corregir.")
     end
   end
+
+  handle_asynchronously :fix_punch, run_at: -> { 16.hours.from_now }
 
 end

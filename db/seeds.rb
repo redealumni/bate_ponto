@@ -41,3 +41,5 @@ users.each do |user|
     punch.save!
   end
 end
+
+Delayed::Job.delete_all
