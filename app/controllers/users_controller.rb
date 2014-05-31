@@ -173,7 +173,7 @@ class UsersController < ApplicationController
     date_range = get_weeks_of_month(date)
 
     begin
-      file_name = "relatorios_#{Date.today.to_s(:filename)}.zip"
+      file_name = "relatorios_#{I18n.l(Date.today, format: :filename)}.zip"
       @format = :pdf
 
       Zip::OutputStream.open temp_file.path do |z|

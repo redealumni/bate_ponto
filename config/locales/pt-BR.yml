@@ -9,6 +9,7 @@
       long_abbr: "%d/%b/%y"
       month_year: "%B de %Y"
       abbr: "%d/%m"
+      filename: '%d_%m_%y'
 
     day_names:
       - Domingo
