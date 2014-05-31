@@ -34,4 +34,9 @@ PontoRa::Application.routes.draw do
 
   root to: 'punches#index'
 
+  # API
+  namespace :api do
+    resources :punches
+  end
+
 end
