@@ -64,8 +64,8 @@ class PunchesController < ApplicationController
   # PUT /punches/1
   # PUT /punches/1.json
   def update
-    @punch = Punch.find(id_param)
-    raise "Sem permissão, seu hacker safado!!!" if !current_user.admin? and @punch.user != current_user
+    @punch = current_user.punches.find(id_param)
+    raise "Sem permissão, seu hacker safado!!!" unless current_user.admin?
 
     respond_to do |format|
       if @punch.update_attributes(update_params)
@@ -83,8 +83,8 @@ class PunchesController < ApplicationController
   # DELETE /punches/1
   # DELETE /punches/1.json
   def destroy
-    @punch = Punch.find(id_param)
-    raise "Sem permissão, seu hacker safado!!!" if !current_user.admin? and @punch.user != current_user
+    @punch = current_user.punches.find(id_param)
+    raise "Sem permissão, seu hacker safado!!!" unless current_user.admin?
 
     @punch.destroy
 
