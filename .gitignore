@@ -25,3 +25,4 @@ tmp/
 .rvmrc
 .ruby-version
 .ruby-gemset
+config/api.yml
