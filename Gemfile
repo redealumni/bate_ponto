@@ -44,6 +44,7 @@ group :development, :production do
 end
 
 group :development, :test do
+  gem 'thin'
   gem 'pry-rails'
   gem 'byebug'
   gem 'pry-byebug'
