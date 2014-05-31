@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
 
   DEFAULT_SHIFTS = [480, 720, 0, 840, 1080, 0]
-  
+
   # TODO: clean up how hours are calculed
   TOLERANCE_HOURS = 0.5 # hours
   TOLERANCE_PUNCH = 15.minutes
@@ -9,13 +9,13 @@ class User < ActiveRecord::Base
   scope :by_name, -> { order 'name ASC' }
   scope :visible, -> { where 'hidden = ?', false }
   scope :hidden, -> { where 'hidden = ?', true}
-  
+
   # has_secure_password enables password confirmation and presence,
   # since we already set to validate presence manually and we don't need
   # password confirmation we just tell the method to enable no validation
   has_secure_password validations: false
   validates :password, presence: { on: :create }
-  
+
   has_many :punches
 
   # Each user has shifts, entrance and exit times, and lunch hours. We don't need to query these (for now, anyway),
@@ -102,11 +102,11 @@ class User < ActiveRecord::Base
   def hours_worked(datetime_range)
     # don't consider future time
     datetime_range = datetime_range.begin..(datetime_range.end < Time.zone.now ? datetime_range.end : Time.zone.now)
-    
+
     # Rails 4: Relation#all deprecated - just give the relationship itself
     punches_in_range = self.punches.where('punched_at >= ? and punched_at <= ?', datetime_range.begin, datetime_range.end).
       order('punched_at ASC')
-    
+
     return 0 if punches_in_range.blank?
 
     fixed_punches_in_range = []
@@ -135,10 +135,10 @@ class User < ActiveRecord::Base
     fixed_punches_in_range.each_slice(2) do |pair|
       time_worked += pair.last.punched_at - pair.first.punched_at
     end
-    
+
     time_worked/60/60
   end
-  
+
   def bad_memory?
     if self.bad_memory_index > 50
       true
@@ -146,11 +146,11 @@ class User < ActiveRecord::Base
       false
     end
   end
-  
+
   def bad_memory_index
     last_punches = self.punches.latest.limit(10)
     num_altered = last_punches.inject(0) {|count, p| p.altered? ?  count + 1 : count}
     num_altered.to_f / last_punches.count * 100 rescue 0
   end
-  
+
 end

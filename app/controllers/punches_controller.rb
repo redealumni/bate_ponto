@@ -2,10 +2,6 @@ class PunchesController < ApplicationController
 
   before_filter :require_admin, only: [:update, :destroy]
 
-  # TODO: do it right
-  # Enables or disables autofixer
-  AUTOFIXER = false
-
   # GET /punches
   # GET /punches.json
   def index
@@ -67,7 +63,7 @@ class PunchesController < ApplicationController
 
   # PUT /punches/1
   # PUT /punches/1.json
-  def update    
+  def update
     @punch = Punch.find(id_param)
     raise "Sem permissão, seu hacker safado!!!" if !current_user.admin? and @punch.user != current_user
 
@@ -86,7 +82,7 @@ class PunchesController < ApplicationController
 
   # DELETE /punches/1
   # DELETE /punches/1.json
-  def destroy    
+  def destroy
     @punch = Punch.find(id_param)
     raise "Sem permissão, seu hacker safado!!!" if !current_user.admin? and @punch.user != current_user
 

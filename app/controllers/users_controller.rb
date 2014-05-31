@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   include DatetimeHelper
 
   before_filter :require_admin, except: [:edit, :update]
-  
+
   # GET /users
   # GET /users.json
   def index
@@ -17,7 +17,7 @@ class UsersController < ApplicationController
 
   # GET /users/1
   # GET /users/1.json
-  def show    
+  def show
     @user = User.find(show_params[:id])
     @punches = @user.punches.latest.paginate(page: show_params[:page], per_page: 10)
 
@@ -134,10 +134,10 @@ class UsersController < ApplicationController
   # GET /users/1/report.pdf
   def report
     date = report_params[:partial] == "true" ? Date.today : Date.today.prev_month
-    
-    @summary = Summary.summary_for(User.find(report_params[:id]), 
-      get_weeks_of_month(date), 
-      date, 
+
+    @summary = Summary.summary_for(User.find(report_params[:id]),
+      get_weeks_of_month(date),
+      date,
       report_params[:partial])
     @partial = report_params[:partial] == "true"
 
@@ -146,7 +146,7 @@ class UsersController < ApplicationController
       format.pdf do
         @format = :pdf
         render pdf: "relatorio_#{@summary.user.name}.pdf",
-          template: "users/report.html.erb", 
+          template: "users/report.html.erb",
           layout: "report_pdf"
       end
     end
@@ -155,7 +155,7 @@ class UsersController < ApplicationController
   # GET /admin/absences
   def absences
     date = admin_reports_params[:partial] == "true" ? Date.today : Date.today.prev_month
-    
+
     @absences = Summary.absences_for date
     @partial = admin_reports_params[:partial] == "true"
 
@@ -179,9 +179,9 @@ class UsersController < ApplicationController
       Zip::OutputStream.open temp_file.path do |z|
         User.visible.find_each do |u|
           @summary = Summary.summary_for u, date_range, date, partial
-          
+
           pdf_string = render_to_string formats: [:html],
-            template: "users/report.html.erb", 
+            template: "users/report.html.erb",
             layout: "report_pdf"
 
           pdf_data = WickedPdf.new.pdf_from_string(pdf_string)
@@ -192,7 +192,7 @@ class UsersController < ApplicationController
       end
 
       send_file temp_file.path, type: 'application/zip', filename: file_name
-    ensure 
+    ensure
       temp_file.close
     end
   end
