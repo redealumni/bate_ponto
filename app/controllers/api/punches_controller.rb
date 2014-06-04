@@ -31,7 +31,7 @@ module Api
     def restrict_access
       @user = User.find_by(token: params[:user_token])
 
-      if @user.blank? || params[:api_token] != API_TOKEN
+      if API_TOKEN.blank? || @user.blank? || params[:api_token] != API_TOKEN
         head :unauthorized
       end
     end
