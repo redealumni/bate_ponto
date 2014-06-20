@@ -6,5 +6,5 @@ O projeto é disponibilizado como um projeto Rails simples: para utilizar basta 
 
 ### Ambiente
 
-* O sistema é testado e utilizado no Ruby 2.0.0. Nenhuma garantia é dada quanto a outros ambientes.
-* O projeto utiliza a versão 4.0.3 do Rails
+* O sistema é testado e utilizado no Ruby 2.1.2. Nenhuma garantia é dada quanto a outros ambientes.
+* O projeto utiliza os releases stable da versão 4.1 do Rails (na dúvida considere o mais recente)

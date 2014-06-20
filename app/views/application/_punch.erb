@@ -10,7 +10,7 @@
         <% end %>
       </div>
       <div class='punch_time_form' meta-dom-id="<%=dom_id(punch)%>">
-        <%= f.datetime_select('punched_at', use_month_numbers: true, minute_step: 15, datetime_separator: '') %>
+        <%= f.datetime_select('punched_at', use_month_numbers: true, minute_step: 1, datetime_separator: '') %>
         <br/>
         <a href="#" class="punch_show_display_link">cancelar</a>
       </div>
