@@ -1,4 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+admin:
+  name: James the Boss
+  admin: true
+  shifts: "--- !ruby/object:Shifts\ndays:\n  :monday:\n  - !ruby/struct:Shift\n    entrance: 480\n    exit: 720\n    lunch: 0\n  - !ruby/struct:Shift\n    entrance: 840\n    exit: 1080\n    lunch: 0\n  :thursday:\n  - !ruby/struct:Shift\n    entrance: 480\n    exit: 720\n    lunch: 0\n  - !ruby/struct:Shift\n    entrance: 840\n    exit: 1080\n    lunch: 0\n  :wednesday:\n  - !ruby/struct:Shift\n    entrance: 480\n    exit: 720\n    lunch: 0\n  - !ruby/struct:Shift\n    entrance: 840\n    exit: 1080\n    lunch: 0\n  :tuesday:\n  - !ruby/struct:Shift\n    entrance: 480\n    exit: 720\n    lunch: 0\n  - !ruby/struct:Shift\n    entrance: 840\n    exit: 1080\n    lunch: 0\n  :friday:\n  - !ruby/struct:Shift\n    entrance: 480\n    exit: 720\n    lunch: 0\n  - !ruby/struct:Shift\n    entrance: 840\n    exit: 1080\n    lunch: 0\n"
+
 joe:
   name: Joe Tester
+  admin: false
+  shifts: "--- !ruby/object:Shifts\ndays:\n  :monday:\n  - !ruby/struct:Shift\n    entrance: 480\n    exit: 720\n    lunch: 0\n  - !ruby/struct:Shift\n    entrance: 840\n    exit: 1080\n    lunch: 0\n  :thursday:\n  - !ruby/struct:Shift\n    entrance: 480\n    exit: 720\n    lunch: 0\n  - !ruby/struct:Shift\n    entrance: 840\n    exit: 1080\n    lunch: 0\n  :wednesday:\n  - !ruby/struct:Shift\n    entrance: 480\n    exit: 720\n    lunch: 0\n  - !ruby/struct:Shift\n    entrance: 840\n    exit: 1080\n    lunch: 0\n  :tuesday:\n  - !ruby/struct:Shift\n    entrance: 480\n    exit: 720\n    lunch: 0\n  - !ruby/struct:Shift\n    entrance: 840\n    exit: 1080\n    lunch: 0\n  :friday:\n  - !ruby/struct:Shift\n    entrance: 480\n    exit: 720\n    lunch: 0\n  - !ruby/struct:Shift\n    entrance: 840\n    exit: 1080\n    lunch: 0\n"

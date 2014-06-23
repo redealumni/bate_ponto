@@ -1,9 +1,14 @@
 require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
-  setup do
-    @user = users(:joe)
-    p @user.punches
+  # setup do
+  #   @user = users(:joe)
+  # end
+
+  def with_current_user(current_user:, &block)
+    @controller.instance_variable_set('@current_user', current_user)
+    yield
+    @controller.instance_variable_set('@current_user', nil)
   end
 
   test "should get index" do
@@ -17,12 +22,22 @@ class UsersControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should create user" do
-    assert_difference('User.count') do
-      post :create, user: { punches: @user.punches }
-    end
+  test "should create user when admin" do
+    with_current_user(current_user: users(:admin)) do
+      assert_difference('User.count') do
+        post :create, user: { password: 'secret' }
+      end
 
-    assert_redirected_to user_path(assigns(:user))
+      assert_redirected_to user_path(assigns(:user))
+    end
+  end
+
+  test "should not create user when not admin" do
+    with_current_user(current_user: users(:joe)) do
+      assert_difference('User.count', 0) do
+        post :create, user: { password: 'secret' }
+      end
+    end
   end
 
   test "should show user" do

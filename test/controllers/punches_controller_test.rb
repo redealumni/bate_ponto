@@ -3,7 +3,6 @@ require 'test_helper'
 class PunchesControllerTest < ActionController::TestCase
   setup do
     @punch = punches(:punch_one)
-    p @punch.user
   end
 
   test "should get index" do

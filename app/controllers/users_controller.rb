@@ -50,8 +50,13 @@ class UsersController < ApplicationController
   def create
     create_params = user_params
 
-    create_params[:shifts] = Shifts.from_hash JSON.parse(create_params[:shifts])
-    create_params[:goals] = JSON.parse(create_params[:goals])
+    if create_params[:shifts].present?
+      create_params[:shifts] = Shifts.from_hash JSON.parse(create_params[:shifts])
+    end
+
+    if create_params[:goals].present?
+      create_params[:goals] = JSON.parse(create_params[:goals])
+    end
 
     @user = User.new(create_params)
 
