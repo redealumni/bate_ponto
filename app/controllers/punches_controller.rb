@@ -64,8 +64,11 @@ class PunchesController < ApplicationController
   # PUT /punches/1
   # PUT /punches/1.json
   def update
-    @punch = Punch.find(id_param)
-    raise "Sem permissão, seu hacker safado!!!" unless current_user.admin?
+    if current_user.admin?
+      @punch = Punch.find(id_param)
+    else
+      @punch = current_user.punches.find(id_param)
+    end
 
     respond_to do |format|
       if @punch.update_attributes(update_params)
@@ -78,13 +81,18 @@ class PunchesController < ApplicationController
         format.json { render json: @punch.errors, status: :unprocessable_entity }
       end
     end
+  rescue ActiveRecord::RecordNotFound => e
+    raise "Sem permissão, seu hacker safado!!!"
   end
 
   # DELETE /punches/1
   # DELETE /punches/1.json
   def destroy
-    @punch = Punch.find(id_param)
-    raise "Sem permissão, seu hacker safado!!!" unless current_user.admin?
+    if current_user.admin?
+      @punch = Punch.find(id_param)
+    else
+      raise "Sem permissão, seu hacker safado!!!"
+    end
 
     @punch.destroy
 
