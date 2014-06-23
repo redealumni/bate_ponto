@@ -51,7 +51,6 @@ group :development, :test do
 end
 
 group :test do
-  # Pretty printed test output
-  gem 'turn', :require => false
+  gem 'fivemat'
   gem 'test-unit'
 end
