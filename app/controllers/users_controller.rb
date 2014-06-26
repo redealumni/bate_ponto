@@ -42,14 +42,12 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
-    @user = User.find(id_param)
+    @user = User.find(params[:id])
   end
 
   # POST /users
   # POST /users.json
   def create
-    create_params = user_params
-
     if create_params[:shifts].present?
       create_params[:shifts] = Shifts.from_hash JSON.parse(create_params[:shifts])
     end
@@ -74,13 +72,15 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.json
   def update
-    update_params = user_params
+    @user = User.find(params[:id])
 
-    update_params[:shifts] = Shifts.from_hash JSON.parse(update_params[:shifts]) if current_user.admin?
-    update_params[:goals] = JSON.parse(update_params[:goals]) if current_user.admin?
+    if update_params[:shifts].present?
+      update_params[:shifts] = Shifts.from_hash(JSON.parse(update_params[:shifts]))
+    end
 
-
-    @user = User.find(id_param)
+    if update_params[:goals].present?
+      update_params[:goals] = JSON.parse(update_params[:goals])
+    end
 
     respond_to do |format|
       if @user.update_attributes(update_params)
@@ -103,7 +103,7 @@ class UsersController < ApplicationController
   # PUT /users/1/hide
   # PUT /users/1/hide.json
   def hide
-    @user = User.find(id_param)
+    @user = User.find(params[:id])
 
     respond_to do |format|
       @user.hidden = !@user.hidden
@@ -126,7 +126,7 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    @user = User.find(id_param)
+    @user = User.find(params[:id])
     @user.destroy
 
     respond_to do |format|
@@ -209,11 +209,6 @@ class UsersController < ApplicationController
       params.permit(:id, :page)
     end
 
-    # Safe id param
-    def id_param
-      params.require(:id)
-    end
-
     # Safe parameters for report
     def report_params
       params.permit(:id, :partial)
@@ -233,4 +228,6 @@ class UsersController < ApplicationController
       end
     end
 
+    alias_method :create_params, :user_params
+    alias_method :update_params, :user_params
 end
