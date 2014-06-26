@@ -25,7 +25,7 @@ class StatsController < ApplicationController
     week_ranges = get_weeks_of_range number_of_weeks.weeks.ago.to_date..finish.to_date
 
     @week_names = week_ranges.map do |week_range|
-      I18n.l week_range.end, format: :long_abbr 
+      I18n.l week_range.end, format: :long_abbr
     end
 
     @series = users.map do |u|
@@ -110,7 +110,7 @@ class StatsController < ApplicationController
   end
 
   def gecko_latest_punches
-    @punches = User.visible.by_name.map{|u| u.punches.latest.first}.compact
+    @punches = User.visible.by_name.map{ |u| u.punches.latest.first }.compact
   end
 
   protected

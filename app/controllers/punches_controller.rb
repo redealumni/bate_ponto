@@ -30,48 +30,54 @@ class PunchesController < ApplicationController
         @punch = user.punches.new(create_params)
       else
         respond_to do |format|
-            format.html { redirect_to root_path, notice: "Senha ou token inválidos." }
-            format.js   { render json: { notice: "Senha ou token inválidos." }, status: :unprocessable_entity }
-            format.json { render json: { notice: "Senha ou token inválidos." }, status: :unprocessable_entity }
+          format.html { redirect_to root_path, notice: "Senha ou token inválidos." and return }
+          format.js   { render json: { notice: "Senha ou token inválidos." }, status: :unprocessable_entity and return }
+          format.json { render json: { notice: "Senha ou token inválidos." }, status: :unprocessable_entity and return }
         end
-        return
       end
     end
 
     respond_to do |format|
-      last_punch = @punch.user.punches.latest.first
-      if last_punch and last_punch.created_at > 5.minutes.ago
+      # horrible "rescue nil"
+      # avoids problems when @punch doesn't have a User
+      last_punch = @punch.user.punches.latest.first rescue nil
+
+      if last_punch && last_punch.created_at > 5.minutes.ago
         #remove punches sequenciais (para correção rápida)
         removed_punch = last_punch.destroy
         format.html { redirect_to root_path, notice: 'Sua última batida foi removida!' }
-        format.js   { render json: {delete: removed_punch}, status: :ok, location: removed_punch }
-        format.json { render json: {delete: removed_punch}, status: :ok, location: removed_punch }
+        format.js   { render json: { delete: removed_punch }, status: :ok, location: removed_punch }
+        format.json { render json: { delete: removed_punch }, status: :ok, location: removed_punch }
       else
         if @punch.save
           format.html { redirect_to root_path, notice: 'Cartão batido com sucesso!' }
-          format.js   { render json: {html: render_to_string(partial: 'punch_info', locals:{punch: @punch}), create: @punch}, status: :created, location: @punch }
+          format.js   {
+            render json: { html: render_to_string({
+                                  partial: 'punch_info',
+                                  locals: { punch: @punch }
+                                 }),
+                           create: @punch
+                          },
+                    status: :created,
+                    location: @punch
+          }
           format.json { render json: @punch, status: :created, location: @punch }
         else
           format.html { render action: "index" }
-          format.js { render json: @punch.errors, status: :unprocessable_entity }
+          format.js   { render json: @punch.errors, status: :unprocessable_entity }
           format.json { render json: @punch.errors, status: :unprocessable_entity }
         end
       end
-
     end
   end
 
   # PUT /punches/1
   # PUT /punches/1.json
   def update
-    if current_user.admin?
-      @punch = Punch.find(id_param)
-    else
-      @punch = current_user.punches.find(id_param)
-    end
+    @punch = Punch.find(params[:id])
 
     respond_to do |format|
-      if @punch.update_attributes(update_params)
+      if @punch.update!(update_params)
         format.html { redirect_to root_path, notice: 'Batida de ponto alterada.' }
         format.js
         format.json { head :ok }
@@ -81,18 +87,12 @@ class PunchesController < ApplicationController
         format.json { render json: @punch.errors, status: :unprocessable_entity }
       end
     end
-  rescue ActiveRecord::RecordNotFound => e
-    raise "Sem permissão, seu hacker safado!!!"
   end
 
   # DELETE /punches/1
   # DELETE /punches/1.json
   def destroy
-    if current_user.admin?
-      @punch = Punch.find(id_param)
-    else
-      raise "Sem permissão, seu hacker safado!!!"
-    end
+    @punch = Punch.find(params[:id])
 
     @punch.destroy
 
@@ -104,24 +104,19 @@ class PunchesController < ApplicationController
   end
 
   private
-    # Get params for creating
-    def create_params
-      params.require(:punch).permit(:comment)
-    end
 
-    # Get user params for unlogged punching
-    def user_params
-      params.require(:punch).permit(user: [:name, :password, :token])[:user]
-    end
+  # Get params for creating
+  def create_params
+    params.require(:punch).permit(:comment)
+  end
 
-    # Get params for updating
-    def update_params
-      params.require(:punch).permit(:comment, :punched_at)
-    end
+  # Get user params for unlogged punching
+  def user_params
+    params.require(:punch).permit(user: [:name, :password, :token])[:user]
+  end
 
-    # Get id parameter
-    def id_param
-      params.require(:id)
-    end
-
+  # Get params for updating
+  def update_params
+    params.require(:punch).permit(:comment, :punched_at)
+  end
 end

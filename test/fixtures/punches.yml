@@ -1,4 +1,10 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 punch_one:
+  user: sarah
+
+punch_two:
   user: joe
+
+punch_three:
+  user: admin

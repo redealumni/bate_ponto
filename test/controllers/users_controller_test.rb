@@ -1,16 +1,12 @@
 require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
+  include CurrentUser
+
   setup do
     @joe   = users(:joe)
     @sarah = users(:sarah)
     @admin = users(:admin)
-  end
-
-  def with_current_user(current_user, &block)
-    @controller.instance_variable_set('@current_user', current_user)
-    yield
-    @controller.instance_variable_set('@current_user', nil)
   end
 
   test "should get index when admin" do
