@@ -55,7 +55,7 @@ class Punch < ActiveRecord::Base
     after = self.user.punches.latest.where("punched_at > ?", self.punched_at)
     if after.blank?
       self.user.punches.create(punched_at: self.punched_at + 6.hours,
-        comment: "Batida automática feita as #{Time.zone.now}, favor corregir.")
+        comment: "Batida automática feita às #{Time.zone.now}, favor corrigir.")
     end
   end
 
