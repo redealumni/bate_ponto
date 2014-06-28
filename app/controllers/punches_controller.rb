@@ -71,13 +71,13 @@ class PunchesController < ApplicationController
     end
   end
 
-  # PUT /punches/1
-  # PUT /punches/1.json
+  # PATCH /punches/1
+  # PATCH /punches/1.json
   def update
     @punch = Punch.find(params[:id])
 
     respond_to do |format|
-      if @punch.update!(update_params)
+      if @punch.update(update_params)
         format.html { redirect_to root_path, notice: 'Batida de ponto alterada.' }
         format.js
         format.json { head :ok }

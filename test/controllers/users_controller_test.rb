@@ -21,6 +21,7 @@ class UsersControllerTest < ActionController::TestCase
     with_current_user(@joe) do
       get :index
       assert_redirected_to root_path
+      assert_equal 'Não autorizado.', flash[:notice]
     end
   end
 
@@ -35,6 +36,7 @@ class UsersControllerTest < ActionController::TestCase
     with_current_user(@joe) do
       get :new
       assert_redirected_to root_path
+      assert_equal 'Não autorizado.', flash[:notice]
     end
   end
 
@@ -45,6 +47,7 @@ class UsersControllerTest < ActionController::TestCase
       end
 
       assert_redirected_to user_path(assigns(:user))
+      assert_equal 'Usuário criado.', flash[:notice]
     end
   end
 
@@ -53,25 +56,27 @@ class UsersControllerTest < ActionController::TestCase
       assert_difference('User.count', 0) do
         post :create, user: { password: 'secret' }
       end
+
+      assert_redirected_to root_path
+      assert_equal 'Não autorizado.', flash[:notice]
     end
   end
 
   test "should show any user when admin" do
-    with_current_user(@joe) do
-      get :show, id: @joe
-      assert_redirected_to root_path
-    end
-  end
-
-  test "should not show any user when non-admin" do
     with_current_user(@admin) do
       get :show, id: @sarah
       assert_response :success
     end
   end
 
-  # this is weird behavior ...
-  # any user can edit the anyone else's password ?
+  test "should not show any user when non-admin" do
+    with_current_user(@joe) do
+      get :show, id: @sarah
+      assert_redirected_to root_path
+      assert_equal 'Não autorizado.', flash[:notice]
+    end
+  end
+
   test "should get edit" do
     with_current_user(@joe) do
       get :edit, id: @sarah
@@ -83,6 +88,8 @@ class UsersControllerTest < ActionController::TestCase
     with_current_user(@admin) do
       patch :update, id: @sarah, user: { punches: @sarah.punches }
       assert_redirected_to user_path(assigns(:user))
+
+      assert_equal 'Usuário alterado com sucesso.', flash[:notice]
     end
   end
 
@@ -93,6 +100,7 @@ class UsersControllerTest < ActionController::TestCase
       end
 
       assert_redirected_to users_path
+      assert_equal 'Usuário removido.', flash[:notice]
     end
   end
 
@@ -103,6 +111,7 @@ class UsersControllerTest < ActionController::TestCase
       end
 
       assert_redirected_to root_path
+      assert_equal 'Não autorizado.', flash[:notice]
     end
   end
 end

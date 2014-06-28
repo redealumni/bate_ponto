@@ -2,9 +2,12 @@
 
 punch_one:
   user: sarah
+  punched_at: '2014-01-01 19:20:30'
 
 punch_two:
   user: joe
+  punched_at: '2014-02-03 18:30:40'
 
 punch_three:
   user: admin
+  punched_at: '2014-03-05 17:40:50'

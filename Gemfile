@@ -53,4 +53,5 @@ end
 group :test do
   gem 'fivemat'
   gem 'test-unit'
+  gem 'timecop'
 end
