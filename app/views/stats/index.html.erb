@@ -97,6 +97,7 @@ $(document).ready(function() {
     <%= label_tag :user_id, "Usuário:" %>
     <%= select_tag :user_id, options_for_select(@user_list, @user_id) %>
     <%= submit_tag "Recarregar", name:nil %>
+    <%= submit_tag "Mês atual", name:'actual_month' %>
   <% end %>
 </div>
 
