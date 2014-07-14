@@ -10,6 +10,7 @@ class StatsController < ApplicationController
 
     @user_id = params[:user_id]
     date = params[:date]
+    mes_atual = params[:mes_atual]
 
     # Do we really need to check stuff from 2 years ago by default?
     # Let the user decide instead
@@ -17,7 +18,12 @@ class StatsController < ApplicationController
 
     user = User.find_by_id(@user_id)
     users = if user then [user] else User.visible.by_name end
-    @start = if date.nil? then default_start else parse_time(date) end
+
+    if mes_atual.nil?
+      @start = if date.nil? then default_start else parse_time(date) end
+    else
+      @start = Date.today.at_beginning_of_month
+    end
 
     finish = Time.zone.now
     number_of_weeks = ((finish.to_date - @start.to_date).to_i / 7).ceil
