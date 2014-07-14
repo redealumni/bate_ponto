@@ -10,7 +10,7 @@ class StatsController < ApplicationController
 
     @user_id = params[:user_id]
     date = params[:date]
-    mes_atual = params[:mes_atual]
+    actual_month = params[:actual_month]
 
     # Do we really need to check stuff from 2 years ago by default?
     # Let the user decide instead
@@ -19,7 +19,7 @@ class StatsController < ApplicationController
     user = User.find_by_id(@user_id)
     users = if user then [user] else User.visible.by_name end
 
-    if mes_atual.nil?
+    if actual_month.nil?
       @start = if date.nil? then default_start else parse_time(date) end
     else
       @start = Date.today.at_beginning_of_month
