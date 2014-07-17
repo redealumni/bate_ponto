@@ -1,24 +1,24 @@
 <div class="stats_line">
-  <span class="value"><%= number_to_human user_stats.hours_today %></span>
+  <span class="value"><%= number_to_human user_stats.time_worked_today / 1.hour.to_f %></span>
   <span class="name">horas hoje</span>
 </div>
 <div class="stats_line">
-  <span class="value"><%= number_to_human user_stats.hours_worked(1.week.ago..Time.zone.now) %></span>
+  <span class="value"><%= number_to_human user_stats.time_worked(1.week.ago..Time.zone.now) / 1.hour.to_f %></span>
   <span class="name">horas nos últimos 7 dias</span>
 </div>
 <div class="stats_line">
-  <span class="value"><%= number_to_human user_stats.hours_worked(1.month.ago..Time.zone.now) %></span>
+  <span class="value"><%= number_to_human user_stats.time_worked(1.month.ago..Time.zone.now) / 1.hour.to_f %></span>
   <span class="name">horas nos últimos 30 dias</span>
 </div>
 <div class="stats_line">
-  <span class="value"><%= number_to_human user_stats.hours_worked_in_month(1.month.ago) %></span>
+  <span class="value"><%= number_to_human user_stats.time_worked_in_month(1.month.ago) / 1.hour.to_f %></span>
   <span class="name">horas em <%= l(1.month.ago, format: :month_year) %></span>
 </div>
 <div class="stats_line">
-  <span class="value"><%= number_to_human user_stats.hours_worked_in_month(Date.today.at_beginning_of_month) %></span>
+  <span class="value"><%= number_to_human user_stats.time_worked_in_month(Date.today.at_beginning_of_month) / 1.hour.to_f %></span>
   <span class="name">horas em <%= l(Date.today.at_beginning_of_month, format: :month_year) %></span>
 </div>
 <div class="stats_line <%= user_stats.working? ? "green" : "red"%>">
-  <span class="value"><%= number_to_human  user_stats.hours_since_last_state %></span>
+  <span class="value"><%= number_to_human  user_stats.time_since_last_state / 1.hour.to_f %></span>
   <span class="name">horas <%= user_stats.working? ? "ralando!" : "sem trabalhar..."%></span>
 </div>

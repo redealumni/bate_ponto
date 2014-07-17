@@ -87,14 +87,14 @@ class User < ActiveRecord::Base
   end
 
   def time_worked_today
-    self.hours_worked(Time.zone.now.beginning_of_day..Time.zone.now)
+    self.time_worked(Time.zone.now.beginning_of_day..Time.zone.now)
   end
 
   def time_worked_in_month(month)
     beginning_of_month = month.beginning_of_month.midnight
     end_of_month = month.end_of_month.end_of_day
 
-    self.hours_worked(beginning_of_month..end_of_month)
+    self.time_worked(beginning_of_month..end_of_month)
   end
 
   # TODO: read ** CAREFULLY ** later, looks like a good place to refactor
