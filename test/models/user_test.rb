@@ -19,71 +19,55 @@ class UserTest < ActiveSupport::TestCase
 
   private :yesterday_time, :yesterday_range
 
-  test "hours_worked caso normal" do
-    #entrou 1:00
+  test "time_worked caso normal" do
     @punches = @user.punches.create(punched_at: (yesterday_time(1.hour)))
-    #saiu 5:00
     @punches = @user.punches.create(punched_at: (yesterday_time(5.hours)))
-    #entrou 10:00
     @punches = @user.punches.create(punched_at: (yesterday_time(10.hours)))
-    #saiu 15:00
     @punches = @user.punches.create(punched_at: (yesterday_time(15.hours)))
 
-    assert_equal 9, @user.hours_worked(yesterday_range).ceil
+    assert_equal 9.hours, @user.time_worked(yesterday_range)
   end
 
-  test "hours_worked punches falta fim" do
-    #entrou 1:00
+  test "time_worked punches falta fim" do
     @punches = @user.punches.create(punched_at: (yesterday_time(1.hour)))
-    #saiu 5:00
     @punches = @user.punches.create(punched_at: (yesterday_time(5.hours)))
-    #entrou 10:00
     @punches = @user.punches.create(punched_at: (yesterday_time(10.hours)))
 
-    #18 horas, até o fim do período
-    assert_equal 18, @user.hours_worked(yesterday_range).ceil
+    assert_equal 18.hours, @user.time_worked(yesterday_range).ceil
   end
 
-  test "hours_worked punches falta início" do
-    #saiu 5:00
+  test "time_worked punches falta início" do
     @punches = @user.punches.create(punched_at: (yesterday_time(5.hours)))
-    #entrou 10:00
     @punches = @user.punches.create(punched_at: (yesterday_time(10.hours)))
-    #saiu 17:00
     @punches = @user.punches.create(punched_at: (yesterday_time(17.hours)))
 
-    #12 horas, desde o início do dia
-    assert_equal 12, @user.hours_worked(yesterday_range).ceil
+    assert_equal 12.hours, @user.time_worked(yesterday_range).ceil
   end
 
 
-  test "hours_worked ignora entrada faltante no meio" do
-    @punches = @user.punches.create(punched_at: (yesterday_time(1.hours))) #entra
-                                                                              # 3:00       sai
-    @punches = @user.punches.create(punched_at: (yesterday_time(5.hours))) #sai
-    @punches = @user.punches.create(punched_at: (yesterday_time(10.hours))) #entra
-    @punches = @user.punches.create(punched_at: (yesterday_time(15.hours))) #sai
-
+  test "time_worked ignora entrada faltante no meio" do
+    @punches = @user.punches.create(punched_at: (yesterday_time(1.hours)))
+    @punches = @user.punches.create(punched_at: (yesterday_time(5.hours)))
+    @punches = @user.punches.create(punched_at: (yesterday_time(10.hours)))
+    @punches = @user.punches.create(punched_at: (yesterday_time(15.hours)))
     @punches = @user.punches.create(punched_at: (yesterday_time(20.hours)))
-    @punches.update_attribute(:punched_at, (yesterday_time(3.hours)) ) #  sai lá atrás
+    @punches.update_attribute(:punched_at, (yesterday_time(3.hours)))
 
-    assert_equal 7, @user.hours_worked(yesterday_range).ceil
+    assert_equal 7.hours, @user.time_worked(yesterday_range).ceil
   end
 
-  test "hours_worked ignora saída faltante no meio" do
-    @punches = @user.punches.create(punched_at: (yesterday_time(1.hours))) #entra
-    @punches = @user.punches.create(punched_at: (yesterday_time(5.hours))) #sai
-                                                                              # 8         entra
-    @punches = @user.punches.create(punched_at: (yesterday_time(10.hours)))#entra
-    @punches = @user.punches.create(punched_at: (yesterday_time(15.hours)))#sai
-
-    @punches = @user.punches.create(punched_at: (yesterday_time(20.hours)))#some
-    @punches.update_attribute(:punched_at, (yesterday_time(8.hours)) ) # entra lá atrás
+  test "time_worked ignora saída faltante no meio" do
+    @punches = @user.punches.create(punched_at: (yesterday_time(1.hours)))
+    @punches = @user.punches.create(punched_at: (yesterday_time(5.hours)))
+    @punches = @user.punches.create(punched_at: (yesterday_time(10.hours)))
+    @punches = @user.punches.create(punched_at: (yesterday_time(15.hours)))
+    @punches = @user.punches.create(punched_at: (yesterday_time(20.hours)))
+    @punches.update_attribute(:punched_at, (yesterday_time(8.hours)))
     
-    assert_equal 11, @user.hours_worked(yesterday_range).ceil
+    assert_equal 11.hours, @user.time_worked(yesterday_range).ceil
   end
 
-  test "hours_worked semana inteira" do
+  test "time_worked semana inteira" do
     start = get_monday_of_week(1.week.ago.to_date)
     finish = (start + 4.days).to_date
 
@@ -91,7 +75,7 @@ class UserTest < ActiveSupport::TestCase
       [1, 5, 10, 14].each { |h| @user.punches.create(punched_at: day + h.hours) }
     end
 
-    assert_equal 40, @user.hours_worked(start.midnight..finish.end_of_day).ceil
+    assert_equal 40.hours, @user.time_worked(start.midnight..finish.end_of_day).ceil
   end
 
 end

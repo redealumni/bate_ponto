@@ -1,12 +1,12 @@
 # Summary classes used for representing user reports
 
-Week = Struct.new(:name, :hours, :weekly_goal, :week_size) do
+Week = Struct.new(:name, :time, :weekly_goal, :week_size) do
   def problem?
-    (weekly_goal - hours).abs < User::TOLERANCE_HOURS * week_size
+    (weekly_goal - time).abs < User::TOLERANCE_HOURS * week_size
   end
 end
 
-Day = Struct.new(:date, :hours, :punches, :issue) do
+Day = Struct.new(:date, :time, :punches, :issue) do
   def readable_punches
     punch_times = punches.map { |p| I18n.l p.punched_at, format: :just_time }
     result = []
@@ -14,7 +14,6 @@ Day = Struct.new(:date, :hours, :punches, :issue) do
     result.join(", ")
   end
 end
-
 
 Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
   extend DatetimeHelper
@@ -52,7 +51,7 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
       end
 
       goal = user.weekly_goal (week.begin.cwday - 1)..(week.end.cwday - 1)
-      Week.new(name, hours_worked_less_lunch(user, week), goal, size)
+      Week.new(name, time_worked_less_lunch(user, week), goal, size)
     end.compact
 
     days = []
@@ -65,25 +64,25 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
 
         issues = []
         day_range = range_for_day day
-        hours = hours_worked_less_lunch_in_day user, day
+        time = time_worked_less_lunch_in_day user, day
         punches_for_day = user.punches.where(punched_at: day_range)
         if punches_for_day.blank? then
           issues << "Funcionário faltou."
         else
-          if not user.is_hours_ok weekday, hours then
-            issues << define_issue_for_hours(user, weekday, hours)
+          if not user.is_time_ok weekday, time then
+            issues << define_issue_for_time(user, weekday, time)
           end
         end
 
-        readable_hours = if hours == 0 then "" else readable_duration(hours, format: :hours) + " feitos no dia. " end
+        readable_time = if time == 0 then "" else readable_duration(time) + " feitos no dia. " end
 
-        processed_issues = readable_hours + if issues.empty? then
+        processed_issues = readable_time + if issues.empty? then
           "Nenhuma irregularidade."
         else 
           issues.join(" ")
         end
 
-        days << Day.new(day, hours, punches_for_day.to_a, processed_issues)
+        days << Day.new(day, time, punches_for_day.to_a, processed_issues)
       end
     end
 
@@ -93,11 +92,11 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
       weeks: [
         {
           name: "Decorrido",
-          data: weeks.map { |week| week.hours.round }
+          data: weeks.map { |week| (week.time.to_f / 1.hour).round }
         },
         {
           name: "Ideal",
-          data: weeks.map { |week| week.weekly_goal.round }  
+          data: weeks.map { |week| (week.weekly_goal.to_f / 1.hour).round }  
         }
       ]
     }
@@ -108,35 +107,35 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
   # Helper private methods
   private
   
-  def self.define_issue_for_hours(user, weekday, hours)
-    error = (user.hours_error(weekday, hours) * 60).ceil
-    if error < 0
-      "Faltaram #{readable_duration(error.abs)} para o funcionário no dia."
-    else
-      "Funcionário fez #{readable_duration(error.abs)} de hora extra."
+    def self.define_issue_for_time(user, weekday, time)
+      error = user.time_error(weekday, time)
+      if error < 0
+        "Faltaram #{readable_duration(error.abs)} para o funcionário no dia."
+      else
+        "Funcionário fez #{readable_duration(error.abs)} de hora extra."
+      end
     end
-  end
 
-  def self.check_range(date_range)
-    date_range.begin.to_date == date_range.end.to_date
-  end
+    def self.check_range(date_range)
+      date_range.begin.to_date == date_range.end.to_date
+    end
 
-  def self.hours_worked_less_lunch(user, date_range)
-    weekdays = date_range.to_a.map { |date| date.cwday }
+    def self.time_worked_less_lunch(user, date_range)
+      weekdays = date_range.to_a.map { |date| date.cwday }
 
-    lunch_time = weekdays.map { |weekday| 
-      user.shifts.lunch_time(Shifts::NUM_MAPPING[weekday]) 
-    }.sum.to_f / 60
+      lunch_time = weekdays.map { |weekday| 
+        user.shifts.lunch_time(Shifts::NUM_MAPPING[weekday]) 
+      }.sum.minutes
 
-    user.hours_worked(to_time_range(date_range)) - lunch_time
-  end
+      (user.time_worked(to_time_range(date_range)) - lunch_time).to_i
+    end
 
-  def self.hours_worked_less_lunch_in_day(user, day)
-    user.hours_worked(range_for_day(day)) - user.shifts.lunch_time(Shifts::NUM_MAPPING[day.cwday]).to_f/60
-  end
+    def self.time_worked_less_lunch_in_day(user, day)
+      user.time_worked(range_for_day(day)) - user.shifts.lunch_time(Shifts::NUM_MAPPING[day.cwday]).minutes
+    end
 
-  def self.swap(value, first, second)
-    if value == first then second else first end
-  end
+    def self.swap(value, first, second)
+      if value == first then second else first end
+    end
 
 end

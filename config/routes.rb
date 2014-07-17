@@ -10,9 +10,11 @@ PontoRa::Application.routes.draw do
   end
 
   # Route for extra admin reports
-  scope '/admin' do
-    get 'absences', to: 'users#absences', as: 'users_absences'
-    get 'reports', to: 'users#report_all', as: 'users_reports'
+  scope '/reports' do
+    get 'index', to: 'reports#index', as: 'reports'
+    get 'absences', to: 'reports#absences', as: 'users_absences'
+    get 'simple', to: 'reports#simple', as: 'users_simple_report'
+    get 'detailed', to: 'reports#detailed', as: 'users_detailed_report'
   end
 
   # Routes for punches

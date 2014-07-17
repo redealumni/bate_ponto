@@ -2,8 +2,7 @@ class User < ActiveRecord::Base
 
   DEFAULT_SHIFTS = [480, 720, 0, 840, 1080, 0]
 
-  # TODO: clean up how hours are calculed
-  TOLERANCE_HOURS = 0.5 # hours
+  TOLERANCE_HOURS = 30.minutes
   TOLERANCE_PUNCH = 15.minutes
 
   scope :by_name, -> { order 'name ASC' }
@@ -39,22 +38,22 @@ class User < ActiveRecord::Base
 
   # Get weekly goal
   def weekly_goal(range = nil)
-    range.present? ? self.goals[range].sum : self.goals.sum
+    (range.present? ? self.goals[range].sum : self.goals.sum).hours
   end
 
   # Get daily goal
   def daily_goal(day)
-    self.goals[Shifts::DAY_MAPPING[day] - 1]
+    self.goals[Shifts::DAY_MAPPING[day] - 1].hours
   end
 
-  # Given a amount of hours and the weekday, check if it's ok for this user
-  def is_hours_ok(day, hours)
-    return self.flexible_goal || (hours - self.daily_goal(day)).abs < TOLERANCE_HOURS
+  # Given a amount of time and the weekday, check if it's ok for this user
+  def is_time_ok(day, time)
+    return self.flexible_goal || (time - self.daily_goal(day)).abs < TOLERANCE_HOURS
   end
 
-  # Return how off is the hours for this user in hours (float)
-  def hours_error(day, hours)
-    return (hours - self.daily_goal(day))
+  # Return how off is the time for this user in time
+  def time_error(day, time)
+    return (time - self.daily_goal(day))
   end
 
   # Given a timestamp of a punch, check if it's ok for this user
@@ -65,10 +64,10 @@ class User < ActiveRecord::Base
     return (adjusted_time - punch_time).abs < TOLERANCE_PUNCH
   end
 
-  # Return as a integer, in minutes
+  # Return as a integer, in seconds
   def punch_time_error(punch_time, day, shift_num, moment)
     adjusted_time = shifts[day][shift_num].shift_time punch_time, moment
-    return ((punch_time - adjusted_time) / 60).round
+    return ((punch_time - adjusted_time) / 60)
   end
 
   def working?
@@ -79,7 +78,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  def hours_since_last_state
+  def time_since_last_state
     if last_punch = self.punches.latest.first
       (Time.zone.now - last_punch.punched_at)/60/60
     else
@@ -87,11 +86,11 @@ class User < ActiveRecord::Base
     end
   end
 
-  def hours_today
+  def time_worked_today
     self.hours_worked(Time.zone.now.beginning_of_day..Time.zone.now)
   end
 
-  def hours_worked_in_month(month)
+  def time_worked_in_month(month)
     beginning_of_month = month.beginning_of_month.midnight
     end_of_month = month.end_of_month.end_of_day
 
@@ -99,7 +98,7 @@ class User < ActiveRecord::Base
   end
 
   # TODO: read ** CAREFULLY ** later, looks like a good place to refactor
-  def hours_worked(datetime_range)
+  def time_worked(datetime_range)
     # don't consider future time
     datetime_range = datetime_range.begin..(datetime_range.end < Time.zone.now ? datetime_range.end : Time.zone.now)
 
@@ -136,7 +135,7 @@ class User < ActiveRecord::Base
       time_worked += pair.last.punched_at - pair.first.punched_at
     end
 
-    time_worked/60/60
+    time_worked.to_i
   end
 
   def bad_memory?

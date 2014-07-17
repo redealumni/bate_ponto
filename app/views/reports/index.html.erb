@@ -1,0 +1,15 @@
+<h1>Relatórios Ponto Redealumni</h1>
+
+<%= link_to "Gerar relatórios simples para todos os usuários visíveis", users_simple_report_path %>
+<br>
+<%= link_to "Gerar relatórios simples parciais para todos os usuários visíveis", users_simple_report_path(partial: true) %>
+<hr>
+<%= link_to "Gerar relatórios detalhados para todos os usuários visíveis", users_detailed_report_path %>
+<br>
+<%= link_to "Gerar relatórios detalhados parciais para todos os usuários visíveis", users_detailed_report_path(partial: true) %>
+<hr>
+<%= link_to "Gerar relatório de faltas para todos os usuários visíveis", users_absences_path %>
+<br>
+<%= link_to "Gerar relatório de faltas parciais para todos os usuários visíveis", users_absences_path(partial: true) %>
+<hr>
+<%= link_to 'Voltar', users_path %>

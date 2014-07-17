@@ -113,20 +113,36 @@ module DatetimeHelper
     return result
   end
 
-  # Format a amount of minutes or hours as a readable string of hours:minutes
-  def readable_duration(duration, format: :minutes)
-    # Convert hours to minutes if needed
-    minutes = format == :hours ? (duration * 60).ceil : duration
+  # Format a amount of seconds as a readable string of hours:minutes:seconds
+  def readable_duration(total_seconds)
+    neg = total_seconds < 0
+    total_seconds = total_seconds.abs
 
-    h = minutes / 60
-    m = minutes % 60
-    str_hours = if h > 0 then (h.to_s + 'h') else '' end
-    str_minutes = if m > 0 then (m.to_s + 'm') else '' end
+    prefix = neg ? '- ' : ''
 
-    if str_hours.blank? and str_minutes.blank? then '0m'
-    elsif str_hours.blank? then str_minutes
-    elsif str_minutes.blank? then str_hours
-    else str_hours + ':' + str_minutes end
+    s = total_seconds % 60
+    m = (total_seconds / 60) % 60
+    h = total_seconds / (3600)
+
+    str_hours   = h > 0 ? (h.to_s + 'h') : '' 
+    str_minutes = m > 0 ? (m.to_s + 'm') : '' 
+    str_seconds = s > 0 ? (s.to_s + 's') : ''
+
+    prefix + [str_hours, str_minutes, str_seconds].select(&:present?).join(':')
+  end
+
+  # Convert a amount of seconds to a fixed format string
+  def duration(total_seconds)
+    neg = total_seconds < 0
+    total_seconds = total_seconds.abs
+
+    prefix = neg ? '- ' : ''
+
+    s = total_seconds % 60
+    m = (total_seconds / 60) % 60
+    h = total_seconds / (3600)
+
+    format("%02d:%02d:%02d", h, m, s)
   end
 
 end

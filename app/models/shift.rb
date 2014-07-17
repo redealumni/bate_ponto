@@ -12,7 +12,7 @@ Shift = Struct.new(:entrance, :exit, :lunch) do
   def to_s
     formatted = [:entrance, :exit].map { |m| I18n.l shift_time(Time.zone.now, m), format: :just_time }
     formatted.join(' as ') + if lunch > 0 
-      " com #{DatetimeHelper.readable_duration(lunch)} de intervalo"
+      " com #{DatetimeHelper.readable_duration(lunch.minutes)} de intervalo"
     else
       ""
     end

@@ -145,6 +145,7 @@ class UsersController < ApplicationController
       date,
       report_params[:partial])
     @partial = report_params[:partial] == "true"
+    @observations = report_params[:observations] == "true"
 
     respond_to do |format|
       format.html { render }
@@ -157,51 +158,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # GET /admin/absences
-  def absences
-    date = admin_reports_params[:partial] == "true" ? Date.today : Date.today.prev_month
-
-    @absences = Summary.absences_for date
-    @partial = admin_reports_params[:partial] == "true"
-
-    respond_to do |format|
-      format.html { render }
-    end
-  end
-
-  # GET /admin/reports
-  def report_all
-    partial = admin_reports_params[:partial] == "true"
-    date = partial ? Date.today : Date.today.prev_month
-
-    temp_file = Tempfile.new("reports-#{request.uuid}")
-    date_range = get_weeks_of_month(date)
-
-    begin
-      file_name = "relatorios_#{I18n.l(Date.today, format: :filename)}.zip"
-      @format = :pdf
-
-      Zip::OutputStream.open temp_file.path do |z|
-        User.visible.find_each do |u|
-          @summary = Summary.summary_for u, date_range, date, partial
-
-          pdf_string = render_to_string formats: [:html],
-            template: "users/report.html.erb",
-            layout: "report_pdf"
-
-          pdf_data = WickedPdf.new.pdf_from_string(pdf_string)
-
-          z.put_next_entry "relatorio_#{@summary.user.name}.pdf"
-          z.write pdf_data
-        end
-      end
-
-      send_file temp_file.path, type: 'application/zip', filename: file_name
-    ensure
-      temp_file.close
-    end
-  end
-
   private
     # Safe parameters for show
     def show_params
@@ -211,7 +167,7 @@ class UsersController < ApplicationController
 
     # Safe parameters for report
     def report_params
-      params.permit(:id, :partial)
+      params.permit(:id, :partial, :observations)
     end
 
     # Safe parameters for admin reports

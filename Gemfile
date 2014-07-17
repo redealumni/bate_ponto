@@ -6,9 +6,9 @@ gem 'rails', '~> 4.1.0'
 
 # Rails 4 doesn't support the assets group anymore
 gem 'sass-rails'
+gem 'compass-rails'
 gem 'coffee-rails'
 gem 'uglifier'
-gem 'compass-rails'
 gem 'zurb-foundation'
 
 gem 'jquery-rails'

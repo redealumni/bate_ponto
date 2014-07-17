@@ -43,12 +43,7 @@
 
 <% end %>
 
-<%= link_to "Gerar relatórios para todos os usuários visíveis", users_reports_path %>
-<br>
-<%= link_to "Gerar relatórios parciais para todos os usuários visíveis", users_reports_path(partial: true) %>
 <hr>
-<%= link_to "Gerar relatório de faltas para todos os usuários visíveis", users_absences_path %>
+<%= link_to "Relatórios gerais", reports_path %>
 <br>
-<%= link_to "Gerar relatório de faltas parciais para todos os usuários visíveis", users_absences_path(partial: true) %>
-<hr>
 <%= link_to 'Novo usuário', new_user_path %>

@@ -7,7 +7,7 @@
 
 <br>
 
-<table class="shift-overview">
+<table class="shift-overview splitForPrint">
   <tr>
     <th>Dia:</th>
     <th>Horário:</th>
@@ -18,21 +18,45 @@
       <td><%= Shifts.localize weekday %></td>
       <td><%= shifts.join(',') %></td>
       <% unless @summary.user.flexible_goal %>
-        <td><%= DatetimeHelper.readable_duration((@summary.user.daily_goal(weekday) * 60 ).round) %></td>
+        <td><%= DatetimeHelper.readable_duration((@summary.user.daily_goal(weekday))) %></td>
       <% end %>
     </tr>
   <% end %>
 </table>
 
-<table class="week-overview">
+<table class="general-overview splitForPrint">
+    <tr>
+      <td><strong>Dias no mês</strong></td>
+      <td><%= total_days = @summary.days.count %></td>
+    </tr>
+    <tr>
+      <td><strong>Dias trabalhados</strong></td>
+      <% worked_days = @summary.days.count { |d| d.punches.present? } %>
+      <td class='<%= worked_days < total_days ? "problem" : "" %>' >
+        <%= @summary.days.count { |d| d.punches.present? } %>
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Meta total no mês</strong></td>
+      <td><%= DatetimeHelper.readable_duration(@summary.weeks.sum(&:weekly_goal)) %></td>
+    </tr>
+    <tr>
+      <td><strong>Tempo total trabalhado no mês</strong></td>
+      <td><%= DatetimeHelper.readable_duration(@summary.weeks.sum(&:time)) %></td>
+    </tr>
+</table>
+
+<table class="week-overview splitForPrint">
   <tr>
     <th>Semana</th>
-    <th>Horas trabalhadas</th>
+    <th>Tempo trabalhado</th>
+    <th>Saldo</th>
   </tr>
   <% @summary.weeks.each do |week| %>
     <tr>
       <td><%= week.name %></td>
-      <td class='<%= if week.problem? then "problem" else "" end %>' ><%= week.hours.round %></td>
+      <td class='<%= week.problem? ? "problem" : "problem" %>' ><%= DatetimeHelper.readable_duration(week.time) %></td>
+      <td><%= DatetimeHelper.readable_duration(week.time - week.weekly_goal) %></td>
     </tr>
   <% end %>
 </table>
@@ -41,19 +65,25 @@
   <tr>
     <th>Dia</th>
     <th>Batidas</th>
-    <th>Irregularidade</th>
+    <th>Horas totais</th>
+    <% if @observations %>
+      <th>Irregularidades</th>
+    <% end %>
   </tr>
 
   <% @summary.days.each do |day| %>
     <tr>
       <td><%= l day.date, format: :short %></td>
       <td><%= day.readable_punches %></td>
-      <td><%= day.issue %></td>
+      <td><%= DatetimeHelper.readable_duration(day.time) %></td>
+      <% if @observations %>
+        <td><%= day.issue %></td>
+      <% end %>
     </tr>
   <% end %>
 </table>
 
-<%= render "chart.html.erb" %>
+<%= render partial: "shared/chart" %>
 
 <br>
 
@@ -61,10 +91,10 @@
   <%= link_to "Exportar como PDF", report_user_path(@summary.user, partial: @partial, format: "pdf") %>
   <br>
   <% unless @partial %>
-    <%= link_to "Gerar relatório parcial do mês", report_user_path(@summary.user, partial: true) %>
+    <%= link_to "Gerar relatório parcial do mês atual", report_user_path(@summary.user, partial: true) %>
   <% else %>
     <%= link_to "Gerar relatório do mês passado", report_user_path(@summary.user) %>
   <% end %>
   <br>
-  <%= link_to "Voltar", :back %>
+  <%= link_to "Voltar", users_path %>
 <% end %>
