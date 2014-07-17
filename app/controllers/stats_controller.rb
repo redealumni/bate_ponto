@@ -36,8 +36,8 @@ class StatsController < ApplicationController
 
     @series = users.map do |u|
       hours = week_ranges.map do |week_range|
-        u.hours_worked(to_time_range(week_range))
-      end
+        u.time_worked(to_time_range(week_range))
+      end.to_f / 1.hour
       {name: u.name, data: hours}
     end
 
@@ -57,18 +57,18 @@ class StatsController < ApplicationController
     data = users.map do |u|
       count += 1
       days_worked = 0
-      total_hours = 0
+      total_time = 0
       (1..30).each do |n|
         day = n.days.ago
         start = day.beginning_of_day
         finish = day.end_of_day
-        hours = u.hours_worked(start..finish)
-        if hours > 2 #only days with more than 2 hours worked count
+        time = u.time_worked(start..finish)
+        if time > 2.hours #only days with more than 2 hours worked count
           days_worked += 1
-          total_hours += hours
+          total_time += time
         end
       end
-      avg = total_hours > 0 ? total_hours.to_f/days_worked : 0
+      avg = total_time > 0 ? (total_time.to_f / days_worked) / 1.hour : 0
       {value: avg, label: "#{u.name} (#{"%2.1f" % avg}h)", colour: COLORS[count]}
     end
 
@@ -125,8 +125,8 @@ class StatsController < ApplicationController
     count = -1
     data = users.map do |u|
       count += 1
-      value = u.hours_worked(start..finish).round
-      {value: value, label: "#{u.name} (#{value}h)", colour: COLORS[count]}
+      value = u.time_worked(start..finish).round
+      {value: value.to_f / 1.hours, label: "#{u.name} (#{value}h)", colour: COLORS[count]}
     end
     return_data = {item: data}
   end
