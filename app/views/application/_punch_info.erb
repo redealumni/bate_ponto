@@ -3,7 +3,7 @@
     <td class="status"><%= punch.entrance? ? "→<br/>In".html_safe : "←<br/>Out".html_safe %></td>
     <td class="text">
       <i><%= punch.user.name %></i>
-      (<%= number_to_human punch.user.hours_today %> horas hoje)
+      (<%= number_to_human punch.user.time_worked_today / 1.hour.to_f %> horas hoje)
     </td>
     <td class="time">
       <div class='punch_time_display right' meta-dom-id="<%=dom_id(punch)%>">
