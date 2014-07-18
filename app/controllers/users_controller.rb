@@ -48,15 +48,17 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    if create_params[:shifts].present?
-      create_params[:shifts] = Shifts.from_hash JSON.parse(create_params[:shifts])
+    processed_params = create_params
+
+    if processed_params[:shifts].present?
+      processed_params[:shifts] = Shifts.from_hash JSON.parse(processed_params[:shifts])
     end
 
-    if create_params[:goals].present?
-      create_params[:goals] = JSON.parse(create_params[:goals])
+    if processed_params[:goals].present?
+      processed_params[:goals] = JSON.parse(processed_params[:goals])
     end
 
-    @user = User.new(create_params)
+    @user = User.new(processed_params)
 
     respond_to do |format|
       if @user.save
@@ -74,16 +76,18 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    if update_params[:shifts].present?
-      update_params[:shifts] = Shifts.from_hash(JSON.parse(update_params[:shifts]))
+    processed_params = update_params
+
+    if processed_params[:shifts].present?
+      processed_params[:shifts] = Shifts.from_hash(JSON.parse(processed_params[:shifts]))
     end
 
-    if update_params[:goals].present?
-      update_params[:goals] = JSON.parse(update_params[:goals])
+    if processed_params[:goals].present?
+      processed_params[:goals] = JSON.parse(processed_params[:goals])
     end
 
     respond_to do |format|
-      if @user.update_attributes(update_params)
+      if @user.update_attributes(processed_params)
         format.html do
           flash[:notice] = 'Usuário alterado com sucesso.'
           if current_user == @user
