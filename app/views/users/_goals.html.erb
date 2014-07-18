@@ -2,7 +2,7 @@
   <h5>Metas diárias: </h5>
   <div class="goals-line row">
     <% 1.upto(5) do |i| %>
-      <div class="field columns small-1 large-2">
+      <div class="field columns small-1 large-2 goals-field">
         <%= label_tag "goal-#{i}", I18n.t("date.day_names")[i] %>
         <%= text_field_tag "goal-#{i}", @user.goals[i - 1] %>
       </div>

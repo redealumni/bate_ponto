@@ -70,16 +70,23 @@ class Shifts
   end
 
   # Populate from hash
-  def from_hash(data)
-    data.each do |day, shifts|
-      @days[day.to_sym] = shifts.map { |e| Shift.from_hash e }
+  def from_hash(data, only_first = false)
+    if only_first
+      first = data.first.last.map { |e| Shift.from_hash e }
+      VALID_DAYS.each do |sym|
+        @days[sym] = first
+      end
+    else
+      data.each do |day, shifts|
+        @days[day.to_sym] = shifts.map { |e| Shift.from_hash e }
+      end
     end
     self
   end
 
   # Class instance variant of from_hash
-  def self.from_hash(data)
-    Shifts.new.from_hash data
+  def self.from_hash(data, only_first = false)
+    Shifts.new.from_hash data, only_first
   end
 
   # TODO: rip this out

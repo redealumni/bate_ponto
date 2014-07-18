@@ -38,6 +38,19 @@
         <%= f.check_box :flexible_goal %>
       </div>
     </div>
+    <hr>
+
+    <div class="row">
+      <div class="field columns small-3 large-6">
+        <%= label_tag 'first_goal', 'Considerar somente primeira meta' %><br />
+        <%= check_box_tag 'first_goal' %>
+      </div>
+      <div class="field columns small-3 large-6">
+        <%= label_tag 'first_shift', 'Considerar somente primeiro dia' %><br />
+        <%= check_box_tag 'first_shift' %>
+      </div>
+    </div>
+
     <span id="__goals"><%= f.hidden_field :goals %></span>
     <%= render 'goals' %>
     <br>

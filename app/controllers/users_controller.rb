@@ -51,11 +51,13 @@ class UsersController < ApplicationController
     processed_params = create_params
 
     if processed_params[:shifts].present?
-      processed_params[:shifts] = Shifts.from_hash JSON.parse(processed_params[:shifts])
+      processed_params[:shifts] = Shifts.from_hash(JSON.parse(processed_params[:shifts]), 
+        shifts_params[:first_shift] == "true")
     end
 
     if processed_params[:goals].present?
-      processed_params[:goals] = JSON.parse(processed_params[:goals])
+      processed_params[:goals] = goals_from_string(processed_params[:goals],
+        shifts_params[:first_goal] == "true")
     end
 
     @user = User.new(processed_params)
@@ -79,21 +81,23 @@ class UsersController < ApplicationController
     processed_params = update_params
 
     if processed_params[:shifts].present?
-      processed_params[:shifts] = Shifts.from_hash(JSON.parse(processed_params[:shifts]))
+      processed_params[:shifts] = Shifts.from_hash(JSON.parse(processed_params[:shifts]), 
+        shifts_params[:first_shift] == "1")
     end
 
     if processed_params[:goals].present?
-      processed_params[:goals] = JSON.parse(processed_params[:goals])
+      processed_params[:goals] = goals_from_string(processed_params[:goals],
+        shifts_params[:first_goal] == "1")
     end
 
     respond_to do |format|
       if @user.update_attributes(processed_params)
         format.html do
           flash[:notice] = 'Usuário alterado com sucesso.'
-          if current_user == @user
+          if !current_user.admin? && current_user == @user
              redirect_to root_path
           else
-            redirect_to @user
+            redirect_to edit_user_path(@user)
           end
         end
         format.json { head :ok }
@@ -163,6 +167,16 @@ class UsersController < ApplicationController
   end
 
   private
+    # Helper method for goals
+    def goals_from_string(string, first_goal = false)
+      parsed = JSON.parse(string)
+      if first_goal
+        [parsed.first] * 5
+      else
+        parsed
+      end
+    end
+
     # Safe parameters for show
     def show_params
       params.require(:id)
@@ -185,6 +199,13 @@ class UsersController < ApplicationController
         params.require(:user).permit(:name, :password, :token, :hidden, :admin, :flexible_goal, :goals, :shifts)
       else
         params.require(:user).permit(:password)
+      end
+    end
+
+    # Parameter for when creating / updating, use only first shift and goal
+    def shifts_params
+      if current_user.admin?
+        params.permit(:first_shift, :first_goal)
       end
     end
 

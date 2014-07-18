@@ -60,6 +60,9 @@ $(->
     $('#__shifts').children().val($(elem).text())
 
   goals = []
+  
+  only_first_shift = false
+  only_first_goal = false
 
   $('#trueGoals').each (idx, elem) ->
     trueValue = $(elem).text()
@@ -138,7 +141,7 @@ $(->
       $('.remove-shift-btn', self.parent()).show()
 
   # Remove shift option
-  $('.remove-shift-btn', shift_main).click (e) ->
+  $('.remove-shift-btn', shift_main).click ->
     self = $(this)
     shift_day = self.parent().data('shift-day')
     old_index = $("#num-of-shifts-#{shift_day}", shift_main)
@@ -149,6 +152,26 @@ $(->
 
     if new_index < 2
       self.hide()
+
+  # Only first shift
+  check_first_shift = ->
+    checked = $(this).is(':checked')
+    $('.shift-list', shift_main).each (i, e) ->
+      if i != 0
+        if checked then $(e).hide() else $(e).show()
+
+  $('#first_shift').change(check_first_shift)
+  check_first_shift()
+
+  # Only first goal
+  check_first_goal = ->
+    checked = $(this).is(':checked')
+    $('.goals-field', goals_main).each (i, e) ->
+      if i != 0
+        if checked then $(e).hide() else $(e).show()
+
+  $('#first_goal').change(check_first_goal)
+  check_first_goal()
 
   # Submit action
   $('form').submit () ->
@@ -173,6 +196,8 @@ $(->
         shifts[shift_day].push new_shift
 
     $('#__shifts').children().val(JSON.stringify(to_array(shifts)))
+
+    # Done
     return
 
 )
