@@ -80,7 +80,7 @@ class User < ActiveRecord::Base
 
   def time_since_last_state
     if last_punch = self.punches.latest.first
-      (Time.zone.now - last_punch.punched_at)/60/60
+      (Time.zone.now - last_punch.punched_at)
     else
       0
     end
