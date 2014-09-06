@@ -80,7 +80,7 @@ GEM
     mime-types (1.25.1)
     minitest (5.3.5)
     multi_json (1.10.1)
-    mysql2 (0.3.16)
+    pg (0.17.1)
     polyglot (0.3.4)
     pry (0.9.12.6)
       coderay (~> 1.0)
@@ -166,7 +166,7 @@ DEPENDENCIES
   fivemat
   jquery-rails
   jquery-timepicker-rails
-  mysql2
+  pg
   pry-byebug
   pry-rails
   rails (~> 4.1.0)

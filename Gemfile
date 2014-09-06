@@ -40,7 +40,7 @@ gem 'delayed_job_active_record'
 # gem 'capistrano'
 
 group :development, :production do
-  gem 'mysql2'
+  gem 'pg'
 end
 
 group :development, :test do
