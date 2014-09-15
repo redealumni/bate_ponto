@@ -29,7 +29,7 @@ module DatetimeHelper
   end
 
   def get_monday_of_week(date)
-    if date.cwday == 5
+    if date.cwday == 1
       date
     else
       date + (1 - date.cwday).days
