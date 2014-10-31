@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
+  include SlackNotifierHelper
 
   DEFAULT_SHIFTS = [480, 720, 0, 840, 1080, 0]
-
   TOLERANCE_HOURS = 30.minutes
   TOLERANCE_PUNCH = 15.minutes
 
@@ -152,4 +152,61 @@ class User < ActiveRecord::Base
     num_altered.to_f / last_punches.count * 100 rescue 0
   end
 
+  # checks if user is late for that shift
+  def late?(shift)
+    return false if self.flexible_goal
+    # User didn't accomplish daily goal yet
+    if self.time_worked_today/60 < self.daily_goal(DatetimeHelper.todays_day)/60
+      lunch = self.shifts[DatetimeHelper.todays_day][shift].try(:lunch)
+      minutes_late = (self.punches.latest.first.punched_at - (Date.today.beginning_of_day+self.shifts[DatetimeHelper.todays_day][shift].entrance.minutes+lunch))/60
+      minutes_late = minutes_late.to_i
+      if minutes_late > 0 && minutes_late <= 10
+        is_late_notification(self.name,minutes_late)
+        return true
+      end
+      if minutes_late > 10
+       missed_today_notification(self.name,minutes_late)
+      end
+    end
+  end
+
+  # gets user's closest shift
+  def closest_shift
+    first_shift = (Time.zone.now - (Date.today.beginning_of_day + self.shifts[DatetimeHelper.todays_day][0].entrance.minutes))/60
+    second_shift = (Time.zone.now - (Date.today.beginning_of_day + self.shifts[DatetimeHelper.todays_day][1].entrance.minutes))/60
+    if first_shift.abs <= second_shift.abs || self.first_punch_of_day?
+      return 0
+    else
+      return 1
+    end
+  end
+
+  def missed_the_day?(day)
+    # TODO: The following condition will eventually change when bate_ponto application implements rules to treat weekend days
+    if self.flexible_goal || day.strftime("%A").downcase == "sunday" || day.strftime("%A").downcase == "saturday"
+      return false
+    end
+    day_range = DatetimeHelper.range_for_day(day)
+    if self.time_worked(day_range) == 0
+      missed_the_day_notification(self.name, day)
+      return true
+    else
+      return false
+    end
+  end
+
+  def first_punch_of_day?
+    return true if self.punches.where("punched_at > ?", Time.zone.today.beginning_of_day).count == 1
+  end
+
+  def break_too_long?
+    if !self.first_punch_of_day?
+      first_punch_out = self.punches.where("punched_at > ? AND entrance = ?", Time.zone.today.beginning_of_day,false).first.punched_at
+      last_punch_in   = self.punches.where("punched_at > ? AND entrance = ?", Time.zone.today.beginning_of_day,true).last.punched_at
+      if  ((last_punch_in - first_punch_out)/60).to_i > self.shifts[DatetimeHelper.todays_day][0].lunch.to_i
+        minutes_exceeded = ((last_punch_in - first_punch_out)/60).to_i - self.shifts[DatetimeHelper.todays_day][0].lunch.to_i
+        break_too_long_notification(self.name,minutes_exceeded)
+      end
+    end
+  end
 end

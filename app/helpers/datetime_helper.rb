@@ -145,4 +145,8 @@ module DatetimeHelper
     format("%02d:%02d:%02d", h, m, s)
   end
 
+  # Get today's week day as a symbol: :monday, :tuesday ..
+  def todays_day
+    return "#{Date.today.strftime("%A").downcase}".to_sym
+  end
 end

@@ -50,6 +50,14 @@ class PunchesController < ApplicationController
         format.json { render json: { delete: removed_punch }, status: :ok, location: removed_punch }
       else
         if @punch.save
+          user = User.find(@punch.user.id)
+          if @punch.entrance?
+            if !user.first_punch_of_day?
+              user.break_too_long?
+            else
+              user.late?(user.closest_shift)
+            end
+          end
           format.html { redirect_to root_path, notice: 'Cartão batido com sucesso!' }
           format.js   {
             render json: { html: render_to_string({
