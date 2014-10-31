@@ -52,7 +52,7 @@ class PunchesController < ApplicationController
         if @punch.save
           user = User.find(@punch.user.id)
           if @punch.entrance?
-            if ! user.first_punch_of_day?
+            if !user.first_punch_of_day?
               user.break_too_long?
             else
               user.late?(user.closest_shift)
