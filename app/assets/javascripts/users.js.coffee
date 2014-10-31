@@ -75,7 +75,7 @@ $(->
     parsed_shifts = to_hash(obj)
 
   shift_time_settings = { timeFormat: 'H:i' }
-  shift_lunch_settings = { timeFormat: 'H:i', maxTime: '2:00', step: 15}
+  shift_lunch_settings = { timeFormat: 'H:i', maxTime: '2:00', step: 20}
   goal_settings = { timeFormat: 'H:i', maxTime: '10:00', step: 60 }
 
   enable_goal_time_picker = (idx, input) ->
