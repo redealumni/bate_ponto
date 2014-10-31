@@ -160,7 +160,6 @@ class User < ActiveRecord::Base
       lunch = self.shifts[DatetimeHelper.todays_day][shift].try(:lunch)
       minutes_late = (self.punches.latest.first.punched_at - (Date.today.beginning_of_day+self.shifts[DatetimeHelper.todays_day][shift].entrance.minutes+lunch))/60
       minutes_late = minutes_late.to_i
-      binding.pry
       if minutes_late > 0 && minutes_late <= 10
         is_late_notification(self.name,minutes_late)
         return true
