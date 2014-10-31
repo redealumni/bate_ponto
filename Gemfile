@@ -33,6 +33,9 @@ gem 'whenever'
 # Background jobs
 gem 'delayed_job_active_record'
 
+# Slack notifications
+gem 'slack-notifier'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 
