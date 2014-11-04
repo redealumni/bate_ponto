@@ -8,17 +8,17 @@ class Shifts
   # Mappings
   DAY_MAPPING = {
     monday: 1,
-    thursday: 2,
+    tuesday: 2,
     wednesday: 3,
-    tuesday: 4,
+    thursday: 4,
     friday: 5
   }
 
   NUM_MAPPING = {
     1 => :monday,
-    2 => :thursday,
+    2 => :tuesday,
     3 => :wednesday,
-    4 => :tuesday,
+    4 => :thursday,
     5 => :friday
   }
 
