@@ -26,7 +26,7 @@ class Shifts
   VALID_DAYS = Set.new(DAY_MAPPING.keys)
 
   def self.default_shifts
-    [Shift.new(480, 720, 0), Shift.new(840, 1080, 0)]
+    [Shift.new(540, 720, 60), Shift.new(780, 1080, 0)]
   end
 
   def self.new_default
