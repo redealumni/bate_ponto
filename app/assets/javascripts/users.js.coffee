@@ -8,17 +8,19 @@ $(->
 
   day_mapping =
     monday: 1
-    thursday: 2
+    tuesday: 2
     wednesday: 3
-    tuesday: 4
+    thursday: 4
     friday: 5
+    saturday: 6
 
   num_mapping =
     1: 'monday'
-    2: 'thursday'
+    2: 'tuesday'
     3: 'wednesday'
-    4: 'tuesday'
+    4: 'thursday'
     5: 'friday'
+    6: 'saturday'
 
   parse_goals = (array) ->
     array.sort (a, b) -> a[0] - b[0]

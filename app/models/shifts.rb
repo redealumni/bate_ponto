@@ -11,7 +11,8 @@ class Shifts
     tuesday: 2,
     wednesday: 3,
     thursday: 4,
-    friday: 5
+    friday: 5,
+    saturday: 6
   }
 
   NUM_MAPPING = {
@@ -19,7 +20,8 @@ class Shifts
     2 => :tuesday,
     3 => :wednesday,
     4 => :thursday,
-    5 => :friday
+    5 => :friday,
+    6 => :saturday
   }
 
   # Allowed keys in the class
