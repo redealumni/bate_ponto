@@ -27,13 +27,13 @@ class User < ActiveRecord::Base
   # We also put daily goals as arrays of hours (in minutes) in the database
   serialize :goals, Array
   validates_each :goals do |record, attr, value|
-    record.errors.add(attr, "possui formato inválido.") unless record.flexible_goal or value.size == 5
+    record.errors.add(attr, "possui formato inválido.") unless record.flexible_goal or value.size == 6
   end
 
   # Ensure shifts and goals aren't nil
   before_validation do |user|
     self.shifts ||= Shifts.new_default
-    self.goals  ||= ([8] * 5)
+    self.goals  ||= ([8] * 5).push(0)
   end
 
   # Get weekly goal
