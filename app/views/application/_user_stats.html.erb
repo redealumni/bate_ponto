@@ -3,6 +3,10 @@
   <span class="name">horas hoje</span>
 </div>
 <div class="stats_line">
+  <span class="value"><%= number_to_human user_stats.time_worked((Time.zone.now.beginning_of_week)..Time.zone.now) / 1.hour.to_f %></span>
+  <span class="name">horas desde segunda</span>
+</div>
+<div class="stats_line">
   <span class="value"><%= number_to_human user_stats.time_worked(1.week.ago..Time.zone.now) / 1.hour.to_f %></span>
   <span class="name">horas nos últimos 7 dias</span>
 </div>
