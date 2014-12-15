@@ -9,10 +9,10 @@
 shift_cfg = Shifts.new_default
 users =
 [
-  User.create!(name:'Admin', password: 'abc123', token: '123', admin: true, shifts: shift_cfg),
-  User.create!(name:'Uni', password: 'abc123', token: '234', shifts: shift_cfg),
-  User.create!(name:'Duni', password: 'abc123', token: '345', shifts: shift_cfg),
-  User.create!(name:'Te', password: 'abc123', token: '456', shifts: shift_cfg)
+  User.create!(name:'Admin', password: 'abc123', token: '123', admin: true, shifts: shift_cfg, flexible_goal: true),
+  User.create!(name:'Uni', password: 'abc123', token: '234', shifts: shift_cfg, flexible_goal: true),
+  User.create!(name:'Duni', password: 'abc123', token: '345', shifts: shift_cfg, flexible_goal: true),
+  User.create!(name:'Te', password: 'abc123', token: '456', shifts: shift_cfg, flexible_goal: true)
 ]
 
 anotherday = Date.yesterday - 1.day
