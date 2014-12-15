@@ -15,7 +15,7 @@ gem 'jquery-rails'
 gem 'will_paginate'
 
 # To use ActiveModel has_secure_password
-gem 'bcrypt-ruby'
+gem 'bcrypt'
 
 # To generate reports
 gem 'wkhtmltopdf-binary'
@@ -51,6 +51,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'byebug'
   gem 'pry-byebug'
+  gem 'therubyracer' # for vagrant
 end
 
 group :test do
