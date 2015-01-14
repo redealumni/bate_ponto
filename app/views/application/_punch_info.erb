@@ -2,8 +2,14 @@
   <tr>
     <td class="status"><%= punch.entrance? ? "→<br/>In".html_safe : "←<br/>Out".html_safe %></td>
     <td class="text">
-      <i><%= punch.user.name %></i>
-      (<%= number_to_human punch.user.time_worked_today / 1.hour.to_f %> horas hoje)
+      <% if punch.user.blank? %>
+        <b>Usuário não existe, informe os desenvolvedores o mais rápido possível!</b>
+        <br>
+        <i>ID do ponto: <%= punch.id %></i>
+      <% else %>
+        <i><%= punch.user.name %></i>
+        (<%= number_to_human punch.user.time_worked_today / 1.hour.to_f %> horas hoje)
+      <% end %>
     </td>
     <td class="time">
       <div class='punch_time_display right' meta-dom-id="<%=dom_id(punch)%>">
