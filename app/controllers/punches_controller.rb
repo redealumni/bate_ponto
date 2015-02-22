@@ -27,6 +27,7 @@ class PunchesController < ApplicationController
 
     if user_params  #bate como outro usuário ou por token
       if user = User.find_by_name(user_params[:name]).try(:authenticate, user_params[:password]) || User.find_by_token(user_params[:token])
+        binding.pry
         @punch = user.punches.new(create_params)
       else
         respond_to do |format|
@@ -43,11 +44,11 @@ class PunchesController < ApplicationController
       last_punch = @punch.user.punches.latest.first rescue nil
 
       if last_punch && last_punch.created_at > 5.minutes.ago
-        #remove punches sequenciais (para correção rápida)
-        removed_punch = last_punch.destroy
-        format.html { redirect_to root_path, notice: 'Sua última batida foi removida!' }
-        format.js   { render json: { delete: removed_punch }, status: :ok, location: removed_punch }
-        format.json { render json: { delete: removed_punch }, status: :ok, location: removed_punch }
+        # remove punches sequenciais (para correção rápida)
+       removed_punch = last_punch.destroy
+       format.html { redirect_to root_path, notice: 'Sua última batida foi removida!' }
+       format.js   { render json: { delete: removed_punch }, status: :ok, location: removed_punch }
+       format.json { render json: { delete: removed_punch }, status: :ok, location: removed_punch }
       else
         if @punch.save
           user = User.find(@punch.user.id)
