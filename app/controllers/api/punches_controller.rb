@@ -13,7 +13,8 @@ module Api
       if last_punch.present? && last_punch.created_at > 5.minutes.ago
         #remove punches sequenciais (para correção rápida)
         removed_punch = last_punch.destroy
-        respond_with removed_punch, status: :ok
+        response = { entrance: 'destroyed'}
+        render json: response
       else
         @punch = @user.punches.new(create_params)
 
