@@ -10,7 +10,6 @@ module Api
 
     def create
       last_punch = @user.punches.latest.first
-      binding.pry
       if last_punch.present? && last_punch.created_at > 5.minutes.ago
         #remove punches sequenciais (para correção rápida)
         removed_punch = last_punch.destroy
@@ -30,7 +29,6 @@ module Api
 
     def restrict_access
       @user = User.find_by(token: params[:user_token]) || User.find_by(slack_username: params[:punch][:user][:slack])
-      binding.pry
       if API_TOKEN.blank? || @user.blank? || params[:api_token] != API_TOKEN
         head :unauthorized
       end
