@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141104161153) do
+ActiveRecord::Schema.define(version: 20150222032825) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20141104161153) do
     t.text     "shifts",                                                     null: false
     t.string   "goals",           default: "---\n- 8\n- 8\n- 8\n- 8\n- 8\n", null: false
     t.boolean  "flexible_goal",   default: false
+    t.string   "slack_username",  default: ""
   end
 
 end

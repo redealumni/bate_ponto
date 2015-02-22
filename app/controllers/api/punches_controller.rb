@@ -2,7 +2,7 @@ module Api
   class PunchesController < ActionController::Base
     before_action :restrict_access
 
-    respond_to :json
+    respond_to :html, :json
 
     def index
       respond_with @user.punches.latest.first(10)
@@ -10,7 +10,6 @@ module Api
 
     def create
       last_punch = @user.punches.latest.first
-
       if last_punch.present? && last_punch.created_at > 5.minutes.ago
         #remove punches sequenciais (para correção rápida)
         removed_punch = last_punch.destroy
@@ -19,9 +18,9 @@ module Api
         @punch = @user.punches.new(create_params)
 
         if @punch.save
-          respond_with @punch, status: :created
+          render json: @punch
         else
-          respond_with @punch.errors, status: :unprocessable_entity
+          render json: @punch.errors, status: :unprocessable_entity
         end
       end
     end
@@ -29,8 +28,7 @@ module Api
     protected
 
     def restrict_access
-      @user = User.find_by(token: params[:user_token])
-
+      @user = User.find_by(token: params[:user_token]) || User.find_by(slack_username: params[:punch][:user][:slack])
       if API_TOKEN.blank? || @user.blank? || params[:api_token] != API_TOKEN
         head :unauthorized
       end
@@ -38,7 +36,11 @@ module Api
 
     # Get params for creating
     def create_params
-      params.require(:punch).permit(:comment)
+      params.require(:punch).permit(:comment,:user)
+    end
+
+    def user_params
+      params.require(:punch).permit(user: [:name, :password, :token])[:user]
     end
   end
 end
