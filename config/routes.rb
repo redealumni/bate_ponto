@@ -1,4 +1,5 @@
 PontoRa::Application.routes.draw do
+  mount_roboto
   resource :session
 
   # Routes for user model

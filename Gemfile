@@ -36,6 +36,9 @@ gem 'delayed_job_active_record'
 # Slack notifications
 gem 'slack-notifier'
 
+# Robots.txt
+gem 'roboto'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 
@@ -51,7 +54,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'byebug'
   gem 'pry-byebug'
-  gem 'therubyracer' # for vagrant
+  # gem 'therubyracer' # for vagrant
 end
 
 group :test do
