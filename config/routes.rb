@@ -34,7 +34,7 @@ PontoRa::Application.routes.draw do
   get 'gecko_this_month_pie',       to: 'stats#gecko_this_month_pie'
   get 'gecko_from_checkpoint_pie',  to: 'stats#gecko_from_checkpoint_pie'
   get 'gecko_latest_punches',       to: 'stats#gecko_latest_punches'
-
+  get 'reports_punch',              to: 'stats#reports_punch'
   root to: 'punches#index'
 
   # API
