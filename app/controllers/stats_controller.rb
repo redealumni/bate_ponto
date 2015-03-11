@@ -126,7 +126,7 @@ class StatsController < ApplicationController
     begin_date  = Time.zone.local(begin_split[2],begin_split[1],begin_split[0])
 
     end_split   = params[:end_date].split("\/")
-    end_date    = Time.zone.local(end_split[2],end_split[1],end_split[0])
+    end_date    = Time.zone.local(end_split[2],end_split[1],end_split[0]).end_of_day
 
     punches     = Punch.where(created_at: begin_date .. end_date)
 
