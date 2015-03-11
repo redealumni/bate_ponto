@@ -121,7 +121,25 @@ class StatsController < ApplicationController
     @punches = User.visible.by_name.map{ |u| u.punches.latest.first }.compact
   end
 
+  def reports_punch
+    begin_date  = datetime_beginning_of_day(params[:start_date])
+    end_date  = datetime_beginning_of_day(params[:end_date])
+    punches = Punch.where(created_at: begin_date .. end_date)
+    data = punches.collect do |punche|
+      {
+        criado_em: punche.created_at.strftime("%d/%m/%y %I:%M%p"),
+        status: punche.entrance? ? "Entrada" : "Saida",
+        nome: punche.user.name
+      }
+    end
+    render json: data.to_json
+  end
+
   protected
+
+  def datetime_beginning_of_day(date)
+    date.to_datetime.beginning_of_day
+  end
 
   def pie_data(users, start, finish)
     count = -1
