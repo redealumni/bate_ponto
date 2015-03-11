@@ -122,8 +122,8 @@ class StatsController < ApplicationController
   end
 
   def reports_punch
-    begin_date  = datetime_beginning_of_day(params[:start_date])
-    end_date  = datetime_beginning_of_day(params[:end_date])
+    begin_date  = params[:start_date].to_datetime.beginning_of_day
+    end_date  = params[:end_date].to_datetime.end_of_day
     punches = Punch.where(created_at: begin_date .. end_date)
     data = punches.collect do |punche|
       {
@@ -136,10 +136,6 @@ class StatsController < ApplicationController
   end
 
   protected
-
-  def datetime_beginning_of_day(date)
-    date.to_datetime.beginning_of_day
-  end
 
   def pie_data(users, start, finish)
     count = -1
