@@ -39,6 +39,9 @@ gem 'slack-notifier'
 # Robots.txt
 gem 'roboto'
 
+# Render Anywhere
+gem 'render_anywhere'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 
