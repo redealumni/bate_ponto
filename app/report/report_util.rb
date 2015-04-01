@@ -27,7 +27,7 @@ class ReportUtil
 
           pdf_data = WickedPdf.new.pdf_from_string(pdf_string)
 
-          z.get_output_stream("relatorio_#{summary.user.name}.pdf") { |os| os.write(pdf_data) }
+          z.get_output_stream("relatorio_#{summary.user.name.parameterize}.pdf") { |os| os.write(pdf_data) }
         end
       end
     end
