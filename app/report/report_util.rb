@@ -3,7 +3,9 @@ class ReportUtil
   include DatetimeHelper
 
   def reports(ids, month_days, folder = "#{Dir.home}/reports")
-    @format = :pdf
+    format = :pdf
+    set_instance_variable("format", format)
+
     users = User.find(ids)
 
     month_days.each do |month_day|
@@ -16,15 +18,16 @@ class ReportUtil
 
       Zip::File.open(file_name, Zip::File::CREATE) do |z|
         users.each do |u|
-          @summary = Summary.summary_for u, date_range, month_day, true
+          summary = Summary.summary_for u, date_range, month_day, true
+          set_instance_variable("summary", summary)
 
-          pdf_string = render_to_string formats: [:html],
+          pdf_string = render formats: [:html],
             template: "users/report.html.erb",
             layout: "report_pdf"
 
           pdf_data = WickedPdf.new.pdf_from_string(pdf_string)
 
-          z.get_output_stream("relatorio_#{@summary.user.name}.pdf") { |os| os.write(pdf_data) }
+          z.get_output_stream("relatorio_#{summary.user.name}.pdf") { |os| os.write(pdf_data) }
         end
       end
     end
