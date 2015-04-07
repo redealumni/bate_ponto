@@ -64,7 +64,7 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
 
         issues = []
         day_range = range_for_day day
-        time = time_worked_less_lunch_in_day user, day
+        time = time_worked_in_day user, day
         punches_for_day = user.punches.where(punched_at: day_range)
         if punches_for_day.blank? then
           issues << "Funcionário faltou."
@@ -133,6 +133,10 @@ Summary = Struct.new(:user, :date, :weeks, :days, :chart) do
     def self.time_worked_less_lunch_in_day(user, day)
       user.time_worked(range_for_day(day)) - user.shifts.lunch_time(Shifts::NUM_MAPPING[day.cwday]).minutes
     end
+
+    def self.time_worked_in_day(user, day)
+      user.time_worked(range_for_day(day))
+    end    
 
     def self.swap(value, first, second)
       if value == first then second else first end

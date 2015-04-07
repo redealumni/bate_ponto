@@ -27,7 +27,6 @@ class PunchesController < ApplicationController
 
     if user_params  #bate como outro usuário ou por token
       if user = User.find_by_name(user_params[:name]).try(:authenticate, user_params[:password]) || User.find_by_token(user_params[:token])
-        binding.pry
         @punch = user.punches.new(create_params)
       else
         respond_to do |format|

@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
 
   # Get daily goal
   def daily_goal(day)
-    self.goals[Shifts::DAY_MAPPING[day] - 1].hours
+    self.goals[Shifts::DAY_MAPPING[day] - 1].try(:hours) || 0
   end
 
   # Given a amount of time and the weekday, check if it's ok for this user
@@ -209,4 +209,14 @@ class User < ActiveRecord::Base
       end
     end
   end
+
+  def get_full_weeks_of_month(date)
+    month_range = date.beginning_of_month..date.end_of_month
+    month_range.chunk { |d| d.wday > 0 }.select(&:first).map(&:last)
+  end
+  def time_worked_at_date(date)
+    self.time_worked(date.beginning_of_day..date.end_of_day)
+  end 
+
+
 end
