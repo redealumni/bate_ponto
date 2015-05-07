@@ -40,6 +40,11 @@ PontoRa::Application.routes.draw do
   # API
   namespace :api do
     resources :punches
+    controller "punches" do
+      post "login", action: "login"
+      post "mobile_punch", action: "mobile_punch"
+      post "list_mobile", action: "list_mobile"
+    end
   end
 
 end

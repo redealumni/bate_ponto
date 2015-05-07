@@ -1,6 +1,6 @@
 module Api
   class PunchesController < ActionController::Base
-    before_action :restrict_access
+    before_action :restrict_access, only: [:index,:create]
 
     respond_to :html, :json
 
@@ -26,6 +26,36 @@ module Api
       end
     end
 
+    def mobile_punch
+      @user = User.find_by_name(session_params[:name])
+      if @user.try(:authenticate, session_params[:password])
+        create_punch
+      else
+        render json: {info: "Falha na authenticação! Verifique nome e senha"}.to_json
+      end
+    end
+
+    def list_mobile
+      @user = User.find_by_name(session_params[:name])
+      if @user.try(:authenticate, session_params[:password])
+        respond_to do |format|
+          format.json { render json: @user.punches.latest.first(10) }
+        end
+      else
+        render json: {info: "Falha na authenticação! Verifique nome e senha"}.to_json
+      end
+    end
+
+    def login
+      @user = User.find_by_name(session_params[:name])
+      if @user.try(:authenticate, session_params[:password])
+        render json: {info: "success" }.to_json
+      else
+        render json: {info: "error" }.to_json
+      end
+    end
+
+
     protected
 
     def restrict_access
@@ -40,8 +70,26 @@ module Api
       params.require(:punch).permit(:comment,:user)
     end
 
-    def user_params
-      params.require(:punch).permit(user: [:name, :password, :token])[:user]
+    def session_params
+      params.require(:user).permit(:name, :password)
+    end
+
+    def create_punch
+      last_punch = @user.punches.latest.first
+      if last_punch.present? && last_punch.created_at > 5.minutes.ago
+        #remove punches sequenciais (para correção rápida)
+        removed_punch = last_punch.destroy
+        response = { entrance: 'destroyed'}
+        render json: response
+      else
+        @punch = @user.punches.new
+
+        if @punch.save
+          render json: @punch
+        else
+          render json: @punch.errors, status: :unprocessable_entity
+        end
+      end
     end
   end
 end
