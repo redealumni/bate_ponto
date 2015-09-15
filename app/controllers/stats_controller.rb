@@ -128,11 +128,11 @@ class StatsController < ApplicationController
     end_split   = params[:end_date].split("\/")
     end_date    = Time.zone.local(end_split[2],end_split[1],end_split[0]).end_of_day
 
-    punches     = Punch.where(created_at: begin_date .. end_date)
+    punches     = Punch.where(punched_at: begin_date .. end_date)
 
     data = punches.collect do |punche|
       {
-        criado_em: punche.created_at.strftime("%d/%m/%y %I:%M%p"),
+        criado_em: punche.punched_at.strftime("%d/%m/%y %I:%M%p"),
         status: punche.entrance? ? "Entrada" : "Saida",
         nome: punche.user.name
       }
