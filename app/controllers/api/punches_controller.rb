@@ -82,7 +82,7 @@ module Api
         response = { punch: @user.punches.latest.first, punch_status: 'destroyed'}
         render json: response
       else
-        @punch = @user.punches.new(create_params)
+        @punch = @user.punches.new
 
         if @punch.save
           response = { punch: @punch, punch_status: 'punched'}
