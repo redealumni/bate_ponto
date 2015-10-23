@@ -78,14 +78,15 @@ module Api
       last_punch = @user.punches.latest.first
       if last_punch.present? && last_punch.created_at > 5.minutes.ago
         #remove punches sequenciais (para correção rápida)
-        removed_punch = last_punch.destroy
-        response = { entrance: 'destroyed'}
+        last_punch.destroy
+        response = { punch: @user.punches.latest.first, punch_status: 'destroyed'}
         render json: response
       else
-        @punch = @user.punches.new
+        @punch = @user.punches.new(create_params)
 
         if @punch.save
-          render json: @punch
+          response = { punch: @punch, punch_status: 'punched'}
+          render json: response
         else
           render json: @punch.errors, status: :unprocessable_entity
         end
