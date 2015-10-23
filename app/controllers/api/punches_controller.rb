@@ -59,7 +59,10 @@ module Api
     protected
 
     def restrict_access
-      @user = User.find_by(token: params[:user_token]) || User.find_by(slack_username: params[:punch][:user][:slack])
+      @user = User.find_by(token: params[:user_token]) if params[:user_token].present?
+      if (params[:punch][:user][:slack].present? rescue nil)
+        @user ||= User.find_by(slack_username: params[:punch][:user][:slack])
+      end
       if API_TOKEN.blank? || @user.blank? || params[:api_token] != API_TOKEN
         head :unauthorized
       end
