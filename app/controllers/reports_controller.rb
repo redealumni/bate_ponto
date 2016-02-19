@@ -6,6 +6,7 @@ class ReportsController < ApplicationController
 
   # GET /reports/index
   def index
+
   end
 
   # GET /reports/simple

@@ -10,8 +10,8 @@
           </ul>
         </div>
     <% end %>
-
-    <% if user_signed_in? %>
+<!-- Recurso retirado a pedido dos Admin pois confundi os usuarios -->
+ <!--    <% if user_signed_in? %><% @punch.entrance? %>
 
         <table class="this_punch <%= @punch.entrance? ? 'entrance' : 'exit' %>">
           <tr>
@@ -26,9 +26,9 @@
               </div>
             </td>
           </tr>
-        </table>
+        </table> 
 
-    <% end %>
+    <% end %> -->
 
     <div class="field">
       <%= f.label :comment %>

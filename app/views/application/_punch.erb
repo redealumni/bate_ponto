@@ -11,11 +11,13 @@
       </div>
       <div class='punch_time_form' meta-dom-id="<%=dom_id(punch)%>">
         <%= f.datetime_select('punched_at', use_month_numbers: true, minute_step: 1, datetime_separator: '') %>
+        <%= select_tag "entrance", "<option>entrando</option><option>saindo</option>".html_safe, include_blank: true %>
         <br/>
         <a href="#" class="punch_show_display_link">cancelar</a>
       </div>
     </td>
-    <td class="text"><%= punch.comment %></td>
+
+    <td class="text"><%= punch.comment %></td>  
     <td class="kind">
       <% if not punch.altered? %>
         <%= image_tag "icon_clock_green.png", title: "Ponto com Horário Original" %>

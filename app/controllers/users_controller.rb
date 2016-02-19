@@ -146,7 +146,22 @@ class UsersController < ApplicationController
   # GET /users/1/report
   # GET /users/1/report.pdf
   def report
-    date = report_params[:partial] == "true" ? Date.today : Date.today.prev_month
+
+    date = report_params[:partial] == "true" ? Date.today : Date.today.prev_day
+
+    if !params[:month].nil? && !params[:year].nil?
+      if params[:month] != "" && params[:year] != "" 
+        if params[:month].to_i <= 12 && params[:year].to_i > 2011  
+          while date.year != params[:year].to_i
+            date = date.prev_month
+          end
+
+          while date.month != params[:month].to_i
+            date = date.prev_month
+          end
+        end
+      end
+    end
 
     @summary = Summary.summary_for(User.find(report_params[:id]),
       get_weeks_of_month(date),
@@ -162,6 +177,8 @@ class UsersController < ApplicationController
         render pdf: "relatorio_#{@summary.user.name}.pdf",
           template: "users/report.html.erb",
           layout: "report_pdf"
+
+
       end
     end
   end
@@ -212,3 +229,5 @@ class UsersController < ApplicationController
     alias_method :create_params, :user_params
     alias_method :update_params, :user_params
 end
+
+

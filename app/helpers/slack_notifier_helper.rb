@@ -18,10 +18,16 @@ module SlackNotifierHelper
     notifier.ping ":warning: *#{user_name}* faltou no dia :date:`#{day.strftime("%d/%m/%Y")}` :warning:"
   end
 
+  def forgot_punch_notification(user_name, slack_name)
+    notifier.channel = slack_name
+    notifier.ping ":clock10: *#{user_name}*, você esqueceu de bater o ponto na saída, preste mais atenção! :clock10:"
+  end
+
   private
   def notifier
     @notifier ||= Slack::Notifier.new "https://hooks.slack.com/services/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", 
                             channel:  "#cagou_no_pau_no_ponto",
                             username: "Seu Zé da portaria"
   end
+
 end

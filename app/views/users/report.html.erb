@@ -1,24 +1,121 @@
 <h1>Relatório de Horas RedeAlumni</h1>
 
+<style>
+  table, td, th, tfoot {border:1px solid #088A85; padding:0px;}
+  th {background-color:#999;}
+  caption {font-size:x-large;}
+  colgroup {background:#F60;}
+  .coluna1 {background:#F66;}
+  .coluna2  {background:#F33;}
+  .coluna3  {background:#F99;}
+</style>
+
+<div class="Datepicker">
+      <form  method="get" id="searchform" action="">
+        <table>
+        <tr><td>
+            Mes:<br>
+            <input type="text" class="datepicker" placeholder="Mes ..." name="month"/>
+            <td>
+            Ano: 
+            <input type="text" class="datepicker" placeholder="Ano ..." name="year"/>
+            </td>
+            <td>
+            <input type="submit" id="searchsubmit" value = "Buscar data" />
+          </td>
+          </tr>
+        </table>
+      </form>
+</div>
+
 <div class="intro">
-  <strong>Funcionário: </strong><%= @summary.user.name %> <br>
+  <strong>Funcionário: </strong><%= @summary.user.name %> <br><br>
   <strong>Data: </strong><%= l @summary.date, format: :month_year %> <br>
 </div>
 
 <br>
 
-<table class="shift-overview splitForPrint">
+<% a = Array.new %> 
+<% d = @summary.days[0].date.beginning_of_week.prev_day %>
+<% d2 = d %>
+<% b = @summary.days.size %>
+<% u = @summary.days[b-1].date %>
+<% count = 0 %>
+<% count2 = 0 %>
+<% count3 = 0 %>
+
+<table class="week-overview splitForPrint" width="70%">
+  <tr>
+    <td align="center"><strong>Domingo</strong></td>
+    <td align="center"><strong>Segunda</strong></td>
+    <td align="center"><strong>Terça</strong></td>
+    <td align="center"><strong>Quarta</strong></td>
+    <td align="center"><strong>Quinta</strong></td>
+    <td align="center"><strong>Sexta</strong></td>
+    <td align="center"><strong>Sábado</strong></td>
+    <td align="center"><strong>Média</strong></td>
+  </tr>
+
+<% while u > d do %> 
+  <tr>
+    <% while count2 < 7 %>
+      <td align="center"><%= sprintf "%.2d / %.2d", d2.day, d2.month %></td>
+      <% count2 = count2 + 1 %>
+      <% d2 = d2.next_day %>
+    <% end %>
+    <td align="center"> - </td>
+    <% count2 = 0 %>
+  </tr>
+
+  <tr>
+    <% count_media = 0 %>
+    <% media = 0 %>
+    <% while count < 7 %>
+      <% if d.day == @summary.days[count3].date.day && d.month == @summary.days[count3].date.month %>
+          <% time = @summary.days[count3].time %>
+          <% count_media = count_media + 1 %>
+          <% media = media + time %>
+          <% hours =  time / 60 / 60 %>
+          <% minutes =  time / 60 % 60 %>
+          <% seconds =  time % 60 %>
+          <% if hours < 3 %>
+            <td align="center" ><font color="red"><%= sprintf "%.2d:%.2d:%.2d", hours, minutes, seconds %></font></td>
+          <% else %>
+            <td align="center" ><%= sprintf "%.2d:%.2d:%.2d", hours, minutes, seconds %></td>
+          <% end %>
+          <% count3 = count3 + 1 %> 
+          <% if count3 > b - 1 %>
+            <% count3 = b - 1 %>
+          <% end %>
+      <% else %>
+          <td align="center"> - </td>
+      <% end %>
+      <% count = count + 1 %>
+      <% d = d.next_day %>
+    <% end %>
+    <% media = media / count_media %>
+    <% hours =  media / 60 / 60 %>
+    <% minutes =  media / 60 % 60 %>
+    <% seconds =  media % 60 %>
+    <td align="center" ><%= sprintf "%.2d:%.2d:%.2d", hours, minutes, seconds %></td>
+    <% count = 0 %>
+    </tr>
+  <% end %>
+</table>
+
+
+<table class="shift-overview splitForPrint" width="60%">
   <tr>
     <th>Dia:</th>
     <th>Horário:</th>
     <% unless @summary.user.flexible_goal %><th>Meta:</th><% end %>
   </tr>
   <% @summary.user.shifts.each do |weekday, shifts| %>
-    <tr>
+    <tr >
       <td><%= Shifts.localize weekday %></td>
       <td><%= shifts.join(',') %></td>
       <% unless @summary.user.flexible_goal %>
-        <td><%= DatetimeHelper.readable_duration((@summary.user.daily_goal(weekday))) %></td>
+        <td align="center"><%= DatetimeHelper.readable_duration((@summary.user.daily_goal(weekday))) %></td>
       <% end %>
     </tr>
   <% end %>

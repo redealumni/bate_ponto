@@ -7,6 +7,7 @@ class SessionsController < ApplicationController
 
   def create
     @user = User.find_by_name(session_params[:name])
+
     if @user.try(:authenticate, session_params[:password])
       session[:user_id] = @user.id
       cookies.permanent.signed[:login_user_id] = { id: @user.id, password_digest: @user.password_digest }.to_json

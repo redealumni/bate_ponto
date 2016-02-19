@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   scope :visible, -> { where 'hidden = ?', false }
   scope :hidden, -> { where 'hidden = ?', true}
 
+
   # has_secure_password enables password confirmation and presence,
   # since we already set to validate presence manually and we don't need
   # password confirmation we just tell the method to enable no validation
@@ -35,6 +36,7 @@ class User < ActiveRecord::Base
     self.shifts ||= Shifts.new_default
     self.goals  ||= ([8] * 5).push(0)
   end
+
 
   # Get weekly goal
   def weekly_goal(range = nil)
@@ -195,6 +197,15 @@ class User < ActiveRecord::Base
     end
   end
 
+  def forgot_punch?
+    last_punch = self.punches.latest.first
+    if last_punch.entrance
+      if Time.zone.now.to_time - last_punch.punched_at > 39600
+        forgot_punch_notification(self.name, self.slack_username)
+      end
+    end
+  end
+
   def first_punch_of_day?
     return true if self.punches.where("punched_at > ?", Time.zone.today.beginning_of_day).count == 1
   end
@@ -217,6 +228,5 @@ class User < ActiveRecord::Base
   def time_worked_at_date(date)
     self.time_worked(date.beginning_of_day..date.end_of_day)
   end 
-
 
 end

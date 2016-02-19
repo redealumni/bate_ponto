@@ -12,3 +12,7 @@ midnight_in_brazil       = Time.parse('0 am') + timezone_offset_in_hours.hours
 every 1.day at: '8:00 am' do
   rake "check_absences:yesterday"
 end
+
+every 1.day at: '5:00 am' do
+  rake "forgots_punchs:forgot"
+end

@@ -25,6 +25,7 @@ PontoRa::Application.routes.draw do
     end
   end
 
+
   # Stats
   get 'stats', to: 'stats#index'
   get 'gecko_daily_avg_30_days',    to: 'stats#gecko_daily_avg_30_days'

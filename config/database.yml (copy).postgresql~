@@ -1,0 +1,21 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  username: yourusername
+  password: yourpassword
+  locale: pt_BR.UTF8
+  pool: 5
+
+development:
+  <<: *default
+  database: bateponto_development
+
+test:
+  <<: *default
+  database: bateponto_test
+
+production:
+  <<: *default
+  database: bateponto_production
+  username: myapp
+  password: <%= ENV['MYAPP_DATABASE_PASSWORD'] %>
