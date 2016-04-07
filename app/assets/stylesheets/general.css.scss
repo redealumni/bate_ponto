@@ -87,8 +87,11 @@ table.punch_item td{
   &.text {
     width: 30%;
   }
+  &.kind {
+    width: 4%;
+  }
   &.actions {
-    width: 20%;
+    width: 16%;
   }
   
 }

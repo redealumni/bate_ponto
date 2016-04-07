@@ -5,7 +5,7 @@
       <div class='punch_time_display' meta-dom-id="<%=dom_id(punch)%>">
         <%= punch.punched_at.to_s(:short)%>
         <br/>
-        <% if user_signed_in? and current_user.admin? %>
+        <% if user_signed_in? %>
           <a href="#" class="punch_show_form_link">mudar</a>
         <% end %>
       </div>
@@ -25,10 +25,12 @@
         <%= image_tag "icon_clock_red.png", title: "Ponto com Horário Alterado" %>
       <% end %>
     </td>
-    <% if user_signed_in? and current_user.admin? %>
+    <% if user_signed_in? %>
       <td class="actions">
         <%= f.submit "Alterar" %>
-        <%= link_to 'remover', punch, data: { confirm: 'Tem certeza?' }, method: :delete, remote: true %>
+        <% if current_user.admin? %>
+          <%= link_to 'remover', punch, data: { confirm: 'Tem certeza?' }, method: :delete, remote: true %>
+        <% end %>
       </td>
     <% end %>
   </tr>
