@@ -1,6 +1,6 @@
 class PunchesController < ApplicationController
 
-  before_filter :require_admin, only: [:update, :destroy]
+  before_filter :require_admin, only: [:destroy]
 
   # GET /punches
   # GET /punches.json
@@ -105,7 +105,24 @@ class PunchesController < ApplicationController
   # PATCH /punches/1.json
   def update
     @punch = Punch.find(params[:id])
-    
+
+    user_data_map = JSON.parse(cookies.permanent.signed[:login_user_id])
+    logged_user_id = user_data_map["id"]
+
+    if logged_user_id != @punch.user.id then
+      logged_user = User.find(logged_user_id)
+
+      if not logged_user.admin? then
+        respond_to do |format|
+          format.html { redirect_to root_path, notice: 'Tentativa de atualizar ponto de outro usuario' }
+          format.js
+          format.json { head :ok }
+        end
+
+        return
+      end
+    end
+
     if params[:entrance] == "entrando"
       @punch.entrance = true
       @punch.comment = "Ponto editado: saindo → entrando"
