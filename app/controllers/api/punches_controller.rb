@@ -1,6 +1,6 @@
 module Api
   class PunchesController < ActionController::Base
-    before_action :restrict_access, only: [:index,:create]
+    before_action :restrict_access, only: [:index,:create,:check_presence]
 
     respond_to :html, :json
 
@@ -52,6 +52,15 @@ module Api
         render json: {info: "success" }.to_json
       else
         render json: {info: "error" }.to_json
+      end
+    end
+
+    def check_presence
+      last_punch = @user.punches.latest.first
+      unless last_punch.nil?
+        render json: {info: last_punch.entrance}.to_json
+      else
+        render json: {info: nil}.to_json
       end
     end
 

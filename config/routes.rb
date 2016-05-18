@@ -45,6 +45,7 @@ PontoRa::Application.routes.draw do
       post "login", action: "login"
       post "mobile_punch", action: "mobile_punch"
       post "list_mobile", action: "list_mobile"
+      post "check_presence", action: "check_presence"
     end
   end
 
