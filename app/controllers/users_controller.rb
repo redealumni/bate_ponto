@@ -213,7 +213,7 @@ class UsersController < ApplicationController
     # Safe parameters for user creation / updating
     def user_params
       if current_user.admin?
-        params.require(:user).permit(:name, :password, :token, :hidden, :admin, :flexible_goal, :goals, :shifts)
+        params.require(:user).permit(:name, :password, :token, :hidden, :admin, :flexible_goal, :goals, :shifts, :slack_username)
       else
         params.require(:user).permit(:password)
       end
