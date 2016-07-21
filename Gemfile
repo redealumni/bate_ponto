@@ -47,6 +47,7 @@ gem 'render_anywhere'
 
 # Deploy with Capistrano
 # gem 'capistrano'
+gem 'tzinfo-data'
 
 group :development, :production do
   gem 'pg'
